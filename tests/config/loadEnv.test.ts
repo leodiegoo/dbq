@@ -35,7 +35,7 @@ const codeOf = (fn: () => unknown): string => {
   } catch (err) {
     return (err as DbqError).code;
   }
-  throw new Error('deveria ter falhado');
+  throw new Error('should have thrown');
 };
 
 afterEach(() => {
@@ -90,7 +90,7 @@ describe('loadEnv', () => {
     const root = writeEnv(mysqlEnv);
     try {
       loadEnv({ root, project: 'proj', env: 'prod' });
-      expect.unreachable('deveria ter falhado');
+      expect.unreachable('should have thrown');
     } catch (err) {
       expect((err as DbqError).code).toBe('USAGE');
       expect((err as DbqError).message).toContain('dev');
@@ -103,7 +103,7 @@ describe('loadEnv', () => {
   });
 
   it('should be refusing malformed json', () => {
-    const root = writeEnv('{ nao e json');
+    const root = writeEnv('{ not json');
     expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
   });
 
@@ -142,21 +142,21 @@ describe('loadEnv', () => {
 
   it('should be taking the database from the env file when no flag is passed', () => {
     const root = writeEnv({
-      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'doArquivo' } },
+      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'fromFile' } },
     });
-    expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBe('doArquivo');
+    expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBe('fromFile');
   });
 
   it('should be preferring the database flag over the env file', () => {
     const root = writeEnv({
-      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'doArquivo' } },
+      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'fromFile' } },
     });
-    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'daFlag' }).database).toBe('daFlag');
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'fromFlag' }).database).toBe('fromFlag');
   });
 
   it('should be applying the database flag to a mysql connection too', () => {
     const root = writeEnv(mysqlEnv);
-    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'outro' }).database).toBe('outro');
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe('other');
   });
 
   it('should be leaving a mysql database undefined so the uri path stands', () => {
@@ -168,7 +168,7 @@ describe('loadEnv', () => {
     const root = writeEnv({ connections: { x: { engine: 'oracle', uri: 'oracle://u:hunter2@h/d' } } });
     try {
       loadEnv({ root, project: 'proj', env: 'dev' });
-      expect.unreachable('deveria ter falhado');
+      expect.unreachable('should have thrown');
     } catch (err) {
       expect((err as DbqError).message).not.toContain('hunter2');
     }

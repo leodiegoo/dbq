@@ -1,70 +1,56 @@
-# dbq — executor de queries read-only para SQL e MongoDB
+# dbq — a read-only query runner for SQL and MongoDB
 
-- **Data:** 2026-09-03
-- **Status:** aprovado, pronto para plano de implementação
-- **Repositório:** `~/Developer/personal/dbq`
+- **Date:** 2026-09-03
+- **Status:** approved, ready for an implementation plan
+- **Repository:** `~/Developer/personal/dbq`
 
-## Objetivo
+## Objective
 
-Uma CLI que executa queries de leitura contra MySQL e MongoDB, configurada por
-arquivos de ambiente em `~/.config/dbq/`, projetada para ser invocada por um
-agente de IA a partir de qualquer diretório.
+A CLI that runs read queries against MySQL and MongoDB, configured by environment files under `~/.config/dbq/`, designed to be invoked by an AI agent from any directory.
 
-O consumidor principal não é humano. Isso inverte duas prioridades usuais de
-CLI: a saída é otimizada para ser parseada e para não estourar contexto, e
-nenhum caminho de execução pode bloquear esperando input interativo.
+The primary consumer is not a human. That inverts two usual CLI priorities: output is optimised to be parsed and to not blow up a context window, and no execution path may block waiting on interactive input.
 
-## Invariante central
+## The central invariant
 
-**O `dbq` não escreve. Nunca.**
+**`dbq` never writes. Ever.**
 
-Não existe flag, variável de ambiente ou arquivo de config que destrave escrita.
-Isso não é um default — é uma propriedade estrutural do programa, garantida por
-validação que acontece antes de qualquer conexão ser aberta.
+No flag, environment variable or config file unlocks writes. This is not a default — it is a structural property of the program, enforced by validation that runs before any connection is opened.
 
-Todas as decisões abaixo derivam dessa invariante. Qualquer mudança futura que a
-enfraqueça invalida este design e exige uma revisão nova.
+Every decision below follows from that invariant. Any future change that weakens it invalidates this design and demands a fresh review.
 
-## Escopo
+## Scope
 
-**Dentro:** MySQL e MongoDB; queries de leitura; descoberta de schema; config
-por projeto e ambiente; saída JSON e tabela.
+**In:** MySQL and MongoDB; read queries; schema discovery; per-project and per-environment configuration; JSON and table output.
 
-**Fora (MVP):** PostgreSQL, OpenSearch, Redis; escrita de qualquer natureza;
-expansão de `${VAR}` nas URIs (anotado como possível v2 — no MVP a URI é texto
-puro); publicação no npm; qualquer prompt interativo.
+**Out (MVP):** PostgreSQL, OpenSearch, Redis; writes of any kind; `${VAR}` expansion in URIs (noted as a possible v2 — in the MVP the URI is plaintext); publishing to npm; any interactive prompt.
 
-## Arquitetura
+## Architecture
 
 ```
 src/
-  cli.ts                  parse de argv, orquestração, impressão (fino)
+  cli.ts                  argv parsing, orchestration, printing (thin on purpose)
   config/
-    resolveProject.ts     cwd → raiz do git → basename, ou --project
-    loadEnv.ts            lê e valida o arquivo da env, resolve --db
+    resolveProject.ts     cwd → git root → basename, or --project
+    loadEnv.ts            reads and validates the env file, resolves --db
   guards/
-    sql.ts                valida string SQL (puro, sem I/O)
-    mongo.ts              parseia db.<col>.<op>(...) via AST (puro, sem I/O)
+    sql.ts                validates the SQL string (pure, no I/O)
+    mongo.ts              parses db.<col>.<op>(...) via AST (pure, no I/O)
   engines/
-    mysql.ts              executa o que o guard aprovou
-    mongo.ts              idem
+    mysql.ts              runs what the guard approved
+    mongo.ts              same
   output/
-    envelope.ts           resultado → JSON ou tabela
+    envelope.ts           result → JSON or table
 ```
 
-### A fronteira que sustenta o projeto
+### The boundary that carries the project
 
-**Guards nunca abrem conexão. Engines nunca veem input cru.**
+**Guards never open a connection. Engines never see raw input.**
 
-O engine recebe uma estrutura já validada — uma coleção, uma operação vinda de
-um whitelist, argumentos que já foram provados literais. Não existe caminho de
-código no qual uma string fornecida pelo usuário alcance o driver sem atravessar
-o guard.
+The engine receives an already-validated structure — a collection, an operation drawn from a whitelist, arguments already proven to be literals. There is no code path in which a user-supplied string reaches the driver without crossing the guard.
 
-Consequência prática: os guards são funções puras, testáveis exaustivamente sem
-banco nenhum. É onde mora o risco e é onde mora a suíte de testes.
+Practical consequence: the guards are pure functions, exhaustively testable with no database at all. That is where the risk lives, and that is where the test suite lives.
 
-### Fluxo de dados
+### Data flow
 
 ```
 argv → resolveProject → loadEnv → guard → engine → envelope → stdout
@@ -73,111 +59,77 @@ argv → resolveProject → loadEnv → guard → engine → envelope → stdout
 ## Stack
 
 ```
-typescript      tipos; checagem via `tsc --noEmit`, nunca em runtime
-commander       comandos, flags, --help gerado automaticamente
-mysql2          driver SQL
-mongodb         driver Mongo
-acorn           AST para o guard do Mongo
-picocolors      cor, exclusivamente em --format table com stdout TTY
-vitest          testes
-pnpm            gerenciador de pacotes
+typescript      types; checked via `tsc --noEmit`, never at runtime
+commander       commands, flags, generated --help
+mysql2          SQL driver
+mongodb         Mongo driver
+acorn           AST for the Mongo guard
+picocolors      colour, exclusively with --format table on a TTY stdout
+vitest          tests
+pnpm            package manager
 ```
 
-**Sem passo de build.** Node 26 executa `.ts` diretamente via type stripping
-nativo (verificado na máquina alvo). O `bin` do `package.json` aponta para
-`src/cli.ts` com shebang `#!/usr/bin/env node`; instalação via `npm link` durante
-o desenvolvimento.
+**No build step.** Node 26 runs `.ts` directly via native type stripping (verified on the target machine). `package.json`'s `bin` points at `src/cli.ts` with a `#!/usr/bin/env node` shebang; installation via `npm link` during development.
 
-Disciplina exigida pelo type stripping: nada de `enum`, `namespace` ou parameter
-properties, e imports internos carregam extensão explícita (`./guards/sql.ts`).
+Discipline demanded by type stripping: no `enum`, `namespace` or parameter properties, and internal imports carry an explicit extension (`./guards/sql.ts`).
 
-**Sem `@clack/prompts` e sem `ora`.** Ambos servem sessão interativa, que é
-precisamente o que o `dbq` não é. Um prompt bloqueia esperando um TTY que não
-existe quando a IA invoca — o comando não falha, ele pendura, o pior modo de
-falha para uma ferramenta automatizada. Um spinner escreve escape de cursor em
-stdout e contamina saída destinada a `JSON.parse`. Nenhum fluxo deste design
-precisa perguntar nada.
+**No `@clack/prompts` and no `ora`.** Both serve interactive sessions, which is precisely what `dbq` is not. A prompt blocks waiting on a TTY that does not exist when an agent invokes it — the command does not fail, it *hangs*, the worst failure mode for an automated tool. A spinner writes cursor escapes to stdout and contaminates output destined for `JSON.parse`. No flow in this design needs to ask anything.
 
-**Commander apesar do tamanho pequeno da superfície.** O `--help` gerado
-automaticamente e sempre em sincronia com as flags reais é o que um agente lê ao
-encontrar um binário desconhecido. Isso vale mais que as poucas linhas de
-`util.parseArgs` que ele substitui.
+**Commander despite the small surface.** The auto-generated `--help`, always in sync with the real flags, is what an agent reads when it meets an unknown binary. That is worth more than the handful of `util.parseArgs` lines it replaces.
 
-## Configuração
+## Configuration
 
-### Localização
+### Location
 
 ```
-~/.config/dbq/<projeto>/<env>.json
+~/.config/dbq/<project>/<env>.json
 ```
 
-Respeita `$XDG_CONFIG_HOME` quando definido. O `dbq` é dono do próprio diretório
-em vez de espalhar nomes de projeto direto em `~/.config/`, que é território
-compartilhado com `nvim`, `gh`, `fish` e outros — colisão de nome entre um
-projeto pessoal e uma ferramenta real é questão de tempo.
+`$XDG_CONFIG_HOME` is honoured when set. `dbq` owns its own directory rather than scattering project names directly into `~/.config/`, which is shared ground with `nvim`, `gh`, `fish` and others — a name collision between a personal project and a real tool is a matter of time.
 
-### Formato
+### Format
 
 ```json
 {
   "connections": {
     "mongo": {
       "engine": "mongodb",
-      "uri": "mongodb://user:senha@host:27017/appdb",
-      "database": "appdb"
+      "uri": "mongodb://user:password@host:27017/mydb",
+      "database": "mydb"
     },
     "mysql": {
       "engine": "mysql",
-      "uri": "mysql://leitura:senha@10.0.0.1:3306/appdb"
+      "uri": "mysql://reader:password@10.0.0.1:3306/mydb"
     }
   },
   "defaults": { "limit": 500, "timeoutMs": 30000 }
 }
 ```
 
-Um arquivo de env agrupa **N conexões nomeadas**, porque um ambiente real não é
-um banco só — no my-project, `dev` é MongoDB e MySQL simultaneamente. Trocar de
-ambiente permanece uma ação única, e `--env` fica sendo o eixo explícito e ruidoso
-que separa dev de produção.
+An env file groups **N named connections**, because a real environment is not a single database — in the original target project, `dev` is MongoDB and MySQL simultaneously. Switching environments stays a single action, and `--env` remains the explicit, noisy axis separating dev from production.
 
-`--db` é opcional quando a env declara uma única conexão.
+`--db` is optional when the environment declares a single connection.
 
-O campo `database` é o banco **default** da conexão, e é opcional. Um nome de
-banco presente no path da URI é sempre ignorado.
+The `database` field is the connection's **default** database, and it is optional. A database name in the URI path is always ignored.
 
-**Revisão de 2026-09-03**, depois do primeiro uso real: a versão original exigia
-`database` no arquivo e o tratava como única fonte de verdade. Um cluster
-hospeda vários bancos — o de dev tem sete — então fixar um por arquivo obrigava
-a criar uma conexão nomeada por banco. A flag `-D, --database` passou a
-sobrescrever o default por invocação.
+**Revision of 2026-09-03**, after first real use: the original version required `database` in the file and treated it as the single source of truth. A cluster hosts several databases — the dev one had seven — so pinning one per file forced a named connection per database. The `-D, --database` flag now overrides the default per invocation.
 
-A razão da regra original continua valendo: ela existia para impedir que dois
-lugares *implícitos* (campo e path da URI) discordassem. Uma flag explícita não
-é ambiguidade, é override — e o path da URI segue ignorado.
+The reason behind the original rule still holds: it existed to stop two *implicit* sources (the field and the URI path) from disagreeing. An explicit flag is not ambiguity, it is an override — and the URI path stays ignored.
 
-Quando nem o campo nem a flag resolvem um banco, o erro lista os bancos do
-cluster, do mesmo modo que o erro de projeto lista os projetos.
+When neither the field nor the flag resolves a database, the error lists the cluster's databases, the same way the project error lists the projects.
 
-### Higiene de credenciais
+### Credential hygiene
 
-- O `dbq` **recusa executar** se o arquivo de env não estiver em modo `0600`, com
-  mensagem informando como corrigir. Esses arquivos guardam senha de produção.
-- Recomendação operacional (não é código): apontar as URIs para um usuário
-  **read-only no próprio banco**. O guard protege de erro humano; o usuário do
-  banco protege de bug no guard.
+- `dbq` **refuses to run** if the env file is not mode `0600`, with a message saying how to fix it. These files hold production passwords.
+- Operational recommendation (not code): point the URIs at a **read-only user in the database itself**. The guard protects against human error; the database user protects against a bug in the guard.
 
-### Resolução de projeto
+### Project resolution
 
-O `dbq` sobe do cwd até a raiz do repositório git e usa o basename do diretório.
-Se não houver correspondência em `~/.config/dbq/`, **falha** — com a lista dos
-projetos disponíveis no texto do erro, para que a reinvocação com `--project`
-seja imediata. Nunca chuta, nunca cai em default.
+`dbq` walks up from the cwd to the git repository root and uses the directory's basename. If nothing matches under `~/.config/dbq/`, it **fails** — with the list of available projects in the error text, so that re-invoking with `--project` is immediate. It never guesses, never falls back to a default.
 
-`--project` sobrescreve a detecção. Não existe "projeto ativo" persistido em
-lugar nenhum: estado global invisível é como se acerta o comando e se erra o
-banco.
+`--project` overrides detection. There is no persisted "active project" anywhere: invisible global state is how you get the command right and the database wrong.
 
-## Superfície da CLI
+## CLI surface
 
 ```bash
 dbq --env dev "SELECT id, name FROM companies WHERE active = 1"
@@ -186,185 +138,133 @@ dbq --project my-project --env prod --db mysql "SHOW TABLES"
 cat pipeline.js | dbq --env dev --db mongo -
 ```
 
-| Flag | Default | Nota |
+| Flag | Default | Note |
 |---|---|---|
-| `--project <nome>` | detectado pelo cwd | |
-| `--env <nome>` | — | obrigatório |
-| `--db <conexão>` | única conexão da env | obrigatório se houver mais de uma |
-| `--limit <n>` | `500` | `0` desliga |
+| `--project <name>` | detected from cwd | |
+| `--env <name>` | — | required |
+| `--db <connection>` | the env's only one | required when there is more than one |
+| `--limit <n>` | `500` | `0` disables it |
 | `--timeout <ms>` | `30000` | |
 | `--format json\|table` | `json` | |
-| `--explain` | off | roda `EXPLAIN` / `.explain()` |
+| `--explain` | off | runs `EXPLAIN` / `.explain()` |
 
-`--explain` é aplicado pelo **engine**, depois do guard aprovar a query original.
-O usuário não escreve `.explain()` na expressão — `explain` não está no whitelist
-de operações encadeáveis e seria recusado. No SQL, o engine prefixa `EXPLAIN`; no
-Mongo, envolve o cursor já construído.
+`--explain` is applied by the **engine**, after the guard approves the original query. The user does not write `.explain()` in the expression — `explain` is not on the chainable whitelist and would be refused. In SQL the engine prefixes `EXPLAIN`; in Mongo it wraps the already-built cursor.
 
-Query pelo argumento posicional, ou `-` para ler de stdin — pipeline de
-`aggregate` com muitos estágios é sofrível de escapar no shell.
+Query via the positional argument, or `-` to read stdin — an `aggregate` pipeline with many stages is miserable to escape in a shell.
 
-### Subcomandos de descoberta
+### Discovery subcommands
 
 ```bash
-dbq envs                                    projetos e envs disponíveis
-dbq schema --env dev --db mysql             tabelas
-dbq schema --env dev --db mysql companies   colunas de uma tabela
-dbq schema --env dev --db mongo             coleções (+ shape inferido por amostra)
+dbq envs                                    available projects and environments
+dbq schema --env dev --db mysql             tables
+dbq schema --env dev --db mysql companies   a table's columns
+dbq schema --env dev --db mongo             collections (+ shape inferred from a sample)
 ```
 
-Isto é **central, não acessório**. Um agente que não enxerga o schema chuta nome
-de coluna, erra, reinvoca, e queima turno atrás de turno. `schema` é o que
-transforma o `dbq` de executor em ferramenta autossuficiente.
+This is **central, not an accessory**. An agent that cannot see the schema guesses column names, fails, re-invokes, and burns turn after turn. Giving away `schema` is what turns `dbq` from a runner into a tool an agent can use on its own.
 
-## Saída e limites
+## Output and limits
 
-O inimigo do consumidor não é feiúra, é volume: um `SELECT * FROM companies` sem
-cláusula pode despejar centenas de milhares de linhas direto no contexto e
-queimar a sessão inteira num comando.
+The consumer's enemy is not ugliness, it is **volume**: a bare `SELECT * FROM companies` can dump hundreds of thousands of rows straight into the context window and burn an entire session in one command.
 
-- **JSON em stdout por padrão**, envelope com `rows`, `rowCount`, `truncated`,
-  `elapsedMs`. `--format table` para leitura humana.
-- **Limite default de 500 injetado**, aplicado mesmo quando a query não pede.
-  Quando corta, `truncated: true` acompanha o total real — o consumidor sabe que
-  precisa refinar em vez de acreditar que viu tudo. `--limit 0` desliga,
-  explicitamente.
-- **`maxTimeMS` / timeout de statement de 30s**, ajustável por env.
+- **JSON on stdout by default**, an envelope carrying `rows`, `rowCount`, `truncated`, `elapsedMs`. `--format table` for human reading.
+- **A default ceiling of 500 injected**, applied even when the query does not ask for one. When it truncates, `truncated: true` accompanies the real total — the consumer knows to refine instead of believing it saw everything. `--limit 0` disables it, explicitly.
+- **`maxTimeMS` / a 30s statement timeout**, adjustable per environment.
 
-### O limite é um teto, não uma substituição
+The injected ceiling means the runner does not literally honour a query asking for `LIMIT 5000`. That is deliberate: the two mistakes cost asymmetrically — injecting too small a limit costs one re-invocation; injecting none costs the session.
 
-Quando a query já declara um limite próprio (`LIMIT 10`, `.limit(10)`), vale o
-**menor** dos dois. `--limit 500` sobre uma query com `LIMIT 10` devolve 10
-linhas, e `truncated` é `false`. O limite injetado nunca aumenta o resultado,
-apenas o teto.
+### The limit is a ceiling, not a replacement
 
-### Como o limite é aplicado
+When the query already declares its own limit (`LIMIT 10`, `.limit(10)`), the **smaller** of the two wins. `--limit 500` over a query with `LIMIT 10` returns 10 rows, and `truncated` is `false`. The injected limit never enlarges a result, only caps it.
 
-- **Mongo:** `.limit(n + 1)` no cursor. Se voltarem `n + 1` documentos, descarta
-  o excedente e marca `truncated: true`.
-- **SQL:** truncamento no cliente, consumindo o resultado em stream e parando em
-  `n + 1` linhas. Não se envolve subquery (`SELECT * FROM (...) LIMIT n`), que
-  quebraria em `SHOW`, `DESCRIBE` e `EXPLAIN` e mudaria o plano de execução.
+### How the limit is applied
 
-### Precedência de configuração
+- **Mongo:** `.limit(n + 1)` on the cursor. If `n + 1` documents come back, the extra is discarded and `truncated: true` is set.
+- **SQL:** client-side truncation, consuming the result as a stream and stopping at `n + 1` rows. No subquery wrapping (`SELECT * FROM (...) LIMIT n`), which would break `SHOW`, `DESCRIBE` and `EXPLAIN` and would distort the execution plan.
 
-Flag da invocação > `defaults` do arquivo da env > default embutido no programa.
-Vale para `limit` e `timeoutMs`.
+### Configuration precedence
 
-O limite injetado significa que o executor não honra literalmente uma query que
-pediu `LIMIT 5000`. É deliberado: o custo dos dois erros é assimétrico — injetar
-limite de menos custa uma reinvocação; não injetar custa a sessão.
+Invocation flag > the env file's `defaults` > the built-in default. Applies to `limit` and `timeoutMs`.
 
-Cor apenas com `--format table` **e** stdout sendo TTY. JSON jamais recebe ANSI:
-byte de escape quebra o parse do consumidor.
+## The MongoDB guard
 
-## Guard do MongoDB
-
-Gramática aceita, e nada além dela:
+The accepted grammar, and nothing beyond it:
 
 ```
-db.<coleção>.<opLeitura>(<literais>)  [.limit(n)|.sort({..})|.skip(n)|.project({..})]*
+db.<collection>.<readOp>(<literals>)  [.limit(n)|.sort({..})|.skip(n)|.project({..})]*
 ```
 
-Algoritmo, via `acorn`:
+The algorithm, via `acorn`:
 
-1. Parse como **Program**, exigindo exatamente uma `ExpressionStatement`. Mata
-   `db.x.find({}); db.y.drop()`.
-2. Desenrolar a cadeia até a base, que precisa ser `db.<coleção>` com
-   **`computed: false`**. Mata `db["compa"+"nies"]["dr"+"op"]()` — não por
-   inspecionar strings, mas porque acesso por colchete não é a forma aceita.
-3. Toda operação num whitelist. Terminais: `find`, `findOne`, `aggregate`,
-   `countDocuments`, `estimatedDocumentCount`, `distinct`. Encadeáveis: `limit`,
-   `sort`, `skip`, `project`.
-4. Todo argumento precisa ser **literal puro**, verificado recursivamente:
-   objeto (chaves não-computadas, sem spread), array (sem spread), string,
-   número, booleano, `null`, menos unário sobre número, e regex literal.
-   Identificador, chamada de função, template string, concatenação e arrow são
-   recusados.
-5. **Varredura profunda de chaves** em todos os argumentos, recusando em
-   qualquer profundidade:
-   - `$out`, `$merge` — **escrevem em coleção**
-   - `$where`, `$function`, `$accumulator` — executam JS no servidor
+1. Parse as a **Program**, requiring exactly one `ExpressionStatement`. Kills `db.x.find({}); db.y.drop()`.
+2. Unwind the chain down to the base, which must be `db.<collection>` with **`computed: false`**. Kills `db["compa" + "nies"]["dr" + "op"]()` — not by inspecting strings, but because bracket access is not the accepted shape.
+3. Every operation must be on a whitelist. Terminal: `find`, `findOne`, `aggregate`, `countDocuments`, `estimatedDocumentCount`, `distinct`. Chainable: `limit`, `sort`, `skip`, `project`.
+4. Every argument must be a **pure literal**, verified recursively: object (non-computed keys, no spread), array (no spread), string, number, boolean, `null`, unary minus on a number, and regex literals. Identifiers, calls, template strings, concatenation and arrow functions are refused.
+5. A **deep key scan** across all arguments, refusing at any depth:
+   - `$out`, `$merge` — **write to a collection**
+   - `$where`, `$function`, `$accumulator` — execute JS on the server
 
-O passo 5 existe porque os quatro primeiros, sozinhos, aprovam
-`db.companies.aggregate([{ $out: "backup" }])`, que grava dados. Um pipeline é
-sintaticamente um literal puro; a escrita está escondida no *conteúdo* dos dados,
-não na forma do código. O whitelist de operações não alcança isso.
+Step 5 exists because the first four, alone, approve `db.companies.aggregate([{ $out: "backup" }])`, which writes data. A pipeline is syntactically a pure literal; the write hides in the *content* of the data, not in the shape of the code. The operation whitelist cannot reach that.
 
-Regex literal é **permitida**: `find({ name: /acme/i })` é leitura legítima e não
-executa código. Uma regex catastrófica consome CPU do servidor, mas isso é custo,
-não escrita, e cai na rede do `maxTimeMS`.
+Regex literals are **allowed**: `find({ name: /acme/i })` is a legitimate read and executes no code. A catastrophic regex consumes server CPU, but that is cost, not writing, and it falls under the `maxTimeMS` net.
 
-## Guard do SQL
+## The SQL guard
 
-1. Normalizar removendo comentários **antes** de examinar a primeira palavra-
-   chave — caso contrário `/*x*/ DROP TABLE y` passa por "não começa com DROP".
-2. Exigir statement único (sem `;` encadeando).
-3. Primeira palavra-chave em `SELECT`, `WITH`, `SHOW`, `DESCRIBE`, `EXPLAIN`.
-4. Recusar `INTO OUTFILE`, `INTO DUMPFILE` (escrevem arquivo) e `FOR UPDATE`
-   (não escreve, mas trava linha — efeito colateral suficiente em produção).
-5. Reforço no driver: `multipleStatements: false` explícito no mysql2.
+1. Normalise by removing comments **before** examining the leading keyword — otherwise `/*x*/ DROP TABLE y` passes the "does not start with DROP" check.
+2. Require a single statement (no `;` chaining).
+3. The leading keyword must be one of `SELECT`, `WITH`, `SHOW`, `DESCRIBE`, `EXPLAIN`.
+4. Refuse `INTO OUTFILE`, `INTO DUMPFILE` (write files) and `FOR UPDATE` (does not write, but takes row locks — side effect enough in production).
+5. Defence in depth at the driver: `multipleStatements: false` set explicitly in mysql2.
 
-## Erros e exit codes
+## Errors and exit codes
 
-Códigos distintos porque cada um implica uma ação corretiva diferente, e quem lê
-é um agente decidindo o próximo passo:
+Distinct codes because each implies a different corrective action, and the reader is an agent choosing its next step:
 
-| Código | Significado | Ação implicada |
+| Code | Meaning | Implied action |
 |---|---|---|
-| `0` | sucesso | — |
-| `1` | inesperado | — |
-| `2` | uso inválido (flag faltando, env inexistente) | corrigir a invocação |
-| `3` | recusado pelo guard | reescrever a query |
-| `4` | conexão / autenticação | env errada, ou VPN fora |
-| `5` | erro do banco (sintaxe, coleção inexistente) | conferir schema |
-| `6` | timeout | filtrar mais |
+| `0` | success | — |
+| `1` | unexpected | — |
+| `2` | invalid usage (missing flag, unknown env) | fix the invocation |
+| `3` | refused by the guard | rewrite the query |
+| `4` | connection / authentication | wrong env, or VPN down |
+| `5` | database error (syntax, missing collection) | check the schema |
+| `6` | timeout | filter harder |
 
-Com `--format json`, o erro sai como JSON em **stderr**:
+With `--format json`, the error goes to **stderr** as JSON:
 
 ```json
 { "error": { "code": "READONLY_VIOLATION",
-             "message": "operação 'drop' não permitida",
-             "hint": "operações de leitura: find, findOne, aggregate, countDocuments, distinct" } }
+             "message": "operation 'drop' is not allowed",
+             "hint": "read operations: find, findOne, aggregate, countDocuments, distinct" } }
 ```
 
-O campo `hint` é deliberado: é o que faz o agente acertar na segunda tentativa em
-vez de tentar cinco variações.
+The `hint` field is deliberate: it is what makes the agent's second attempt correct instead of its fifth.
 
-**Credencial nunca aparece em mensagem de erro.** Drivers de banco ecoam a
-connection string inteira, senha inclusa, ao falhar autenticação. A URI passa por
-um scrub antes de qualquer byte alcançar stderr.
+**Credentials never appear in an error message.** Database drivers echo the entire connection string, password included, when authentication fails. The URI is scrubbed before any byte reaches stderr.
 
-## Estratégia de teste
+## Test strategy
 
-Vitest, com o peso concentrado onde está o risco.
+Vitest, with the weight concentrated where the risk is.
 
-- **Guards — o grosso da suíte, escrito primeiro (TDD).** Funções puras,
-  table-driven, zero banco. Dois corpora:
-  - queries que **precisam passar**;
-  - corpus adversarial que **precisa ser recusado**: `$out` aninhado em pipeline,
-    `$merge`, `db["dr"+"op"]()`, `;DROP` encadeado, `DROP` escondido atrás de
-    comentário, `INTO OUTFILE`, `FOR UPDATE`, `$where`, `$function`,
-    encadeamento de operação fora do whitelist, argumento com chamada de função.
+- **Guards — the bulk of the suite, written first (TDD).** Pure functions, table-driven, no database. Two corpora:
+  - queries that **must pass**;
+  - an adversarial corpus that **must be refused**: `$out` nested in a pipeline, `$merge`, `db["dr"+"op"]()`, chained `;DROP`, `DROP` hidden behind a comment, `INTO OUTFILE`, `FOR UPDATE`, `$where`, `$function`, chaining outside the whitelist, an argument containing a function call.
 
-  Cada furo descrito neste documento vira um teste antes de virar código.
-- **Resolução de config**: diretório temporário, `~/.config` falso, detecção de
-  cwd com repo git sintético, recusa por permissão diferente de `0600`.
-- **Envelope e truncamento**: puros, baratos.
-- **Engines**: integração opt-in por variável de ambiente, contra Mongo e MySQL
-  em docker. Não bloqueiam a suíte principal.
+  Every hole described in this document becomes a test before it becomes code.
+- **Config resolution**: temporary directories, a fake `~/.config`, cwd detection against a synthetic git repo, refusal on a mode other than `0600`.
+- **Envelope and truncation**: pure, cheap.
+- **Engines**: opt-in integration via an environment variable, against Mongo and MySQL in Docker. They do not block the main suite.
 
-A suíte adversarial dos guards não pode ser pulada nem marcada como skip para
-desbloquear build: ela **é** a invariante do projeto.
+The adversarial guard suite may not be skipped or marked `.skip` to unblock a build: it **is** the project's invariant.
 
-## Decisões registradas
+## Recorded decisions
 
-| Decisão | Alternativa descartada | Razão |
+| Decision | Rejected alternative | Reason |
 |---|---|---|
-| Read-only puro, sem escape | Escrita por flag + env permissiva | Prod a um typo de distância; agente não pode se auto-autorizar |
-| Env agrupa N conexões | Um arquivo por conexão | Espelha o ambiente real; `dev-mysql` e `prod-mysql` como strings vizinhas convidam ao erro |
-| Auto-detect de projeto pelo cwd, falha alto | `--project` obrigatório; projeto ativo persistido | Ergonomia sem estado global invisível |
-| Sintaxe mongosh parseada por AST | `eval` da string; argumentos estruturados | Ergonomia de (a) com a garantia de (b); `eval` transforma a invariante em torcida |
-| Limite 500 injetado | Honrar a query como escrita | Custo assimétrico: reinvocação vs. sessão |
-| Sem build step (type stripping nativo) | `tsx` + `tsup` | Menos partes móveis; bundler volta se houver publicação |
-| Sem Clack, sem ora | CLI interativa | Prompt pendura sem TTY; spinner contamina stdout |
+| Pure read-only, no escape hatch | Writes behind a flag + a permissive env | Production one typo away; an agent must not be able to self-authorise |
+| An env groups N connections | One file per connection | Mirrors the real environment; `dev-mysql` and `prod-mysql` as neighbouring strings invite the mistake |
+| Project auto-detected from cwd, fails loudly | Mandatory `--project`; a persisted active project | Ergonomics without invisible global state |
+| mongosh syntax parsed as an AST | `eval` of the string; structured arguments | The ergonomics of the former with the guarantee of the latter; `eval` turns the invariant into a hope |
+| A 500-row ceiling injected | Honour the query as written | Asymmetric cost: one re-invocation versus the session |
+| No build step (native type stripping) | `tsx` + `tsup` | Fewer moving parts; a bundler returns if publishing happens |
+| No Clack, no ora | An interactive CLI | A prompt hangs with no TTY; a spinner contaminates stdout |

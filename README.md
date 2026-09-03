@@ -38,7 +38,7 @@ Handing an AI agent direct database access creates two independent problems.
 
 ```bash
 $ dbq --env production 'db.plans.drop()'
-{ "error": { "code": "READONLY_VIOLATION", "message": "operacao 'drop' nao e permitida", … } }
+{ "error": { "code": "READONLY_VIOLATION", "message": "operation 'drop' is not allowed", … } }
 $ echo $?
 3
 ```
@@ -126,8 +126,8 @@ chmod 600 ~/.config/dbq/my-project/dev.json
 **The `chmod 600` is not optional:** `dbq` refuses to run if the mode is anything else. These files hold credentials.
 
 ```
-USAGE: /Users/…/dev.json esta com permissao 644; esperado 600
-dica: rode: chmod 600 /Users/…/dev.json
+USAGE: /Users/…/dev.json has mode 644; expected 600
+hint: run: chmod 600 /Users/…/dev.json
 ```
 
 ### Fields
@@ -152,8 +152,8 @@ A real environment is not a single database: `dev` is usually MySQL **and** Mong
 `--db` is optional when the environment declares a single connection, and required when there is more than one:
 
 ```
-USAGE: a env 'dev' tem varias conexoes: mysql, mongo
-dica: passe --db <conexao>
+USAGE: env 'dev' has several connections: mysql, mongo
+hint: pass --db <connection>
 ```
 
 The shape is deliberate: switching environments is **one** action, and `--env` stays the explicit axis separating dev from production. With one file per connection, `dev-mysql` and `prod-mysql` would be neighbouring strings in the same argument — precisely the mistake worth making hard.
@@ -174,8 +174,8 @@ node -e 'console.log(encodeURIComponent(process.argv[1]))' 'my#pass@word'
 If nothing matches under `~/.config/dbq/`, it **fails** and lists the alternatives — it never guesses, never falls back to a default:
 
 ```
-USAGE: nao foi possivel inferir o projeto a partir de '/tmp'. Disponiveis: my-project, other-project
-dica: passe --project <nome>
+USAGE: could not infer the project from '/tmp'. Available: my-project, other-project
+hint: pass --project <name>
 ```
 
 There is no persisted "active project" anywhere. Invisible global state is how you get the command right and the database wrong.
@@ -423,8 +423,8 @@ Errors go to **stderr**, in the same format as the output:
 {
   "error": {
     "code": "READONLY_VIOLATION",
-    "message": "operador '$out' nao e permitido: grava dados ou executa javascript no servidor",
-    "hint": "operacoes de leitura: find, findOne, aggregate, countDocuments, estimatedDocumentCount, distinct; …"
+    "message": "operator '$out' is not allowed: it writes data or runs JavaScript on the server",
+    "hint": "read operations: find, findOne, aggregate, countDocuments, estimatedDocumentCount, distinct; …"
   }
 }
 ```
@@ -433,7 +433,7 @@ The `hint` field is deliberate: it is what makes the second attempt correct inst
 
 **Credentials never reach an error message.** Drivers love echoing the whole connection string, password included, when authentication fails — the URI is scrubbed before any byte reaches stderr.
 
-> Runtime messages are currently in Portuguese. Exit codes and the `error.code` field are the stable, language-independent contract — key on those, not on the prose.
+> Exit codes and the `error.code` field are the stable contract — key on those, never on the message prose.
 
 ---
 
@@ -511,11 +511,11 @@ dbq -e dev -d mongo 'db.plans.find({}, { name: 1 })' | jq -r '.rows[].name'
 
 | Symptom | Likely cause |
 |---|---|
-| `esta com permissao 644; esperado 600` | run `chmod 600` on the env file |
-| `nao foi possivel inferir o projeto` | you are outside the repo; pass `--project` |
-| `a env 'dev' tem varias conexoes` | pass `--db <connection>` |
-| `nenhum banco definido para esta conexao` | pass `-D <name>`, or declare `database` in the file |
-| `'schema' e um subcomando, nao uma query` | subcommands come before flags |
+| `has mode 644; expected 600` | run `chmod 600` on the env file |
+| `could not infer the project` | you are outside the repo; pass `--project` |
+| `env 'dev' has several connections` | pass `--db <connection>` |
+| `no database defined for this connection` | pass `-D <name>`, or declare `database` in the file |
+| `'schema' is a subcommand, not a query` | subcommands come before flags |
 | exit `4` with `ETIMEDOUT` | VPN disconnected, or host unreachable |
 | exit `6` | query too heavy; filter harder or raise `--timeout` |
 | fewer results than expected | check `truncated` in the output; raise `--limit` |

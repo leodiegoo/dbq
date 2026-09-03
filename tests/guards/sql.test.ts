@@ -9,11 +9,11 @@ const refuses = (sql: string) => {
   } catch (err) {
     thrown = err;
   }
-  expect(thrown, `deveria recusar: ${sql}`).toBeInstanceOf(DbqError);
-  expect((thrown as DbqError).code, `deveria recusar: ${sql}`).toBe('READONLY_VIOLATION');
+  expect(thrown, `should refuse: ${sql}`).toBeInstanceOf(DbqError);
+  expect((thrown as DbqError).code, `should refuse: ${sql}`).toBe('READONLY_VIOLATION');
 };
 
-describe('guardSql — queries aceitas', () => {
+describe('guardSql — accepted queries', () => {
   it('should be accepting a plain select', () => {
     expect(guardSql('SELECT id FROM companies')).toEqual({
       kind: 'sql',
@@ -48,7 +48,7 @@ describe('guardSql — queries aceitas', () => {
   });
 });
 
-describe('guardSql — queries recusadas', () => {
+describe('guardSql — refused queries', () => {
   it('should be refusing every write statement', () => {
     for (const sql of [
       'INSERT INTO t VALUES (1)',
@@ -110,7 +110,7 @@ describe('guardSql — queries recusadas', () => {
   it('should be attaching a hint listing the allowed keywords', () => {
     try {
       guardSql('DROP TABLE t');
-      expect.unreachable('deveria ter falhado');
+      expect.unreachable('should have thrown');
     } catch (err) {
       expect((err as DbqError).hint).toContain('SELECT');
     }

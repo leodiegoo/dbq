@@ -36,14 +36,14 @@ const gitRoot = (cwd: string): string | undefined => {
 
 export const resolveProject = (opts: { explicit?: string; cwd: string; root: string }): string => {
   const available = listProjects(opts.root);
-  const lista = available.length > 0 ? available.join(', ') : '(nenhum)';
+  const known = available.length > 0 ? available.join(', ') : '(none)';
 
   if (opts.explicit !== undefined) {
     if (!available.includes(opts.explicit)) {
       throw new DbqError(
         'USAGE',
-        `projeto '${opts.explicit}' nao encontrado em ${opts.root}. Disponiveis: ${lista}`,
-        `crie ${join(opts.root, opts.explicit)}/<env>.json`,
+        `project '${opts.explicit}' not found in ${opts.root}. Available: ${known}`,
+        `create ${join(opts.root, opts.explicit)}/<env>.json`,
       );
     }
     return opts.explicit;
@@ -54,7 +54,7 @@ export const resolveProject = (opts: { explicit?: string; cwd: string; root: str
 
   throw new DbqError(
     'USAGE',
-    `nao foi possivel inferir o projeto a partir de '${opts.cwd}'. Disponiveis: ${lista}`,
-    'passe --project <nome>',
+    `could not infer the project from '${opts.cwd}'. Available: ${known}`,
+    'pass --project <name>',
   );
 };

@@ -28,12 +28,12 @@ type CommonOptions = {
 
 const integer = (raw: string): number => {
   const value = Number(raw);
-  if (!Number.isInteger(value) || value < 0) throw new InvalidArgumentError('esperado um inteiro nao negativo');
+  if (!Number.isInteger(value) || value < 0) throw new InvalidArgumentError('expected a non-negative integer');
   return value;
 };
 
 const format = (raw: string): Format => {
-  if (raw !== 'json' && raw !== 'table') throw new InvalidArgumentError("esperado 'json' ou 'table'");
+  if (raw !== 'json' && raw !== 'table') throw new InvalidArgumentError("expected 'json' or 'table'");
   return raw;
 };
 
@@ -72,44 +72,44 @@ const fail = (err: unknown, output: Format): never => {
 const SUBCOMMANDS = ['run', 'envs', 'schema', 'databases'];
 
 /**
- * `dbq -e dev -d mysql schema` manda a palavra `schema` como query: o Commander
- * so reconhece subcomando quando ele vem antes das flags. Recusar com a
- * invocacao corrigida e melhor do que reordenar argv por conta propria, que
- * quebraria para quem tivesse uma conexao chamada `schema`.
+ * `dbq -e dev -d mysql schema` sends the word `schema` as the query: Commander
+ * only recognises a subcommand when it comes before the flags. Refusing with
+ * the corrected invocation beats reordering argv ourselves, which would break
+ * for anyone with a connection named `schema`.
  */
 const rejectSubcommandAsQuery = (raw: string): void => {
   const word = raw.trim();
   if (!SUBCOMMANDS.includes(word)) return;
   throw new DbqError(
     'USAGE',
-    `'${word}' e um subcomando, nao uma query`,
-    `o subcomando vem antes das flags: dbq ${word} -e <env> [-d <conexao>]`,
+    `'${word}' is a subcommand, not a query`,
+    `the subcommand comes before the flags: dbq ${word} -e <env> [-d <connection>]`,
   );
 };
 
 const program = new Command();
 
-program.name('dbq').description('Executor read-only de queries SQL e MongoDB').version('0.1.0');
+program.name('dbq').description('Read-only query runner for SQL and MongoDB').version('0.1.0');
 
 const withCommonOptions = (command: Command): Command =>
   command
-    .option('-p, --project <nome>', 'projeto em ~/.config/dbq (default: inferido do cwd)')
-    .requiredOption('-e, --env <nome>', 'ambiente a usar')
-    .option('-d, --db <conexao>', 'conexao dentro da env (obrigatorio se houver mais de uma)')
-    .option('-D, --database <nome>', 'banco a consultar; sobrescreve o do arquivo da env')
-    .option('-t, --timeout <ms>', 'timeout do statement', integer)
-    .option('-f, --format <formato>', 'json ou table', format, 'json');
+    .option('-p, --project <name>', 'project under ~/.config/dbq (default: inferred from cwd)')
+    .requiredOption('-e, --env <name>', 'environment to use')
+    .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
+    .option('-D, --database <name>', 'database to query; overrides the env file')
+    .option('-t, --timeout <ms>', 'statement timeout', integer)
+    .option('-f, --format <format>', 'json or table', format, 'json');
 
-// Subcomando default: `dbq "SELECT 1"` cai aqui, mas `dbq envs` e `dbq schema`
-// continuam sendo roteados pelo nome. As opcoes comuns precisam viver no
-// subcomando — no programa raiz, o Commander as cobraria de todos eles.
+// Default subcommand: `dbq "SELECT 1"` lands here, while `dbq envs` and
+// `dbq schema` are still routed by name. The common options must live on the
+// subcommand — on the root program Commander would demand them from all.
 withCommonOptions(
   program
     .command('run', { isDefault: true })
-    .description('executa uma query de leitura (comando default)')
-    .argument('<query>', "query SQL, expressao db.<colecao>.<op>(...), ou '-' para ler do stdin")
-    .option('-l, --limit <n>', 'teto de linhas retornadas; 0 desliga', integer)
-    .option('-x, --explain', 'roda EXPLAIN / .explain() em vez da query'),
+    .description('run a read query (default command)')
+    .argument('<query>', "SQL query, a db.<collection>.<op>(...) expression, or '-' to read stdin")
+    .option('-l, --limit <n>', 'ceiling on returned rows; 0 disables it', integer)
+    .option('-x, --explain', 'run EXPLAIN / .explain() instead of the query'),
 ).action(async (query: string, opts: CommonOptions) => {
   try {
     const raw = query === '-' ? await readStdin() : query;
@@ -155,8 +155,8 @@ withCommonOptions(
 
 program
   .command('envs')
-  .description('lista projetos e ambientes configurados')
-  .option('-f, --format <formato>', 'json ou table', format, 'json')
+  .description('list configured projects and environments')
+  .option('-f, --format <format>', 'json or table', format, 'json')
   .action((opts: { format: Format }) => {
     try {
       const root = configRoot();
@@ -178,9 +178,9 @@ program
 withCommonOptions(
   program
     .command('schema')
-    .description('lista tabelas/colecoes, ou o detalhe de uma delas')
-    .argument('[alvo]', 'nome da tabela ou colecao'),
-).action(async (alvo: string | undefined, opts: CommonOptions) => {
+    .description('list tables/collections, or detail one of them')
+    .argument('[target]', 'table or collection name'),
+).action(async (target: string | undefined, opts: CommonOptions) => {
   try {
     const { project, resolved } = resolve(opts);
     const { connection } = resolved;
@@ -188,8 +188,8 @@ withCommonOptions(
 
     const rows =
       connection.engine === 'mysql'
-        ? await mysqlSchema(connection, alvo, { timeoutMs: resolved.timeoutMs, database: resolved.database })
-        : await mongoSchema(connection, alvo, { timeoutMs: resolved.timeoutMs, database: resolved.database });
+        ? await mysqlSchema(connection, target, { timeoutMs: resolved.timeoutMs, database: resolved.database })
+        : await mongoSchema(connection, target, { timeoutMs: resolved.timeoutMs, database: resolved.database });
 
     emit(
       {
@@ -210,7 +210,7 @@ withCommonOptions(
 });
 
 withCommonOptions(
-  program.command('databases').description('lista os bancos disponiveis na conexao'),
+  program.command('databases').description('list the databases available on the connection'),
 ).action(async (opts: CommonOptions) => {
   try {
     const { project, resolved } = resolve(opts);
@@ -256,7 +256,7 @@ withCommonOptions(
   }
 });
 
-// Commander sai com 1 em erro de uso; a spec reserva 2 para isso.
+// Commander exits with 1 on usage errors; the spec reserves 2 for that.
 program.exitOverride((err) => {
   if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
   process.exit(err.exitCode === 0 ? 0 : 2);

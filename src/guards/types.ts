@@ -10,9 +10,10 @@ export const MONGO_READ_OPS = [
 export const MONGO_CHAIN_OPS = ['limit', 'sort', 'skip', 'project'] as const;
 
 /**
- * $out e $merge gravam em colecao. $where, $function e $accumulator executam
- * JavaScript no servidor. Nenhum deles e alcancado pelo whitelist de operacoes,
- * porque a escrita vive no conteudo dos argumentos, nao na forma do codigo.
+ * $out and $merge write to a collection. $where, $function and $accumulator
+ * execute JavaScript on the server. The operation whitelist reaches none of
+ * them, because the write hides in the content of the arguments rather than in
+ * the shape of the code.
  */
 export const FORBIDDEN_KEYS = ['$out', '$merge', '$where', '$function', '$accumulator'] as const;
 

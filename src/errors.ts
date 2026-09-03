@@ -53,28 +53,29 @@ export const toDbqError = (err: unknown): DbqError => {
   const tags = [readTag(err, 'code'), readTag(err, 'codeName'), err.name].filter(Boolean);
   const message = scrubUri(err.message);
 
-  // ETIMEDOUT aparece nas duas listas e a checagem de timeout vem primeiro de
-  // proposito: um socket que estourou o tempo e mais acionavel como "filtre
-  // mais" do que como "confira a rede".
+  // ETIMEDOUT appears in both lists, and the timeout check comes first on
+  // purpose: a socket that ran out of time is more actionable as "filter
+  // harder" than as "check the network".
   if (tags.some((tag) => TIMEOUT_MARKERS.includes(tag))) {
-    return new DbqError('TIMEOUT', message, 'reduza o escopo da query ou aumente --timeout');
+    return new DbqError('TIMEOUT', message, 'narrow the query, or raise --timeout');
   }
 
   if (tags.some((tag) => CONNECTION_CODES.has(tag))) {
-    return new DbqError('CONNECTION_ERROR', message, 'confira --env, a URI da conexao e o acesso a rede');
+    return new DbqError('CONNECTION_ERROR', message, 'check --env, the connection URI and network access');
   }
 
   if (tags.some((tag) => tag !== 'Error')) {
-    return new DbqError('DATABASE_ERROR', message, 'confira o schema com `dbq schema`');
+    return new DbqError('DATABASE_ERROR', message, 'check the schema with `dbq schema`');
   }
 
   return new DbqError('UNEXPECTED', message);
 };
 
 /**
- * Erros levantados enquanto a conexao ainda esta sendo aberta sao sempre de
- * conexao, nunca de query. Sem isso um `connect ETIMEDOUT` vira TIMEOUT e o
- * consumidor recebe "reduza o escopo da query" para um socket que nem abriu.
+ * Failures raised while the connection is still opening are always connection
+ * errors, never query errors. Without this a `connect ETIMEDOUT` becomes
+ * TIMEOUT and the consumer is told to "narrow the query" for a socket that
+ * never opened.
  */
 export const toConnectionError = (err: unknown): DbqError => {
   const converted = toDbqError(err);
@@ -82,6 +83,6 @@ export const toConnectionError = (err: unknown): DbqError => {
   return new DbqError(
     'CONNECTION_ERROR',
     converted.message,
-    'confira --env, a URI da conexao e o acesso a rede (VPN?)',
+    'check --env, the connection URI and network access (VPN?)',
   );
 };

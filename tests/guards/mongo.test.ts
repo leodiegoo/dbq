@@ -9,11 +9,11 @@ const refuses = (expr: string) => {
   } catch (err) {
     thrown = err;
   }
-  expect(thrown, `deveria recusar: ${expr}`).toBeInstanceOf(DbqError);
-  expect((thrown as DbqError).code, `deveria recusar: ${expr}`).toBe('READONLY_VIOLATION');
+  expect(thrown, `should refuse: ${expr}`).toBeInstanceOf(DbqError);
+  expect((thrown as DbqError).code, `should refuse: ${expr}`).toBe('READONLY_VIOLATION');
 };
 
-describe('guardMongo — expressoes aceitas', () => {
+describe('guardMongo — accepted expressions', () => {
   it('should be parsing a bare find', () => {
     expect(guardMongo('db.companies.find({ active: true })')).toEqual({
       kind: 'mongo',
@@ -72,7 +72,7 @@ describe('guardMongo — expressoes aceitas', () => {
   });
 });
 
-describe('guardMongo — expressoes recusadas', () => {
+describe('guardMongo — refused expressions', () => {
   it('should be refusing write operations', () => {
     for (const expr of [
       'db.c.drop()',
@@ -158,7 +158,7 @@ describe('guardMongo — expressoes recusadas', () => {
   it('should be attaching a hint listing the read operations', () => {
     try {
       guardMongo('db.c.drop()');
-      expect.unreachable('deveria ter falhado');
+      expect.unreachable('should have thrown');
     } catch (err) {
       expect((err as DbqError).hint).toContain('find');
     }

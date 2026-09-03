@@ -93,7 +93,7 @@ describe('resolveProject', () => {
 
     try {
       resolveProject({ cwd: dir, root });
-      expect.unreachable('deveria ter falhado');
+      expect.unreachable('should have thrown');
     } catch (err) {
       expect((err as DbqError).code).toBe('USAGE');
       expect((err as DbqError).message).toContain('alpha');

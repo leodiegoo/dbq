@@ -12,7 +12,7 @@ describe('DbqError', () => {
   });
 
   it('should be carrying an optional hint', () => {
-    expect(new DbqError('READONLY_VIOLATION', 'x', 'tente find').hint).toBe('tente find');
+    expect(new DbqError('READONLY_VIOLATION', 'x', 'try find').hint).toBe('try find');
     expect(new DbqError('USAGE', 'x').hint).toBeUndefined();
   });
 });
@@ -43,7 +43,7 @@ describe('scrubUri', () => {
 
 describe('toDbqError', () => {
   it('should be passing a DbqError through unchanged', () => {
-    const original = new DbqError('TIMEOUT', 'estourou');
+    const original = new DbqError('TIMEOUT', 'timed out');
     expect(toDbqError(original)).toBe(original);
   });
 
@@ -82,8 +82,8 @@ describe('toConnectionError', () => {
 
   it('should be replacing the misleading query hint with a connectivity one', () => {
     const err = Object.assign(new Error('connect ETIMEDOUT'), { code: 'ETIMEDOUT' });
-    expect(toConnectionError(err).hint).toContain('rede');
-    expect(toConnectionError(err).hint).not.toContain('escopo da query');
+    expect(toConnectionError(err).hint).toContain('network');
+    expect(toConnectionError(err).hint).not.toContain('narrow the query');
   });
 
   it('should be preserving an error already classified as a connection error', () => {

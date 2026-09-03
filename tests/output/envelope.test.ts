@@ -58,11 +58,11 @@ describe('formatTable', () => {
   });
 
   it('should be announcing truncation', () => {
-    expect(formatTable(envelope([{ a: 1 }], true), false)).toContain('truncado');
+    expect(formatTable(envelope([{ a: 1 }], true), false)).toContain('truncated');
   });
 
   it('should be reporting an empty result instead of an empty table', () => {
-    expect(formatTable(envelope([]), false)).toContain('0 linhas');
+    expect(formatTable(envelope([]), false)).toContain('0 rows');
   });
 
   it('should be omitting ansi when colour is disabled', () => {
@@ -72,9 +72,9 @@ describe('formatTable', () => {
 
 describe('formatError', () => {
   it('should be emitting a parseable json error carrying code, message and hint', () => {
-    const parsed = JSON.parse(formatError(new DbqError('READONLY_VIOLATION', 'nao permitido', 'use find'), 'json'));
+    const parsed = JSON.parse(formatError(new DbqError('READONLY_VIOLATION', 'not allowed', 'use find'), 'json'));
     expect(parsed.error.code).toBe('READONLY_VIOLATION');
-    expect(parsed.error.message).toBe('nao permitido');
+    expect(parsed.error.message).toBe('not allowed');
     expect(parsed.error.hint).toBe('use find');
   });
 
@@ -84,8 +84,8 @@ describe('formatError', () => {
   });
 
   it('should be rendering plain text for the table format', () => {
-    const out = formatError(new DbqError('TIMEOUT', 'estourou', 'filtre mais'), 'table');
+    const out = formatError(new DbqError('TIMEOUT', 'timed out', 'filter harder'), 'table');
     expect(out).toContain('TIMEOUT');
-    expect(out).toContain('filtre mais');
+    expect(out).toContain('filter harder');
   });
 });

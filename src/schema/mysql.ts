@@ -10,11 +10,11 @@ export const mysqlSchema = async (
   opts: { timeoutMs: number; database?: string },
 ): Promise<unknown[]> => {
   if (table !== undefined && !IDENTIFIER.test(table)) {
-    throw new DbqError('USAGE', `nome de tabela invalido: '${table}'`, 'use apenas letras, numeros e underscore');
+    throw new DbqError('USAGE', `invalid table name: '${table}'`, 'use letters, digits and underscores only');
   }
 
-  // A interpolacao e segura porque o IDENTIFIER acima ja recusou tudo que nao
-  // seja [A-Za-z0-9_$]: nenhuma crase, aspa, espaco ou `;` sobrevive a checagem.
+  // The interpolation is safe because IDENTIFIER above already rejected
+  // anything outside [A-Za-z0-9_$]: no backtick, quote, space or `;` survives.
   const statement = table === undefined ? 'SHOW TABLES' : `DESCRIBE \`${table}\``;
 
   const result = await executeMysql(

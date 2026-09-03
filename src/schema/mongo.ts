@@ -35,8 +35,8 @@ export const mongoSchema = async (
       const names = await listDatabases(client);
       throw new DbqError(
         'USAGE',
-        `nenhum banco definido para esta conexao. Disponiveis: ${names.join(', ') || '(nenhum)'}`,
-        'passe --database <nome>, ou declare "database" no arquivo da env',
+        `no database defined for this connection. Available: ${names.join(', ') || '(none)'}`,
+        'pass --database <name>, or declare "database" in the env file',
       );
     }
     const db = client.db(database);

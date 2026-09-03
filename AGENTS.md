@@ -84,7 +84,7 @@ Node erases types at runtime but **does not transform code**. That rules out:
 - **Named exports only** — never `export default`. The sole exception is `vitest.config.ts`, which Vitest requires.
 - **ESM** (`"type": "module"`).
 - **Arrow functions** for modules; `class` only for `DbqError`.
-- **Runtime strings stay in Portuguese** — error messages, hints, table footers. Code, comments, tests and documentation are in English. Exit codes and `error.code` are the stable contract; the prose is not, so never key logic on message text.
+- **Everything is in English** — code, comments, tests, documentation and runtime messages. Exit codes and `error.code` are the stable contract; message prose is not, so never key logic on message text.
 - **Comments explain why, not what.** The existing ones mark non-obvious decisions (why `ETIMEDOUT` is checked before `ECONNREFUSED`, why the identifier interpolation in `schema/mysql.ts` is safe). Keep that bar — don't comment the obvious.
 - **Derive unions from objects** instead of hand-writing them. See `MONGO_READ_OPS` / `MongoReadOp` in `guards/types.ts`.
 

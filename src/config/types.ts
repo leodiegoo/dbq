@@ -13,7 +13,7 @@ export type EnvConfig = {
 export type ResolvedConnection = {
   name: string;
   connection: Connection;
-  /** Flag > campo da env > indefinido (MySQL cai no path da URI; Mongo falha listando). */
+  /** Flag > env file field > undefined (MySQL falls back to the URI path; Mongo fails and lists). */
   database: string | undefined;
   limit: number;
   timeoutMs: number;

@@ -6,7 +6,7 @@ import { applyLimit } from '../output/envelope.ts';
 
 export type ExecuteOptions = { limit: number; timeoutMs: number; explain: boolean; database?: string };
 
-/** --database sobrescreve o banco do path da URI; sem a flag, o path manda. */
+/** --database overrides the database in the URI path; without the flag, the path wins. */
 const withDatabase = (uri: string, database: string | undefined): string => {
   if (database === undefined) return uri;
   const url = new URL(uri);
@@ -22,8 +22,8 @@ export const executeMysql = async (
 ): Promise<ExecuteResult> => {
   const client = createConnection({
     uri: withDatabase(connection.uri, opts.database),
-    // Reforco no driver: mesmo que o guard falhasse, o servidor recusaria
-    // qualquer tentativa de encadear um segundo statement.
+    // Defence in depth at the driver: even if the guard failed, the server
+    // would reject any attempt to chain a second statement.
     multipleStatements: false,
     connectTimeout: opts.timeoutMs,
     supportBigNumbers: true,
@@ -47,8 +47,8 @@ export const executeMysql = async (
       stream.on('error', reject);
       stream.on('result', (row: unknown) => {
         collected.push(row);
-        // Para de consumir assim que a linha extra chega: o teto existe para
-        // proteger a sessao do consumidor, entao nao adianta baixar o resto.
+        // Stop consuming as soon as the extra row arrives: the ceiling exists
+        // to protect the consumer's session, so fetching the rest is waste.
         if (fetch > 0 && collected.length >= fetch && !destroyed) {
           destroyed = true;
           client.destroy();

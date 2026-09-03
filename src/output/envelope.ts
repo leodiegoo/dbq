@@ -18,13 +18,13 @@ export const applyLimit = <T>(rows: T[], limit: number): { rows: T[]; truncated:
 };
 
 /**
- * Os drivers devolvem valores que JSON.stringify nao representa bem: ObjectId,
- * Date, RegExp, Buffer, BigInt. Sem isso o consumidor recebe `{}` no lugar de um
- * id, que e pior do que um erro porque parece um dado valido.
+ * Drivers return values that JSON.stringify represents poorly: ObjectId, Date,
+ * RegExp, Buffer, BigInt. Without this the consumer gets `{}` where an id
+ * should be — worse than an error, because it looks like valid data.
  */
 const replacer = function (this: unknown, key: string, value: unknown): unknown {
-  // JSON.stringify chama toJSON antes do replacer, entao Date chega como string:
-  // o valor cru vem do objeto pai.
+  // JSON.stringify calls toJSON before the replacer, so a Date arrives as a
+  // string: the raw value has to come from the parent object.
   const original = (this as Record<string, unknown>)[key];
   if (original instanceof Date) return original.toISOString();
   if (original instanceof RegExp) return original.toString();
@@ -47,7 +47,7 @@ export const formatTable = (envelope: Envelope, color: boolean): string => {
   const lines: string[] = [];
 
   if (envelope.rows.length === 0) {
-    lines.push('0 linhas');
+    lines.push('0 rows');
   } else {
     const columns: string[] = [];
     for (const row of envelope.rows) {
@@ -75,10 +75,10 @@ export const formatTable = (envelope: Envelope, color: boolean): string => {
     for (const cells of body) lines.push(render(cells));
   }
 
-  const suffix = envelope.truncated ? ' (truncado)' : '';
+  const suffix = envelope.truncated ? ' (truncated)' : '';
   lines.push('');
   lines.push(
-    `${envelope.rowCount} linha(s)${suffix} em ${envelope.elapsedMs}ms — ${envelope.project}/${envelope.env}/${envelope.db}`,
+    `${envelope.rowCount} row(s)${suffix} in ${envelope.elapsedMs}ms — ${envelope.project}/${envelope.env}/${envelope.db}`,
   );
 
   return lines.join('\n');
@@ -93,6 +93,6 @@ export const formatError = (err: DbqError, format: 'json' | 'table'): string => 
     return JSON.stringify({ error: payload }, null, 2);
   }
 
-  const hint = err.hint === undefined ? '' : `\ndica: ${err.hint}`;
+  const hint = err.hint === undefined ? '' : `\nhint: ${err.hint}`;
   return `${err.code}: ${err.message}${hint}`;
 };

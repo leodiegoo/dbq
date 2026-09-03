@@ -13,21 +13,21 @@ export const listDatabases = async (client: MongoClient): Promise<string[]> => {
 };
 
 /**
- * Sem banco resolvido nao da para montar a query. O erro lista os bancos do
- * cluster para que a reinvocacao com --database seja imediata, do mesmo jeito
- * que o erro de projeto lista os projetos.
+ * With no database resolved there is no query to build. The error lists the
+ * cluster's databases so that re-invoking with --database is immediate, the
+ * same way the project error lists the projects.
  */
 const requireDatabase = async (client: MongoClient, database: string | undefined): Promise<string> => {
   if (database !== undefined) return database;
   const names = await listDatabases(client);
   throw new DbqError(
     'USAGE',
-    `nenhum banco definido para esta conexao. Disponiveis: ${names.join(', ') || '(nenhum)'}`,
-    'passe --database <nome>, ou declare "database" no arquivo da env',
+    `no database defined for this connection. Available: ${names.join(', ') || '(none)'}`,
+    'pass --database <name>, or declare "database" in the env file',
   );
 };
 
-/** O teto do dbq e um limite superior: uma query que ja pede menos continua mandando. */
+/** The dbq ceiling is an upper bound: a query already asking for less still wins. */
 const ceiling = (requested: number | undefined, cap: number): number => {
   if (cap <= 0) return requested ?? 0;
   if (requested === undefined) return cap + 1;
