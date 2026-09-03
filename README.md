@@ -150,5 +150,9 @@ pnpm typecheck   # tsc --noEmit
 A suíte adversarial em `tests/guards/` é a invariante do projeto: nenhum caso
 dela pode ser pulado ou marcado como skip para desbloquear build.
 
-Documentos: [design](docs/specs/2026-09-03-dbq-design.md) ·
+Antes de mexer no código, leia o [AGENTS.md](AGENTS.md) — arquitetura, a
+fronteira guard/engine, restrições do type stripping e onde adicionar cada tipo
+de código.
+
+Documentos: [AGENTS.md](AGENTS.md) · [design](docs/specs/2026-09-03-dbq-design.md) ·
 [plano](docs/plans/2026-09-03-dbq.md).
