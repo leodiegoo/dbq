@@ -27,13 +27,14 @@ const validateConnection = (name: string, raw: unknown): Connection => {
 
   if (raw.engine === 'mongodb') {
     const database = raw.database;
-    if (typeof database !== 'string' || database.length === 0) {
-      usage(
-        `conexao '${name}' precisa de 'database'`,
-        'o nome do banco no path da URI e ignorado; declare o campo database',
-      );
+    if (database !== undefined && (typeof database !== 'string' || database.length === 0)) {
+      usage(`conexao '${name}' tem um 'database' invalido`, 'use uma string nao vazia, ou omita o campo');
     }
-    return { engine: 'mongodb', uri: uri as string, database: database as string };
+    // `database` e opcional: vira o default da conexao, sobrescrito por --database.
+    // O nome do banco no path da URI segue ignorado nos dois casos.
+    return database === undefined
+      ? { engine: 'mongodb', uri: uri as string }
+      : { engine: 'mongodb', uri: uri as string, database: database as string };
   }
 
   return usage(`engine '${String(raw.engine)}' nao suportada na conexao '${name}'`, "use 'mysql' ou 'mongodb'");
@@ -44,6 +45,7 @@ export const loadEnv = (opts: {
   project: string;
   env: string;
   db?: string;
+  database?: string;
   limit?: number;
   timeoutMs?: number;
 }): ResolvedConnection => {
@@ -98,6 +100,7 @@ export const loadEnv = (opts: {
   return {
     name: selected as string,
     connection,
+    database: opts.database ?? (connection.engine === 'mongodb' ? connection.database : undefined),
     limit: opts.limit ?? fileDefaults.limit ?? DEFAULT_LIMIT,
     timeoutMs: opts.timeoutMs ?? fileDefaults.timeoutMs ?? DEFAULT_TIMEOUT_MS,
   };

@@ -7,7 +7,7 @@ const IDENTIFIER = /^[A-Za-z0-9_$]+$/;
 export const mysqlSchema = async (
   connection: MysqlConnection,
   table: string | undefined,
-  opts: { timeoutMs: number },
+  opts: { timeoutMs: number; database?: string },
 ): Promise<unknown[]> => {
   if (table !== undefined && !IDENTIFIER.test(table)) {
     throw new DbqError('USAGE', `nome de tabela invalido: '${table}'`, 'use apenas letras, numeros e underscore');
@@ -20,7 +20,7 @@ export const mysqlSchema = async (
   const result = await executeMysql(
     connection,
     { kind: 'sql', statement },
-    { limit: 0, timeoutMs: opts.timeoutMs, explain: false },
+    { limit: 0, timeoutMs: opts.timeoutMs, explain: false, database: opts.database },
   );
 
   return result.rows;

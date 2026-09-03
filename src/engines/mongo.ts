@@ -1,9 +1,31 @@
 import { MongoClient, type Document } from 'mongodb';
-import { toConnectionError, toDbqError } from '../errors.ts';
+import { DbqError, toConnectionError, toDbqError } from '../errors.ts';
 import type { MongoConnection } from '../config/types.ts';
 import type { MongoPlan } from '../guards/types.ts';
 import { applyLimit } from '../output/envelope.ts';
 import type { ExecuteOptions, ExecuteResult } from './mysql.ts';
+
+const INTERNAL_DATABASES = ['admin', 'config', 'local'];
+
+export const listDatabases = async (client: MongoClient): Promise<string[]> => {
+  const { databases } = await client.db().admin().listDatabases({ nameOnly: true });
+  return databases.map((entry) => entry.name).filter((name) => !INTERNAL_DATABASES.includes(name));
+};
+
+/**
+ * Sem banco resolvido nao da para montar a query. O erro lista os bancos do
+ * cluster para que a reinvocacao com --database seja imediata, do mesmo jeito
+ * que o erro de projeto lista os projetos.
+ */
+const requireDatabase = async (client: MongoClient, database: string | undefined): Promise<string> => {
+  if (database !== undefined) return database;
+  const names = await listDatabases(client);
+  throw new DbqError(
+    'USAGE',
+    `nenhum banco definido para esta conexao. Disponiveis: ${names.join(', ') || '(nenhum)'}`,
+    'passe --database <nome>, ou declare "database" no arquivo da env',
+  );
+};
 
 /** O teto do dbq e um limite superior: uma query que ja pede menos continua mandando. */
 const ceiling = (requested: number | undefined, cap: number): number => {
@@ -26,7 +48,8 @@ export const executeMongo = async (
     await client.connect().catch((err: unknown) => {
       throw toConnectionError(err);
     });
-    const collection = client.db(connection.database).collection(plan.collection);
+    const database = await requireDatabase(client, opts.database);
+    const collection = client.db(database).collection(plan.collection);
     const [first, second] = plan.args;
     const { limit, sort, skip, project } = plan.modifiers;
     const fetch = ceiling(limit, opts.limit);

@@ -117,11 +117,6 @@ describe('loadEnv', () => {
     expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
   });
 
-  it('should be refusing a mongodb connection without a database field', () => {
-    const root = writeEnv({ connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado' } } });
-    expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
-  });
-
   it('should be refusing a connection without a uri', () => {
     const root = writeEnv({ connections: { mysql: { engine: 'mysql' } } });
     expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
@@ -132,11 +127,41 @@ describe('loadEnv', () => {
       connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado', database: 'real' } },
     });
     const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
+    expect(resolved.database).toBe('real');
     expect(resolved.connection).toEqual({
       engine: 'mongodb',
       uri: 'mongodb://h:27017/ignorado',
       database: 'real',
     });
+  });
+
+  it('should be leaving the database undefined when neither config nor flag supplies one', () => {
+    const root = writeEnv({ connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado' } } });
+    expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBeUndefined();
+  });
+
+  it('should be taking the database from the env file when no flag is passed', () => {
+    const root = writeEnv({
+      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'doArquivo' } },
+    });
+    expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBe('doArquivo');
+  });
+
+  it('should be preferring the database flag over the env file', () => {
+    const root = writeEnv({
+      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'doArquivo' } },
+    });
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'daFlag' }).database).toBe('daFlag');
+  });
+
+  it('should be applying the database flag to a mysql connection too', () => {
+    const root = writeEnv(mysqlEnv);
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'outro' }).database).toBe('outro');
+  });
+
+  it('should be leaving a mysql database undefined so the uri path stands', () => {
+    const root = writeEnv(mysqlEnv);
+    expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBeUndefined();
   });
 
   it('should not be leaking the uri password in a validation error', () => {

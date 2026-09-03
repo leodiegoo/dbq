@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
-import { toConnectionError, toDbqError } from '../errors.ts';
+import { DbqError, toConnectionError, toDbqError } from '../errors.ts';
+import { listDatabases } from '../engines/mongo.ts';
 import type { MongoConnection } from '../config/types.ts';
 
 const SAMPLE_SIZE = 100;
@@ -18,7 +19,7 @@ const describe = (value: unknown): string => {
 export const mongoSchema = async (
   connection: MongoConnection,
   collection: string | undefined,
-  opts: { timeoutMs: number },
+  opts: { timeoutMs: number; database?: string },
 ): Promise<unknown[]> => {
   const client = new MongoClient(connection.uri, {
     serverSelectionTimeoutMS: opts.timeoutMs,
@@ -29,7 +30,16 @@ export const mongoSchema = async (
     await client.connect().catch((err: unknown) => {
       throw toConnectionError(err);
     });
-    const db = client.db(connection.database);
+    const database = opts.database ?? connection.database;
+    if (database === undefined) {
+      const names = await listDatabases(client);
+      throw new DbqError(
+        'USAGE',
+        `nenhum banco definido para esta conexao. Disponiveis: ${names.join(', ') || '(nenhum)'}`,
+        'passe --database <nome>, ou declare "database" no arquivo da env',
+      );
+    }
+    const db = client.db(database);
 
     if (collection === undefined) {
       const collections = await db.listCollections({}, { nameOnly: true }).toArray();

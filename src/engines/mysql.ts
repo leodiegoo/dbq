@@ -4,7 +4,15 @@ import type { MysqlConnection } from '../config/types.ts';
 import type { SqlPlan } from '../guards/types.ts';
 import { applyLimit } from '../output/envelope.ts';
 
-export type ExecuteOptions = { limit: number; timeoutMs: number; explain: boolean };
+export type ExecuteOptions = { limit: number; timeoutMs: number; explain: boolean; database?: string };
+
+/** --database sobrescreve o banco do path da URI; sem a flag, o path manda. */
+const withDatabase = (uri: string, database: string | undefined): string => {
+  if (database === undefined) return uri;
+  const url = new URL(uri);
+  url.pathname = `/${encodeURIComponent(database)}`;
+  return url.toString();
+};
 export type ExecuteResult = { rows: unknown[]; truncated: boolean };
 
 export const executeMysql = async (
@@ -13,7 +21,7 @@ export const executeMysql = async (
   opts: ExecuteOptions,
 ): Promise<ExecuteResult> => {
   const client = createConnection({
-    uri: connection.uri,
+    uri: withDatabase(connection.uri, opts.database),
     // Reforco no driver: mesmo que o guard falhasse, o servidor recusaria
     // qualquer tentativa de encadear um segundo statement.
     multipleStatements: false,

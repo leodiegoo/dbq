@@ -9,6 +9,8 @@ import { executeMysql } from './engines/mysql.ts';
 import { executeMongo } from './engines/mongo.ts';
 import { mysqlSchema } from './schema/mysql.ts';
 import { mongoSchema } from './schema/mongo.ts';
+import { listDatabases } from './engines/mongo.ts';
+import { MongoClient } from 'mongodb';
 import { formatError, formatJson, formatTable, type Envelope } from './output/envelope.ts';
 
 type Format = 'json' | 'table';
@@ -17,6 +19,7 @@ type CommonOptions = {
   project?: string;
   env: string;
   db?: string;
+  database?: string;
   limit?: number;
   timeout?: number;
   format: Format;
@@ -48,6 +51,7 @@ const resolve = (opts: CommonOptions) => {
     project,
     env: opts.env,
     db: opts.db,
+    database: opts.database,
     limit: opts.limit,
     timeoutMs: opts.timeout,
   });
@@ -65,6 +69,24 @@ const fail = (err: unknown, output: Format): never => {
   process.exit(dbqError.exitCode);
 };
 
+const SUBCOMMANDS = ['run', 'envs', 'schema', 'databases'];
+
+/**
+ * `dbq -e dev -d mysql schema` manda a palavra `schema` como query: o Commander
+ * so reconhece subcomando quando ele vem antes das flags. Recusar com a
+ * invocacao corrigida e melhor do que reordenar argv por conta propria, que
+ * quebraria para quem tivesse uma conexao chamada `schema`.
+ */
+const rejectSubcommandAsQuery = (raw: string): void => {
+  const word = raw.trim();
+  if (!SUBCOMMANDS.includes(word)) return;
+  throw new DbqError(
+    'USAGE',
+    `'${word}' e um subcomando, nao uma query`,
+    `o subcomando vem antes das flags: dbq ${word} -e <env> [-d <conexao>]`,
+  );
+};
+
 const program = new Command();
 
 program.name('dbq').description('Executor read-only de queries SQL e MongoDB').version('0.1.0');
@@ -74,6 +96,7 @@ const withCommonOptions = (command: Command): Command =>
     .option('-p, --project <nome>', 'projeto em ~/.config/dbq (default: inferido do cwd)')
     .requiredOption('-e, --env <nome>', 'ambiente a usar')
     .option('-d, --db <conexao>', 'conexao dentro da env (obrigatorio se houver mais de uma)')
+    .option('-D, --database <nome>', 'banco a consultar; sobrescreve o do arquivo da env')
     .option('-t, --timeout <ms>', 'timeout do statement', integer)
     .option('-f, --format <formato>', 'json ou table', format, 'json');
 
@@ -90,6 +113,7 @@ withCommonOptions(
 ).action(async (query: string, opts: CommonOptions) => {
   try {
     const raw = query === '-' ? await readStdin() : query;
+    rejectSubcommandAsQuery(raw);
     const { project, resolved } = resolve(opts);
     const { connection } = resolved;
     const started = Date.now();
@@ -100,11 +124,13 @@ withCommonOptions(
             limit: resolved.limit,
             timeoutMs: resolved.timeoutMs,
             explain: opts.explain === true,
+            database: resolved.database,
           })
         : executeMongo(connection, guardMongo(raw), {
             limit: resolved.limit,
             timeoutMs: resolved.timeoutMs,
             explain: opts.explain === true,
+            database: resolved.database,
           });
 
     const { rows, truncated } = await execute;
@@ -162,8 +188,55 @@ withCommonOptions(
 
     const rows =
       connection.engine === 'mysql'
-        ? await mysqlSchema(connection, alvo, { timeoutMs: resolved.timeoutMs })
-        : await mongoSchema(connection, alvo, { timeoutMs: resolved.timeoutMs });
+        ? await mysqlSchema(connection, alvo, { timeoutMs: resolved.timeoutMs, database: resolved.database })
+        : await mongoSchema(connection, alvo, { timeoutMs: resolved.timeoutMs, database: resolved.database });
+
+    emit(
+      {
+        project,
+        env: opts.env,
+        db: resolved.name,
+        engine: connection.engine,
+        rowCount: rows.length,
+        truncated: false,
+        elapsedMs: Date.now() - started,
+        rows,
+      },
+      opts.format,
+    );
+  } catch (err) {
+    fail(err, opts.format);
+  }
+});
+
+withCommonOptions(
+  program.command('databases').description('lista os bancos disponiveis na conexao'),
+).action(async (opts: CommonOptions) => {
+  try {
+    const { project, resolved } = resolve(opts);
+    const { connection } = resolved;
+    const started = Date.now();
+
+    let rows: unknown[];
+    if (connection.engine === 'mysql') {
+      const result = await executeMysql(
+        connection,
+        { kind: 'sql', statement: 'SHOW DATABASES' },
+        { limit: 0, timeoutMs: resolved.timeoutMs, explain: false },
+      );
+      rows = result.rows;
+    } else {
+      const client = new MongoClient(connection.uri, {
+        serverSelectionTimeoutMS: resolved.timeoutMs,
+        socketTimeoutMS: resolved.timeoutMs,
+      });
+      try {
+        await client.connect();
+        rows = (await listDatabases(client)).map((database) => ({ database }));
+      } finally {
+        await client.close().catch(() => undefined);
+      }
+    }
 
     emit(
       {

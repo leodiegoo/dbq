@@ -142,10 +142,21 @@ que separa dev de produção.
 
 `--db` é opcional quando a env declara uma única conexão.
 
-O campo `database` só existe para conexões `mongodb` e é **obrigatório** —
-resolve qual banco a expressão `db.<coleção>` referencia. Um nome de banco
-presente no path da URI é ignorado; `database` é a única fonte de verdade, para
-que não haja dois lugares discordando sobre onde a query roda.
+O campo `database` é o banco **default** da conexão, e é opcional. Um nome de
+banco presente no path da URI é sempre ignorado.
+
+**Revisão de 2026-09-03**, depois do primeiro uso real: a versão original exigia
+`database` no arquivo e o tratava como única fonte de verdade. Um cluster
+hospeda vários bancos — o de dev tem sete — então fixar um por arquivo obrigava
+a criar uma conexão nomeada por banco. A flag `-D, --database` passou a
+sobrescrever o default por invocação.
+
+A razão da regra original continua valendo: ela existia para impedir que dois
+lugares *implícitos* (campo e path da URI) discordassem. Uma flag explícita não
+é ambiguidade, é override — e o path da URI segue ignorado.
+
+Quando nem o campo nem a flag resolvem um banco, o erro lista os bancos do
+cluster, do mesmo modo que o erro de projeto lista os projetos.
 
 ### Higiene de credenciais
 

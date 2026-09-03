@@ -43,9 +43,24 @@ O `<projeto>` é inferido do basename da raiz do repositório git no diretório
 atual; `--project` sobrescreve. Se a inferência falhar, o erro lista os projetos
 disponíveis em vez de chutar um.
 
-Em conexões `mongodb` o campo `database` é obrigatório e é a **única** fonte de
-verdade: um nome de banco no path da URI é ignorado, para que não haja dois
-lugares discordando sobre onde a query roda.
+O campo `database` é o banco **default** da conexão. Um nome de banco no path da
+URI é sempre ignorado — só o campo e a flag `--database` decidem onde a query
+roda, para que não haja dois lugares implícitos discordando.
+
+Um cluster costuma hospedar vários bancos, então `--database` sobrescreve o
+default por invocação e evita ter uma conexão nomeada por banco:
+
+```bash
+dbq databases --env dev --db mongo              # descobre o que existe
+dbq --env dev --db mongo -D outro-banco 'db.rules.find({})'
+```
+
+Se nem o campo nem a flag definirem um banco, o erro **lista os bancos
+disponíveis** no cluster, para que a reinvocação acerte de primeira.
+
+No MySQL, consulta cross-database já funciona sem flag nenhuma:
+`SELECT * FROM outrobanco.tabela` passa pelo guard normalmente, desde que o
+usuário tenha permissão.
 
 Aponte as URIs para um usuário **read-only no próprio banco**. O guard protege
 de erro humano; o usuário do banco protege de bug no guard.
@@ -58,6 +73,7 @@ dbq --env dev --db mongo 'db.companies.find({ active: true }).limit(10)'
 cat pipeline.js | dbq --env dev --db mongo -
 
 dbq envs
+dbq databases --env dev --db mysql
 dbq schema --env dev --db mysql
 dbq schema --env dev --db mysql companies
 dbq schema --env dev --db mongo companies
@@ -68,6 +84,7 @@ dbq schema --env dev --db mongo companies
 | `-p, --project <nome>` | inferido do cwd | |
 | `-e, --env <nome>` | — | obrigatório |
 | `-d, --db <conexão>` | única conexão da env | obrigatório se houver mais de uma |
+| `-D, --database <nome>` | campo `database` da conexão | sobrescreve por invocação |
 | `-l, --limit <n>` | `500` | teto; `0` desliga |
 | `-t, --timeout <ms>` | `30000` | |
 | `-f, --format json\|table` | `json` | |
