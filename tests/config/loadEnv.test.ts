@@ -113,8 +113,20 @@ describe('loadEnv', () => {
   });
 
   it('should be refusing an unsupported engine', () => {
-    const root = writeEnv({ connections: { pg: { engine: 'postgres', uri: 'postgres://h/d' } } });
+    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://h:6379' } } });
     expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
+  });
+
+  it('should be accepting a postgres connection', () => {
+    const root = writeEnv({ connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } } });
+    const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
+    expect(resolved.connection.engine).toBe('postgres');
+    expect(resolved.database).toBeUndefined();
+  });
+
+  it('should be applying the database flag to a postgres connection', () => {
+    const root = writeEnv({ connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } } });
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe('other');
   });
 
   it('should be refusing a connection without a uri', () => {

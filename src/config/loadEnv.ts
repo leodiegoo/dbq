@@ -25,6 +25,16 @@ const validateConnection = (name: string, raw: unknown): Connection => {
 
   if (raw.engine === 'mysql') return { engine: 'mysql', uri: uri as string };
 
+  if (raw.engine === 'postgres') {
+    const database = raw.database;
+    if (database !== undefined && (typeof database !== 'string' || database.length === 0)) {
+      usage(`connection '${name}' has an invalid 'database'`, 'use a non-empty string, or omit the field');
+    }
+    return database === undefined
+      ? { engine: 'postgres', uri: uri as string }
+      : { engine: 'postgres', uri: uri as string, database: database as string };
+  }
+
   if (raw.engine === 'mongodb') {
     const database = raw.database;
     if (database !== undefined && (typeof database !== 'string' || database.length === 0)) {
@@ -37,7 +47,10 @@ const validateConnection = (name: string, raw: unknown): Connection => {
       : { engine: 'mongodb', uri: uri as string, database: database as string };
   }
 
-  return usage(`engine '${String(raw.engine)}' is not supported on connection '${name}'`, "use 'mysql' or 'mongodb'");
+  return usage(
+    `engine '${String(raw.engine)}' is not supported on connection '${name}'`,
+    "use 'mysql', 'postgres' or 'mongodb'",
+  );
 };
 
 export const loadEnv = (opts: {
@@ -100,7 +113,7 @@ export const loadEnv = (opts: {
   return {
     name: selected as string,
     connection,
-    database: opts.database ?? (connection.engine === 'mongodb' ? connection.database : undefined),
+    database: opts.database ?? (connection.engine === 'mysql' ? undefined : connection.database),
     limit: opts.limit ?? fileDefaults.limit ?? DEFAULT_LIMIT,
     timeoutMs: opts.timeoutMs ?? fileDefaults.timeoutMs ?? DEFAULT_TIMEOUT_MS,
   };

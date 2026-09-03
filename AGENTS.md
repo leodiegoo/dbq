@@ -1,8 +1,8 @@
 # dbq — Knowledge Base
 
-**Stack**: TypeScript run directly by Node 26 (native type stripping, no build step) + Commander + mysql2 + mongodb + acorn + Vitest + pnpm
+**Stack**: TypeScript run directly by Node 26 (native type stripping, no build step) + Commander + mysql2 + pg + mongodb + acorn + Vitest + pnpm
 
-A read-only query runner for SQL and MongoDB. The primary consumer is an **AI agent**, not a person — that inverts the usual CLI priorities and explains nearly every design decision here.
+A read-only query runner for MySQL, PostgreSQL and MongoDB. The primary consumer is an **AI agent**, not a person — that inverts the usual CLI priorities and explains nearly every design decision here.
 
 ## Quick Start
 
@@ -37,13 +37,16 @@ src/
     loadEnv.ts            reads/validates the env file, resolves --db and --database
   guards/
     types.ts              SqlPlan, MongoPlan — the guard → engine contract
-    sql.ts                validates the SQL string   (pure, zero I/O)
-    mongo.ts              parses an AST via acorn    (pure, zero I/O)
+    sql.ts                validates a MySQL string     (pure, zero I/O)
+    postgres.ts           validates a PostgreSQL string (pure, zero I/O)
+    mongo.ts              parses an AST via acorn       (pure, zero I/O)
   engines/
     mysql.ts              runs what the guard approved; truncates while streaming
+    postgres.ts           same, inside a BEGIN READ ONLY transaction
     mongo.ts              same; applies limit(n+1) and maxTimeMS
   schema/
     mysql.ts              SHOW TABLES / DESCRIBE
+    postgres.ts           information_schema, results qualified as schema.table
     mongo.ts              listCollections / shape inferred from a sample
   output/
     envelope.ts           truncation, serialisable JSON, table, error
@@ -155,6 +158,9 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 **Watch out for:**
 
 - `applyLimit` is a ceiling, not a replacement. A query already asking for less still wins.
+- The PostgreSQL guard checks write keywords at **every** position, not just the leading one — a data-modifying CTE (`WITH x AS (INSERT …) SELECT …`) begins at `WITH` and ends in `SELECT`. Never copy the MySQL guard for a new SQL dialect without re-deriving this.
+- PostgreSQL lexes `"` as an identifier quote and supports `$$` dollar quoting, so it needs its own normaliser. Reusing the MySQL one produces both false positives and false negatives.
+- `--explain` must never add `ANALYZE` on PostgreSQL: `EXPLAIN ANALYZE` executes the statement.
 - Engines fetch `n + 1` rows on purpose — that is how `truncated` is detected without an extra `COUNT`.
 - The URI path **never** determines the database. Only the `database` field and the `-D` flag do.
 

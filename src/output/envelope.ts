@@ -5,7 +5,7 @@ export type Envelope = {
   project: string;
   env: string;
   db: string;
-  engine: 'mysql' | 'mongodb';
+  engine: 'mysql' | 'postgres' | 'mongodb';
   rowCount: number;
   truncated: boolean;
   elapsedMs: number;

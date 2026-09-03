@@ -1,6 +1,6 @@
 # dbq
 
-A **read-only** query runner for SQL and MongoDB, configured per environment and callable from any directory.
+A **read-only** query runner for MySQL, PostgreSQL and MongoDB, configured per environment and callable from any directory.
 
 Built to be driven by an AI agent: output is parseable JSON, errors carry an actionable hint, exit codes distinguish "rewrite the query" from "wrong connection" — and **no code path can write to the database**.
 
@@ -52,7 +52,7 @@ Not a single network packet left the machine for that command.
 ## Requirements
 
 - **Node >= 26.** The binary points straight at a `.ts` file and Node strips the types at runtime — no build step, no `dist/`.
-- MySQL and/or MongoDB reachable over the network (VPN, if that applies).
+- MySQL, PostgreSQL and/or MongoDB reachable over the network (VPN, if that applies).
 
 ---
 
@@ -135,7 +135,7 @@ hint: run: chmod 600 /Users/…/dev.json
 | Field | Required | What it is |
 |---|---|---|
 | `connections` | yes | map of named connections |
-| `connections.<name>.engine` | yes | `"mysql"` or `"mongodb"` |
+| `connections.<name>.engine` | yes | `"mysql"`, `"postgres"` or `"mongodb"` |
 | `connections.<name>.uri` | yes | full connection URI |
 | `connections.<name>.database` | no | **default** database for this connection |
 | `defaults.limit` | no | row ceiling (built-in: `500`) |
@@ -220,6 +220,9 @@ dbq [options] <query>
 dbq -e dev -d mysql "SELECT id, name FROM companies WHERE active = 1"
 dbq -e dev -d mysql "SHOW TABLES"
 dbq -e dev -d mysql -x "SELECT * FROM orders WHERE user_id = 42"
+
+dbq -e dev -d pg "SELECT id, name FROM companies WHERE active"
+dbq -e dev -d pg "TABLE companies"
 ```
 
 ### MongoDB
@@ -263,6 +266,7 @@ An agent that cannot see the schema guesses column names, fails, and burns turn 
 dbq envs                                  # configured projects and environments
 dbq databases -e dev -d mongo             # databases on that connection
 dbq schema -e dev -d mysql                # tables
+dbq schema -e dev -d pg                   # tables, qualified as schema.table
 dbq schema -e dev -d mysql companies      # columns, types, keys
 dbq schema -e dev -d mongo                # collections
 dbq schema -e dev -d mongo companies      # fields, types and presence
@@ -289,7 +293,7 @@ that stops you filtering on a field most documents don't have.
 
 ## What is allowed
 
-### SQL
+### SQL (MySQL)
 
 **Accepted:** `SELECT`, `WITH … SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN`.
 
@@ -302,6 +306,46 @@ Comments are stripped **before** the leading-keyword check, and string literals 
 SELECT 1; DROP TABLE companies          -- refused (single statement only)
 SELECT * FROM t WHERE name = 'a;b'      -- accepted (the ; is inside a string)
 ```
+
+### SQL (PostgreSQL)
+
+PostgreSQL gets its own guard, because it is not MySQL with a different driver.
+
+**Accepted:** `SELECT`, `WITH`, `TABLE`, `VALUES`, `SHOW`, `EXPLAIN`.
+
+**Every write keyword is refused at any position**, not just at the start:
+
+```sql
+WITH x AS (INSERT INTO t VALUES (1) RETURNING *) SELECT * FROM x   -- refused
+```
+
+That statement begins at `WITH`, ends in `SELECT`, and writes. Data-modifying
+CTEs are a real PostgreSQL feature, and a leading-keyword check does not see
+them.
+
+Also refused: `COPY … TO PROGRAM` (runs a shell command on the server), `COPY`
+to or from a file, `pg_read_file` / `pg_ls_dir` / `lo_export` (server
+filesystem), `nextval` / `setval` (mutate a sequence), `pg_sleep` and advisory
+locks, `dblink` (outbound connection from the server), row locks, transaction
+control, and `EXPLAIN ANALYZE` — which actually executes the statement, so
+`--explain` never adds `ANALYZE`.
+
+**And the server enforces it too.** Every PostgreSQL query runs inside:
+
+```sql
+BEGIN READ ONLY;
+SET LOCAL statement_timeout = <timeout>;
+<your query>
+ROLLBACK;
+```
+
+This is the one engine where a hole in the parser is not a hole in the
+guarantee: the backend rejects writes on its own. `statement_timeout` is
+server-side for the same reason.
+
+Note that `$$ … $$` dollar quoting is string syntax, not execution:
+`SELECT $$ DROP TABLE t $$` returns the text and is accepted, exactly like
+`SELECT 'DROP TABLE t'`. Execution enters through `DO`, which is refused.
 
 ### MongoDB
 
@@ -545,8 +589,12 @@ Documents: [AGENTS.md](AGENTS.md) · [design](docs/specs/2026-09-03-dbq-design.m
 
 ## Scope
 
-**In:** MySQL, MongoDB, read queries, schema discovery, per-project and per-environment configuration.
+**In:** MySQL, PostgreSQL, MongoDB, read queries, schema discovery, per-project and per-environment configuration.
 
-**Out:** PostgreSQL, OpenSearch, Redis, writes of any kind, interactive prompts.
+**Out:** Redis, OpenSearch, writes of any kind, interactive prompts.
+
+Redis was considered and deliberately left out: it has no query language, no
+schema and no rows, so `schema` and the row ceiling have no meaning there — and
+its real hazard is not writing but `KEYS *` blocking a single-threaded server.
 
 `${VAR}` expansion in URIs — to keep production passwords out of plaintext — is noted as a v2 candidate.

@@ -4,11 +4,14 @@ import { DbqError, toDbqError } from './errors.ts';
 import { configRoot, listEnvs, listProjects, resolveProject } from './config/resolveProject.ts';
 import { loadEnv } from './config/loadEnv.ts';
 import { guardSql } from './guards/sql.ts';
+import { guardPostgres } from './guards/postgres.ts';
 import { guardMongo } from './guards/mongo.ts';
 import { executeMysql } from './engines/mysql.ts';
 import { executeMongo } from './engines/mongo.ts';
+import { executePostgres } from './engines/postgres.ts';
 import { mysqlSchema } from './schema/mysql.ts';
 import { mongoSchema } from './schema/mongo.ts';
+import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
 import { listDatabases } from './engines/mongo.ts';
 import { MongoClient } from 'mongodb';
 import { formatError, formatJson, formatTable, type Envelope } from './output/envelope.ts';
@@ -118,22 +121,19 @@ withCommonOptions(
     const { connection } = resolved;
     const started = Date.now();
 
-    const execute =
-      connection.engine === 'mysql'
-        ? executeMysql(connection, guardSql(raw), {
-            limit: resolved.limit,
-            timeoutMs: resolved.timeoutMs,
-            explain: opts.explain === true,
-            database: resolved.database,
-          })
-        : executeMongo(connection, guardMongo(raw), {
-            limit: resolved.limit,
-            timeoutMs: resolved.timeoutMs,
-            explain: opts.explain === true,
-            database: resolved.database,
-          });
+    const engineOptions = {
+      limit: resolved.limit,
+      timeoutMs: resolved.timeoutMs,
+      explain: opts.explain === true,
+      database: resolved.database,
+    };
 
-    const { rows, truncated } = await execute;
+    const { rows, truncated } =
+      connection.engine === 'mysql'
+        ? await executeMysql(connection, guardSql(raw), engineOptions)
+        : connection.engine === 'postgres'
+          ? await executePostgres(connection, guardPostgres(raw), engineOptions)
+          : await executeMongo(connection, guardMongo(raw), engineOptions);
 
     emit(
       {
@@ -186,10 +186,13 @@ withCommonOptions(
     const { connection } = resolved;
     const started = Date.now();
 
+    const schemaOptions = { timeoutMs: resolved.timeoutMs, database: resolved.database };
     const rows =
       connection.engine === 'mysql'
-        ? await mysqlSchema(connection, target, { timeoutMs: resolved.timeoutMs, database: resolved.database })
-        : await mongoSchema(connection, target, { timeoutMs: resolved.timeoutMs, database: resolved.database });
+        ? await mysqlSchema(connection, target, schemaOptions)
+        : connection.engine === 'postgres'
+          ? await postgresSchema(connection, target, schemaOptions)
+          : await mongoSchema(connection, target, schemaOptions);
 
     emit(
       {
@@ -225,6 +228,8 @@ withCommonOptions(
         { limit: 0, timeoutMs: resolved.timeoutMs, explain: false },
       );
       rows = result.rows;
+    } else if (connection.engine === 'postgres') {
+      rows = await postgresDatabases(connection, { timeoutMs: resolved.timeoutMs });
     } else {
       const client = new MongoClient(connection.uri, {
         serverSelectionTimeoutMS: resolved.timeoutMs,

@@ -1,4 +1,4 @@
-# dbq — a read-only query runner for SQL and MongoDB
+# dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB
 
 - **Date:** 2026-09-03
 - **Status:** approved, ready for an implementation plan
@@ -6,7 +6,7 @@
 
 ## Objective
 
-A CLI that runs read queries against MySQL and MongoDB, configured by environment files under `~/.config/dbq/`, designed to be invoked by an AI agent from any directory.
+A CLI that runs read queries against MySQL, PostgreSQL and MongoDB, configured by environment files under `~/.config/dbq/`, designed to be invoked by an AI agent from any directory.
 
 The primary consumer is not a human. That inverts two usual CLI priorities: output is optimised to be parsed and to not blow up a context window, and no execution path may block waiting on interactive input.
 
@@ -20,9 +20,9 @@ Every decision below follows from that invariant. Any future change that weakens
 
 ## Scope
 
-**In:** MySQL and MongoDB; read queries; schema discovery; per-project and per-environment configuration; JSON and table output.
+**In:** MySQL, PostgreSQL and MongoDB; read queries; schema discovery; per-project and per-environment configuration; JSON and table output.
 
-**Out (MVP):** PostgreSQL, OpenSearch, Redis; writes of any kind; `${VAR}` expansion in URIs (noted as a possible v2 — in the MVP the URI is plaintext); publishing to npm; any interactive prompt.
+**Out (MVP):** OpenSearch, Redis; writes of any kind; `${VAR}` expansion in URIs (noted as a possible v2 — in the MVP the URI is plaintext); publishing to npm; any interactive prompt.
 
 ## Architecture
 
@@ -33,10 +33,12 @@ src/
     resolveProject.ts     cwd → git root → basename, or --project
     loadEnv.ts            reads and validates the env file, resolves --db
   guards/
-    sql.ts                validates the SQL string (pure, no I/O)
+    sql.ts                validates a MySQL string (pure, no I/O)
+    postgres.ts           validates a PostgreSQL string (pure, no I/O)
     mongo.ts              parses db.<col>.<op>(...) via AST (pure, no I/O)
   engines/
     mysql.ts              runs what the guard approved
+    postgres.ts           same, inside a BEGIN READ ONLY transaction
     mongo.ts              same
   output/
     envelope.ts           result → JSON or table
@@ -61,7 +63,8 @@ argv → resolveProject → loadEnv → guard → engine → envelope → stdout
 ```
 typescript      types; checked via `tsc --noEmit`, never at runtime
 commander       commands, flags, generated --help
-mysql2          SQL driver
+mysql2          MySQL driver
+pg + pg-cursor  PostgreSQL driver and cursor-based truncation
 mongodb         Mongo driver
 acorn           AST for the Mongo guard
 picocolors      colour, exclusively with --format table on a TTY stdout
@@ -257,6 +260,55 @@ Vitest, with the weight concentrated where the risk is.
 
 The adversarial guard suite may not be skipped or marked `.skip` to unblock a build: it **is** the project's invariant.
 
+## Revision of 2026-09-03 — PostgreSQL
+
+Added as a third engine. Redis was considered alongside it and **rejected**: it
+has no query language, no schema and no rows, so `dbq schema` and the row
+ceiling have no meaning there, and its characteristic hazard is not writing but
+`KEYS *` blocking a single-threaded server — something read-only does not
+protect against. A cache is not a query target.
+
+PostgreSQL is **not MySQL with a different driver**, and reusing the MySQL guard
+would have been a security bug:
+
+1. **A write keyword may appear anywhere.**
+   `WITH x AS (INSERT INTO t VALUES (1) RETURNING *) SELECT * FROM x` is a real
+   PostgreSQL feature: it begins at `WITH`, ends in `SELECT`, and writes. The
+   leading-keyword rule that suffices for MySQL does not see it. The PostgreSQL
+   guard therefore scans for write keywords at every position.
+2. **It lexes differently.** `"` delimits an identifier rather than a string,
+   block comments nest, and `$$ … $$` dollar quoting can hide a whole
+   statement. The MySQL normaliser produces both false positives (a column
+   legitimately named `"delete"`) and false negatives against it, so PostgreSQL
+   has its own.
+3. **Its function surface reaches the host.** `COPY … TO PROGRAM` runs a shell
+   command; `pg_read_file`, `pg_ls_dir` and `lo_export` reach the filesystem;
+   `dblink` opens an outbound connection from the server; `nextval`/`setval`
+   mutate sequences. All refused by fragment.
+4. **`EXPLAIN ANALYZE` executes the statement.** `--explain` never adds
+   `ANALYZE`, and `ANALYZE` is a refused keyword.
+
+In exchange, PostgreSQL offers something the other engines cannot: every query
+runs inside `BEGIN READ ONLY` with a server-side `SET LOCAL statement_timeout`,
+and is rolled back. **This is the one engine where a hole in the parser is not a
+hole in the guarantee** — the backend refuses the write itself.
+
+One thing the corpus corrected: `SELECT $$ DROP TABLE t $$` was initially
+written as a case that must be refused. It must be *accepted*. Dollar quoting is
+alternative string-literal syntax, so that statement returns the text and
+executes nothing, exactly like `SELECT 'DROP TABLE t'`. Execution enters through
+`DO`, which is refused on its own.
+
+**Schemas (namespaces)** are an axis MySQL and Mongo lack. Rather than adding a
+flag, `dbq schema` qualifies its results (`public.users`) and accepts a target
+either bare or qualified — the axis appears where it helps rather than in every
+invocation.
+
+Truncation uses `pg-cursor`: without a cursor the driver buffers the whole
+result before the ceiling could be applied, which is precisely the volume
+problem the ceiling exists to prevent. Utility statements (`SHOW`, `EXPLAIN`)
+are not cursorable and return few rows, so they are buffered.
+
 ## Recorded decisions
 
 | Decision | Rejected alternative | Reason |
@@ -268,3 +320,6 @@ The adversarial guard suite may not be skipped or marked `.skip` to unblock a bu
 | A 500-row ceiling injected | Honour the query as written | Asymmetric cost: one re-invocation versus the session |
 | No build step (native type stripping) | `tsx` + `tsup` | Fewer moving parts; a bundler returns if publishing happens |
 | No Clack, no ora | An interactive CLI | A prompt hangs with no TTY; a spinner contaminates stdout |
+| A dedicated PostgreSQL guard | Reusing the MySQL guard | Data-modifying CTEs and a different lexer; reuse would have been a security bug |
+| PostgreSQL wrapped in BEGIN READ ONLY | Trusting the guard alone | The server enforces it, so a parser hole is not a guarantee hole |
+| Redis rejected | A command whitelist engine | No query language, no schema, no rows; its hazard is blocking, not writing |
