@@ -271,13 +271,17 @@ dbq schema -e dev -d mongo companies      # fields, types and presence
 Mongo's `schema` samples 100 documents and reports **presence** per field — the signal that keeps you from writing a query against an optional field:
 
 ```
-field                 types    presence
---------------------  -------  --------
-_id                   string   100%
-lastLoginAt           boolean  86%
-deletedAt  boolean  14%
-name                  string   100%
+field        types          presence
+-----------  -------------  --------
+_id          objectid       100%
+createdAt    date           100%
+email        string         100%
+lastLoginAt  date           86%
+deletedAt    date | null    14%
 ```
+
+`lastLoginAt` on 86% of the sample and `deletedAt` on 14% is exactly the signal
+that stops you filtering on a field most documents don't have.
 
 > **Subcommands come before flags.** `dbq schema -e dev`, not `dbq -e dev schema`. The wrong order is refused, with the corrected invocation in the hint.
 
