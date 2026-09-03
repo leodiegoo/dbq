@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { toDbqError } from '../errors.ts';
+import { toConnectionError, toDbqError } from '../errors.ts';
 import type { MongoConnection } from '../config/types.ts';
 
 const SAMPLE_SIZE = 100;
@@ -26,7 +26,9 @@ export const mongoSchema = async (
   });
 
   try {
-    await client.connect();
+    await client.connect().catch((err: unknown) => {
+      throw toConnectionError(err);
+    });
     const db = client.db(connection.database);
 
     if (collection === undefined) {

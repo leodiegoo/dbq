@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2';
-import { toDbqError } from '../errors.ts';
+import { toConnectionError, toDbqError } from '../errors.ts';
 import type { MysqlConnection } from '../config/types.ts';
 import type { SqlPlan } from '../guards/types.ts';
 import { applyLimit } from '../output/envelope.ts';
@@ -26,7 +26,7 @@ export const executeMysql = async (
 
   try {
     await new Promise<void>((resolve, reject) => {
-      client.connect((err) => (err ? reject(err) : resolve()));
+      client.connect((err) => (err ? reject(toConnectionError(err)) : resolve()));
     });
 
     const statement = opts.explain ? `EXPLAIN ${plan.statement}` : plan.statement;

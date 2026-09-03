@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DbqError, scrubUri, toDbqError } from '../src/errors.ts';
+import { DbqError, scrubUri, toConnectionError, toDbqError } from '../src/errors.ts';
 
 describe('DbqError', () => {
   it('should be mapping each code to its documented exit code', () => {
@@ -70,5 +70,29 @@ describe('toDbqError', () => {
   it('should be scrubbing credentials out of the converted message', () => {
     const err = new Error('failed on mysql://u:hunter2@h:3306/d');
     expect(toDbqError(err).message).not.toContain('hunter2');
+  });
+});
+
+describe('toConnectionError', () => {
+  it('should be reclassifying a connect-phase ETIMEDOUT as a connection error', () => {
+    const err = Object.assign(new Error('connect ETIMEDOUT'), { code: 'ETIMEDOUT' });
+    expect(toDbqError(err).code).toBe('TIMEOUT');
+    expect(toConnectionError(err).code).toBe('CONNECTION_ERROR');
+  });
+
+  it('should be replacing the misleading query hint with a connectivity one', () => {
+    const err = Object.assign(new Error('connect ETIMEDOUT'), { code: 'ETIMEDOUT' });
+    expect(toConnectionError(err).hint).toContain('rede');
+    expect(toConnectionError(err).hint).not.toContain('escopo da query');
+  });
+
+  it('should be preserving an error already classified as a connection error', () => {
+    const err = Object.assign(new Error('connect ECONNREFUSED'), { code: 'ECONNREFUSED' });
+    expect(toConnectionError(err).code).toBe('CONNECTION_ERROR');
+  });
+
+  it('should be scrubbing credentials out of the connection error message', () => {
+    const err = new Error('failed on mysql://u:hunter2@h:3306/d');
+    expect(toConnectionError(err).message).not.toContain('hunter2');
   });
 });

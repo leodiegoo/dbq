@@ -70,3 +70,18 @@ export const toDbqError = (err: unknown): DbqError => {
 
   return new DbqError('UNEXPECTED', message);
 };
+
+/**
+ * Erros levantados enquanto a conexao ainda esta sendo aberta sao sempre de
+ * conexao, nunca de query. Sem isso um `connect ETIMEDOUT` vira TIMEOUT e o
+ * consumidor recebe "reduza o escopo da query" para um socket que nem abriu.
+ */
+export const toConnectionError = (err: unknown): DbqError => {
+  const converted = toDbqError(err);
+  if (converted.code === 'CONNECTION_ERROR') return converted;
+  return new DbqError(
+    'CONNECTION_ERROR',
+    converted.message,
+    'confira --env, a URI da conexao e o acesso a rede (VPN?)',
+  );
+};

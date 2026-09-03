@@ -1,5 +1,5 @@
 import { MongoClient, type Document } from 'mongodb';
-import { toDbqError } from '../errors.ts';
+import { toConnectionError, toDbqError } from '../errors.ts';
 import type { MongoConnection } from '../config/types.ts';
 import type { MongoPlan } from '../guards/types.ts';
 import { applyLimit } from '../output/envelope.ts';
@@ -23,7 +23,9 @@ export const executeMongo = async (
   });
 
   try {
-    await client.connect();
+    await client.connect().catch((err: unknown) => {
+      throw toConnectionError(err);
+    });
     const collection = client.db(connection.database).collection(plan.collection);
     const [first, second] = plan.args;
     const { limit, sort, skip, project } = plan.modifiers;
