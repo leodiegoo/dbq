@@ -1,8 +1,8 @@
 # dbq
 
-Executor **read-only** de queries SQL e MongoDB, configurado por ambiente e invocável de qualquer diretório.
+A **read-only** query runner for SQL and MongoDB, configured per environment and callable from any directory.
 
-Feito para ser usado por um agente de IA: a saída é JSON parseável, os erros trazem uma dica acionável, os exit codes distinguem "reescreva a query" de "conexão errada" — e **não existe caminho de código que escreva no banco**.
+Built to be driven by an AI agent: output is parseable JSON, errors carry an actionable hint, exit codes distinguish "rewrite the query" from "wrong connection" — and **no code path can write to the database**.
 
 ```bash
 dbq --env dev "SELECT id, name FROM companies WHERE active = 1"
@@ -11,30 +11,30 @@ dbq --env dev --db mongo 'db.companies.find({ active: true }).limit(10)'
 
 ---
 
-## Índice
+## Contents
 
-- [Por que existe](#por-que-existe)
-- [Requisitos](#requisitos)
-- [Instalação](#instalação)
-- [Configuração](#configuração)
-- [Uso](#uso)
-- [Descoberta](#descoberta-envs-databases-schema)
-- [O que é permitido](#o-que-é-permitido)
-- [Limites e truncamento](#limites-e-truncamento)
-- [Saída](#saída)
+- [Why this exists](#why-this-exists)
+- [Requirements](#requirements)
+- [Install](#install)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Discovery](#discovery-envs-databases-schema)
+- [What is allowed](#what-is-allowed)
+- [Limits and truncation](#limits-and-truncation)
+- [Output](#output)
 - [Exit codes](#exit-codes)
-- [Como funciona por dentro](#como-funciona-por-dentro)
-- [Receitas](#receitas)
-- [Solução de problemas](#solução-de-problemas)
-- [Desenvolvimento](#desenvolvimento)
+- [How it works](#how-it-works)
+- [Recipes](#recipes)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
 
 ---
 
-## Por que existe
+## Why this exists
 
-Dar a um agente de IA acesso direto a um banco tem dois problemas, e eles são independentes.
+Handing an AI agent direct database access creates two independent problems.
 
-**O primeiro é destruição.** Um agente com contexto errado roda `DELETE` em produção sem má intenção nenhuma. A resposta usual — "confie no prompt" — não é resposta. O `dbq` recusa escrita **estruturalmente**: a query é validada antes de qualquer conexão ser aberta, e não existe flag, variável de ambiente ou campo de config que destrave isso.
+**The first is destruction.** An agent with the wrong context runs `DELETE` against production with no ill intent whatsoever. The usual answer — "trust the prompt" — is not an answer. `dbq` refuses writes **structurally**: the query is validated before any connection is opened, and no flag, environment variable or config field unlocks it.
 
 ```bash
 $ dbq --env production 'db.plans.drop()'
@@ -43,20 +43,20 @@ $ echo $?
 3
 ```
 
-Nenhum pacote de rede saiu da máquina nesse comando.
+Not a single network packet left the machine for that command.
 
-**O segundo é volume.** Um `SELECT * FROM companies` sem cláusula devolve centenas de milhares de linhas direto no contexto e queima a sessão inteira num comando. O `dbq` injeta um teto de linhas mesmo quando a query não pede, e avisa quando cortou.
-
----
-
-## Requisitos
-
-- **Node >= 26.** O binário aponta direto para um `.ts` e o Node apaga os tipos em runtime — sem passo de build, sem `dist/`.
-- MySQL e/ou MongoDB alcançáveis pela rede (VPN, se for o caso).
+**The second is volume.** A bare `SELECT * FROM companies` returns hundreds of thousands of rows straight into the context window and burns an entire session in one command. `dbq` injects a row ceiling even when the query doesn't ask for one, and tells you when it truncated.
 
 ---
 
-## Instalação
+## Requirements
+
+- **Node >= 26.** The binary points straight at a `.ts` file and Node strips the types at runtime — no build step, no `dist/`.
+- MySQL and/or MongoDB reachable over the network (VPN, if that applies).
+
+---
+
+## Install
 
 ```bash
 git clone https://github.com/leodiegoo/dbq.git
@@ -65,154 +65,154 @@ pnpm install
 npm link
 ```
 
-`npm link` coloca `dbq` no PATH. Confira:
+`npm link` puts `dbq` on your PATH. Check it:
 
 ```bash
 dbq --version   # 0.1.0
 dbq --help
 ```
 
-> `npm link` é o caminho de desenvolvimento — edições no fonte valem imediatamente, sem reinstalar.
+> `npm link` is the development path — source edits take effect immediately, with no reinstall.
 
 ---
 
-## Configuração
+## Configuration
 
-### Onde os arquivos ficam
+### Where files live
 
 ```
-~/.config/dbq/<projeto>/<env>.json
+~/.config/dbq/<project>/<env>.json
 ```
 
-Respeita `$XDG_CONFIG_HOME` quando definido. O `dbq` é dono do próprio diretório em vez de espalhar nomes de projeto direto em `~/.config/` — território compartilhado com `nvim`, `gh`, `fish` e outros.
+`$XDG_CONFIG_HOME` is honoured when set. `dbq` owns its own directory rather than scattering project names directly into `~/.config/` — shared ground with `nvim`, `gh`, `fish` and others.
 
-Exemplo de uma máquina com dois projetos:
+A machine with two projects:
 
 ```
 ~/.config/dbq/
-├── meu-projeto/
+├── my-project/
 │   ├── dev.json
 │   ├── staging.json
 │   └── production.json
-└── outro-projeto/
+└── other-project/
     └── local.json
 ```
 
-### Criando o primeiro arquivo
+### Creating your first file
 
 ```bash
-mkdir -p ~/.config/dbq/meu-projeto
+mkdir -p ~/.config/dbq/my-project
 
-cat > ~/.config/dbq/meu-projeto/dev.json <<'EOF'
+cat > ~/.config/dbq/my-project/dev.json <<'EOF'
 {
   "connections": {
     "mysql": {
       "engine": "mysql",
-      "uri": "mysql://leitura:senha@10.0.0.1:3306/meubanco"
+      "uri": "mysql://reader:password@10.0.0.1:3306/mydb"
     },
     "mongo": {
       "engine": "mongodb",
-      "uri": "mongodb://leitura:senha@10.0.0.2:27017",
-      "database": "meubanco"
+      "uri": "mongodb://reader:password@10.0.0.2:27017",
+      "database": "mydb"
     }
   },
   "defaults": { "limit": 500, "timeoutMs": 30000 }
 }
 EOF
 
-chmod 600 ~/.config/dbq/meu-projeto/dev.json
+chmod 600 ~/.config/dbq/my-project/dev.json
 ```
 
-**O `chmod 600` não é opcional:** o `dbq` recusa executar se a permissão for outra. Esses arquivos guardam credencial.
+**The `chmod 600` is not optional:** `dbq` refuses to run if the mode is anything else. These files hold credentials.
 
 ```
 USAGE: /Users/…/dev.json esta com permissao 644; esperado 600
 dica: rode: chmod 600 /Users/…/dev.json
 ```
 
-### Campos
+### Fields
 
-| Campo | Obrigatório | O quê |
+| Field | Required | What it is |
 |---|---|---|
-| `connections` | sim | mapa de conexões nomeadas |
-| `connections.<nome>.engine` | sim | `"mysql"` ou `"mongodb"` |
-| `connections.<nome>.uri` | sim | URI de conexão completa |
-| `connections.<nome>.database` | não | banco **default** dessa conexão |
-| `defaults.limit` | não | teto de linhas (embutido: `500`) |
-| `defaults.timeoutMs` | não | timeout do statement (embutido: `30000`) |
+| `connections` | yes | map of named connections |
+| `connections.<name>.engine` | yes | `"mysql"` or `"mongodb"` |
+| `connections.<name>.uri` | yes | full connection URI |
+| `connections.<name>.database` | no | **default** database for this connection |
+| `defaults.limit` | no | row ceiling (built-in: `500`) |
+| `defaults.timeoutMs` | no | statement timeout (built-in: `30000`) |
 
-**Precedência:** flag da invocação > `defaults` do arquivo > default embutido.
+**Precedence:** invocation flag > file `defaults` > built-in default.
 
-O nome de banco no path da URI é **sempre ignorado**. Só o campo `database` e a flag `-D` decidem onde a query roda — assim não há dois lugares implícitos discordando.
+A database name in the URI path is **always ignored**. Only the `database` field and the `-D` flag decide where the query runs, so no two implicit sources can disagree.
 
-### Um arquivo agrupa N conexões
+### One file groups N connections
 
-Um ambiente real não é um banco só: `dev` costuma ser MySQL **e** MongoDB simultaneamente. Por isso a unidade é o ambiente, com conexões nomeadas dentro.
+A real environment is not a single database: `dev` is usually MySQL **and** MongoDB at the same time. So the unit is the environment, with named connections inside it.
 
-`--db` é opcional quando a env declara uma única conexão, e obrigatório quando há mais de uma:
+`--db` is optional when the environment declares a single connection, and required when there is more than one:
 
 ```
 USAGE: a env 'dev' tem varias conexoes: mysql, mongo
 dica: passe --db <conexao>
 ```
 
-O desenho é deliberado: trocar de ambiente é **uma** ação, e `--env` fica sendo o eixo explícito que separa dev de produção. Com um arquivo por conexão, `dev-mysql` e `prod-mysql` seriam strings vizinhas num mesmo argumento — exatamente o erro que não se quer facilitar.
+The shape is deliberate: switching environments is **one** action, and `--env` stays the explicit axis separating dev from production. With one file per connection, `dev-mysql` and `prod-mysql` would be neighbouring strings in the same argument — precisely the mistake worth making hard.
 
-### Senha com caracteres especiais
+### Passwords with special characters
 
-A senha vai na URI, então precisa ser percent-encoded. Caracteres que **quebram** se não forem escapados: `#` `@` `/` `:` `?` `&` `%`.
+The password lives in the URI, so it must be percent-encoded. Characters that **break** unescaped: `#` `@` `/` `:` `?` `&` `%`.
 
 ```bash
-node -e 'console.log(encodeURIComponent(process.argv[1]))' 'minha#senha@estranha'
-# minha%23senha%40estranha
+node -e 'console.log(encodeURIComponent(process.argv[1]))' 'my#pass@word'
+# my%23pass%40word
 ```
 
-### Como o projeto é descoberto
+### How the project is discovered
 
-O `dbq` sobe do diretório atual até a raiz do repositório git e usa o basename. Estando em qualquer lugar dentro de `~/code/meu-projeto`, `--project` é desnecessário.
+`dbq` walks up from the current directory to the git repository root and uses its basename. Anywhere inside `~/code/my-project`, `--project` is unnecessary.
 
-Se não houver correspondência em `~/.config/dbq/`, ele **falha** listando as alternativas — nunca chuta, nunca cai num default:
+If nothing matches under `~/.config/dbq/`, it **fails** and lists the alternatives — it never guesses, never falls back to a default:
 
 ```
-USAGE: nao foi possivel inferir o projeto a partir de '/tmp'. Disponiveis: meu-projeto, outro-projeto
+USAGE: nao foi possivel inferir o projeto a partir de '/tmp'. Disponiveis: my-project, other-project
 dica: passe --project <nome>
 ```
 
-Não existe "projeto ativo" persistido em lugar nenhum. Estado global invisível é como se acerta o comando e se erra o banco.
+There is no persisted "active project" anywhere. Invisible global state is how you get the command right and the database wrong.
 
-### Recomendação de segurança
+### Security recommendation
 
-Aponte as URIs para um **usuário read-only no próprio banco**.
+Point the URIs at a **read-only user in the database itself**.
 
 ```sql
-CREATE USER 'dbq_leitura'@'%' IDENTIFIED BY '…';
-GRANT SELECT, SHOW VIEW ON meubanco.* TO 'dbq_leitura'@'%';
+CREATE USER 'dbq_reader'@'%' IDENTIFIED BY '…';
+GRANT SELECT, SHOW VIEW ON mydb.* TO 'dbq_reader'@'%';
 ```
 
 ```js
-db.createUser({ user: "dbq_leitura", pwd: "…", roles: [{ role: "read", db: "meubanco" }] })
+db.createUser({ user: "dbq_reader", pwd: "…", roles: [{ role: "read", db: "mydb" }] })
 ```
 
-O guard te protege de erro humano; o usuário do banco te protege de um bug no guard. São camadas diferentes e você quer as duas.
+The guard protects you from human error; the database user protects you from a bug in the guard. Different layers — you want both.
 
 ---
 
-## Uso
+## Usage
 
 ```bash
-dbq [opções] <query>
+dbq [options] <query>
 ```
 
-| Flag | Default | O quê |
+| Flag | Default | What it does |
 |---|---|---|
-| `-p, --project <nome>` | inferido do cwd | projeto em `~/.config/dbq` |
-| `-e, --env <nome>` | — | **obrigatório** |
-| `-d, --db <conexão>` | única da env | obrigatório se houver mais de uma |
-| `-D, --database <nome>` | campo `database` | banco a consultar, por invocação |
-| `-l, --limit <n>` | `500` | teto de linhas; `0` desliga |
-| `-t, --timeout <ms>` | `30000` | timeout do statement |
-| `-f, --format <json\|table>` | `json` | formato da saída |
-| `-x, --explain` | off | roda `EXPLAIN` / `.explain()` |
+| `-p, --project <name>` | inferred from cwd | project under `~/.config/dbq` |
+| `-e, --env <name>` | — | **required** |
+| `-d, --db <connection>` | the env's only one | required when there is more than one |
+| `-D, --database <name>` | the `database` field | database to query, per invocation |
+| `-l, --limit <n>` | `500` | row ceiling; `0` disables it |
+| `-t, --timeout <ms>` | `30000` | statement timeout |
+| `-f, --format <json\|table>` | `json` | output format |
+| `-x, --explain` | off | run `EXPLAIN` / `.explain()` instead |
 
 ### SQL
 
@@ -224,7 +224,7 @@ dbq -e dev -d mysql -x "SELECT * FROM orders WHERE user_id = 42"
 
 ### MongoDB
 
-A expressão usa a sintaxe do `mongosh`, com `db` referindo o banco resolvido:
+The expression uses `mongosh` syntax, with `db` referring to the resolved database:
 
 ```bash
 dbq -e dev -d mongo 'db.companies.find({ active: true })'
@@ -232,43 +232,43 @@ dbq -e dev -d mongo 'db.companies.find({}, { name: 1 }).sort({ name: 1 }).limit(
 dbq -e dev -d mongo 'db.orders.aggregate([{ $match: { paid: true } }, { $group: { _id: "$userId", n: { $sum: 1 } } }])'
 ```
 
-### Query pelo stdin
+### Query from stdin
 
-Pipeline longo é sofrível de escapar no shell. Use `-`:
+Long pipelines are miserable to escape in a shell. Use `-`:
 
 ```bash
 cat pipeline.js | dbq -e dev -d mongo -
-dbq -e dev -d mysql - < consulta.sql
+dbq -e dev -d mysql - < query.sql
 ```
 
-### Trocando de banco sem trocar de conexão
+### Switching databases without switching connections
 
-Um cluster hospeda vários bancos. `-D` sobrescreve o default por invocação:
+One cluster hosts many databases. `-D` overrides the default per invocation:
 
 ```bash
-dbq databases -e dev -d mongo                        # descobre o que existe
-dbq -e dev -d mongo -D outro-banco 'db.users.find({})'
+dbq databases -e dev -d mongo                          # find out what exists
+dbq -e dev -d mongo -D other-database 'db.users.find({})'
 dbq -e dev -d mysql -D information_schema "SELECT DATABASE()"
 ```
 
-No MySQL, cross-database também funciona sem flag nenhuma: `SELECT * FROM outrobanco.tabela` passa normalmente, desde que o usuário tenha permissão.
+In MySQL, cross-database queries also work with no flag at all: `SELECT * FROM otherdb.table` passes normally, provided the user has permission.
 
 ---
 
-## Descoberta: `envs`, `databases`, `schema`
+## Discovery: `envs`, `databases`, `schema`
 
-Um agente que não enxerga o schema chuta nome de coluna, erra e queima turno atrás de turno. A trilha completa:
+An agent that cannot see the schema guesses column names, fails, and burns turn after turn. The full trail:
 
 ```bash
-dbq envs                                  # projetos e ambientes configurados
-dbq databases -e dev -d mongo             # bancos daquela conexão
-dbq schema -e dev -d mysql                # tabelas
-dbq schema -e dev -d mysql companies      # colunas, tipos, chaves
-dbq schema -e dev -d mongo                # coleções
-dbq schema -e dev -d mongo companies      # campos, tipos e presença
+dbq envs                                  # configured projects and environments
+dbq databases -e dev -d mongo             # databases on that connection
+dbq schema -e dev -d mysql                # tables
+dbq schema -e dev -d mysql companies      # columns, types, keys
+dbq schema -e dev -d mongo                # collections
+dbq schema -e dev -d mongo companies      # fields, types and presence
 ```
 
-O `schema` do Mongo amostra 100 documentos e reporta **presença** por campo — sinal que evita escrever query sobre campo opcional:
+Mongo's `schema` samples 100 documents and reports **presence** per field — the signal that keeps you from writing a query against an optional field:
 
 ```
 field                 types    presence
@@ -279,96 +279,96 @@ deletedAt  boolean  14%
 name                  string   100%
 ```
 
-> **Subcomandos vêm antes das flags.** `dbq schema -e dev`, não `dbq -e dev schema`. A ordem trocada é recusada com a invocação corrigida na dica.
+> **Subcommands come before flags.** `dbq schema -e dev`, not `dbq -e dev schema`. The wrong order is refused, with the corrected invocation in the hint.
 
 ---
 
-## O que é permitido
+## What is allowed
 
 ### SQL
 
-**Aceito:** `SELECT`, `WITH … SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN`.
+**Accepted:** `SELECT`, `WITH … SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN`.
 
-**Recusado:** todo o resto, mais `INTO OUTFILE` e `INTO DUMPFILE` (escrevem arquivo no servidor), `FOR UPDATE` e `LOCK IN SHARE MODE` (travam linhas).
+**Refused:** everything else, plus `INTO OUTFILE` and `INTO DUMPFILE` (write files on the server), `FOR UPDATE` and `LOCK IN SHARE MODE` (take row locks).
 
-Comentários são removidos **antes** da checagem da primeira palavra-chave, e literais de string são neutralizados:
+Comments are stripped **before** the leading-keyword check, and string literals are neutralised:
 
 ```sql
-/* inofensivo */ DROP TABLE companies   -- recusado
-SELECT 1; DROP TABLE companies          -- recusado (statement único)
-SELECT * FROM t WHERE name = 'a;b'      -- aceito (o ; está numa string)
+/* harmless */ DROP TABLE companies     -- refused
+SELECT 1; DROP TABLE companies          -- refused (single statement only)
+SELECT * FROM t WHERE name = 'a;b'      -- accepted (the ; is inside a string)
 ```
 
 ### MongoDB
 
-**Forma aceita:** exatamente `db.<coleção>.<operação>(…)`, opcionalmente encadeada.
+**Accepted shape:** exactly `db.<collection>.<operation>(…)`, optionally chained.
 
 | | |
 |---|---|
-| Operações | `find` `findOne` `aggregate` `countDocuments` `estimatedDocumentCount` `distinct` |
-| Encadeáveis | `limit` `sort` `skip` `project` |
-| Argumentos | apenas literais puros: objeto, array, string, número, booleano, `null`, regex |
+| Operations | `find` `findOne` `aggregate` `countDocuments` `estimatedDocumentCount` `distinct` |
+| Chainable | `limit` `sort` `skip` `project` |
+| Arguments | pure literals only: object, array, string, number, boolean, `null`, regex |
 
-A expressão é **parseada por AST, nunca avaliada**. Isso não é detalhe de implementação — é a decisão que sustenta a garantia:
+The expression is **parsed as an AST, never evaluated**. That is not an implementation detail — it is the decision the whole guarantee rests on:
 
 ```js
-db.companies.drop()              // recusado: operação fora do whitelist
-db["compa" + "nies"].drop()      // recusado: acesso por colchete não é a forma aceita
-db.c.find({ a: fn() })           // recusado: argumento não é literal puro
-db.c.find({}).toArray()          // recusado: encadeamento fora do whitelist
-db.c.find({}); db.d.drop()       // recusado: mais de um statement
+db.companies.drop()              // refused: operation not on the whitelist
+db["compa" + "nies"].drop()      // refused: bracket access is not the accepted shape
+db.c.find({ a: fn() })           // refused: argument is not a pure literal
+db.c.find({}).toArray()          // refused: chained call not on the whitelist
+db.c.find({}); db.d.drop()       // refused: more than one statement
 ```
 
-`db["compa" + "nies"]` não morre porque alguém inspecionou a string procurando `drop` — morre porque concatenação simplesmente não faz parte da gramática aceita.
+`db["compa" + "nies"]` does not die because something inspected the string looking for `drop` — it dies because concatenation simply isn't part of the accepted grammar.
 
-**Operadores proibidos em qualquer profundidade** dos argumentos:
+**Operators refused at any depth** inside the arguments:
 
-| Operador | Por quê |
+| Operator | Why |
 |---|---|
-| `$out`, `$merge` | **gravam em coleção** |
-| `$where`, `$function`, `$accumulator` | executam JavaScript no servidor |
+| `$out`, `$merge` | **write to a collection** |
+| `$where`, `$function`, `$accumulator` | execute JavaScript on the server |
 
 ```js
-db.c.aggregate([{ $out: "backup" }])                    // recusado
-db.c.aggregate([{ $facet: { a: [{ $out: "x" }] } }])    // recusado, aninhado
-db.c.find({ $and: [{ $where: "true" }] })               // recusado, aninhado
+db.c.aggregate([{ $out: "backup" }])                    // refused
+db.c.aggregate([{ $facet: { a: [{ $out: "x" }] } }])    // refused, nested
+db.c.find({ $and: [{ $where: "true" }] })               // refused, nested
 ```
 
-Isso existe porque o whitelist de operações **não alcança** esses casos: um pipeline com `$out` é sintaticamente um literal puro. A escrita vive no conteúdo dos dados, não na forma do código.
+This exists because the operation whitelist **cannot reach** those cases: a pipeline containing `$out` is syntactically a pure literal. The write hides in the content of the data, not in the shape of the code.
 
-> Não existe flag que destrave escrita. Se você precisa escrever, o `dbq` não é a ferramenta.
+> No flag unlocks writes. If you need to write, `dbq` is the wrong tool.
 
 ---
 
-## Limites e truncamento
+## Limits and truncation
 
-`--limit` é um **teto**, não uma substituição — uma query que já pede menos continua mandando:
+`--limit` is a **ceiling**, not a replacement — a query that already asks for less still wins:
 
-| Query | `--limit` | Resultado |
+| Query | `--limit` | Result |
 |---|---|---|
-| `find({})` sobre 134 docs | 500 | 134 linhas, `truncated: false` |
-| `find({})` sobre 134 docs | 3 | 3 linhas, `truncated: true` |
-| `find({}).limit(2)` | 3 | 2 linhas, `truncated: false` |
+| `find({})` over 134 docs | 500 | 134 rows, `truncated: false` |
+| `find({})` over 134 docs | 3 | 3 rows, `truncated: true` |
+| `find({}).limit(2)` | 3 | 2 rows, `truncated: false` |
 
-`--limit 0` desliga o teto, explicitamente.
+`--limit 0` disables the ceiling, explicitly.
 
-Quando corta, a saída avisa — o consumidor sabe que precisa refinar em vez de acreditar que viu tudo:
+When it truncates, the output says so — the consumer knows to refine instead of believing it saw everything:
 
 ```json
 { "rowCount": 3, "truncated": true, "elapsedMs": 54, "rows": [ … ] }
 ```
 
-O teto injetado significa que o `dbq` não honra literalmente um `LIMIT 5000`. É deliberado: o custo dos dois erros é assimétrico — injetar limite de menos custa uma reinvocação, não injetar custa a sessão.
+The injected ceiling means `dbq` does not literally honour a `LIMIT 5000`. That is deliberate: the two mistakes cost asymmetrically — injecting too small a limit costs one re-invocation, injecting none costs the session.
 
 ---
 
-## Saída
+## Output
 
-**JSON** (default), num envelope com metadados:
+**JSON** by default, in an envelope with metadata:
 
 ```json
 {
-  "project": "meu-projeto",
+  "project": "my-project",
   "env": "dev",
   "db": "mysql",
   "engine": "mysql",
@@ -382,42 +382,42 @@ O teto injetado significa que o `dbq` não honra literalmente um `LIMIT 5000`. �
 }
 ```
 
-`Date`, `RegExp`, `ObjectId`, `BigInt` e `Buffer` são serializados de forma legível — sem isso o consumidor receberia `{}` no lugar de um id, que é pior que um erro porque parece um dado válido.
+`Date`, `RegExp`, `ObjectId`, `BigInt` and `Buffer` are serialised readably — without that the consumer would receive `{}` where an id should be, which is worse than an error because it looks like valid data.
 
-**Tabela**, para olho humano:
+**Table**, for human eyes:
 
 ```bash
-dbq -e dev -d mysql -f table "SELECT id, name FROM appdb"
+dbq -e dev -d mysql -f table "SELECT id, name FROM companies"
 ```
 
 ```
 id   name
----  --------------
+---  ------
 530  Acme
 470  Globex
 
-2 linha(s) em 49ms — meu-projeto/dev/mysql
+2 row(s) in 49ms — my-project/dev/mysql
 ```
 
-Cor só aparece com `--format table` **e** stdout sendo TTY. JSON jamais recebe ANSI: um byte de escape quebraria o `JSON.parse` do consumidor.
+Colour appears only with `--format table` **and** stdout being a TTY. JSON never receives ANSI: one escape byte would break the consumer's `JSON.parse`.
 
 ---
 
 ## Exit codes
 
-Cada código implica uma ação corretiva diferente — é o que permite um agente decidir o próximo passo sem interpretar texto:
+Each code implies a different corrective action — that is what lets an agent choose its next step without parsing prose:
 
-| Código | Significado | O que fazer |
+| Code | Meaning | What to do |
 |---|---|---|
-| `0` | sucesso | — |
-| `1` | inesperado | — |
-| `2` | uso inválido | corrigir a invocação |
-| `3` | recusado pelo guard | reescrever a query |
-| `4` | conexão / autenticação | conferir `--env`, credenciais, VPN |
-| `5` | erro do banco | conferir com `dbq schema` |
-| `6` | timeout | filtrar mais, ou aumentar `--timeout` |
+| `0` | success | — |
+| `1` | unexpected | — |
+| `2` | invalid usage | fix the invocation |
+| `3` | refused by the guard | rewrite the query |
+| `4` | connection / authentication | check `--env`, credentials, VPN |
+| `5` | database error | check with `dbq schema` |
+| `6` | timeout | filter harder, or raise `--timeout` |
 
-Erro sai em **stderr**, no mesmo formato da saída:
+Errors go to **stderr**, in the same format as the output:
 
 ```json
 {
@@ -429,13 +429,15 @@ Erro sai em **stderr**, no mesmo formato da saída:
 }
 ```
 
-O campo `hint` é deliberado: é o que faz acertar na segunda tentativa em vez de tentar cinco variações.
+The `hint` field is deliberate: it is what makes the second attempt correct instead of the fifth.
 
-**Credencial nunca aparece em mensagem de erro.** Drivers adoram ecoar a connection string inteira, senha inclusa, ao falhar autenticação — a URI passa por scrub antes de qualquer byte alcançar stderr.
+**Credentials never reach an error message.** Drivers love echoing the whole connection string, password included, when authentication fails — the URI is scrubbed before any byte reaches stderr.
+
+> Runtime messages are currently in Portuguese. Exit codes and the `error.code` field are the stable, language-independent contract — key on those, not on the prose.
 
 ---
 
-## Como funciona por dentro
+## How it works
 
 ```
 argv → resolveProject → loadEnv → guard → engine → envelope → stdout
@@ -443,45 +445,45 @@ argv → resolveProject → loadEnv → guard → engine → envelope → stdout
 
 ```
 src/
-  cli.ts            argv, orquestração, tradução de erro → exit code
-  config/           resolve projeto pelo cwd; lê e valida a env
-  guards/           valida a query          (funções puras, zero I/O)
-  engines/          executa o que foi aprovado
-  schema/           descoberta de tabelas, coleções e bancos
-  output/           truncamento e formatação
-  errors.ts         DbqError, exit codes, scrub de credenciais
+  cli.ts            argv, orchestration, error → exit code
+  config/           resolves the project from cwd; reads and validates the env file
+  guards/           validates the query      (pure functions, zero I/O)
+  engines/          executes what was approved
+  schema/           discovery of tables, collections and databases
+  output/           truncation and formatting
+  errors.ts         DbqError, exit codes, credential scrubbing
 ```
 
-**A fronteira que sustenta o projeto: guards nunca abrem conexão, engines nunca veem input cru.**
+**The boundary the whole project rests on: guards never open a connection, engines never see raw input.**
 
-O engine recebe uma estrutura já validada — uma coleção, uma operação vinda de um whitelist, argumentos já provados literais. Não existe caminho de código no qual uma string do usuário alcance o driver sem atravessar o guard.
+The engine receives an already-validated structure — a collection, an operation drawn from a whitelist, arguments already proven to be literals. There is no code path where a user-supplied string reaches the driver without crossing the guard.
 
-Duas consequências práticas:
+Two practical consequences:
 
-1. **O read-only é estrutural, não otimista.** Uma query destrutiva contra produção morre no parser, antes de a rede ser tocada.
-2. **Os guards são funções puras**, então a suíte que protege a garantia roda sem banco nenhum — e é por isso que ela pode ser exaustiva.
+1. **Read-only is structural, not hopeful.** A destructive query against production dies in the parser, before the network is touched.
+2. **The guards are pure functions**, so the suite protecting the guarantee runs with no database at all — which is why it can be exhaustive.
 
-O detalhamento de cada decisão, com as alternativas descartadas e o porquê, está em [docs/specs/2026-09-03-dbq-design.md](docs/specs/2026-09-03-dbq-design.md).
+Every decision, with the alternatives that were rejected and why, is written up in [docs/specs/2026-09-03-dbq-design.md](docs/specs/2026-09-03-dbq-design.md).
 
 ---
 
-## Receitas
+## Recipes
 
-**Contar antes de listar**, para saber se vale pedir os dados:
+**Count before listing**, to learn whether the data is worth fetching:
 
 ```bash
 dbq -e dev -d mongo 'db.orders.countDocuments({ status: "pending" })'
 ```
 
-**Explorar uma tabela desconhecida:**
+**Explore an unfamiliar table:**
 
 ```bash
-dbq schema -e dev -d mysql                        # que tabelas existem
-dbq schema -e dev -d mysql orders                 # que colunas tem
-dbq -e dev -d mysql -l 5 "SELECT * FROM orders"   # como os dados se parecem
+dbq schema -e dev -d mysql                        # what tables exist
+dbq schema -e dev -d mysql orders                 # what columns it has
+dbq -e dev -d mysql -l 5 "SELECT * FROM orders"   # what the data looks like
 ```
 
-**Comparar ambientes** (fish):
+**Compare environments** (fish):
 
 ```fish
 for env in dev staging production
@@ -489,58 +491,58 @@ for env in dev staging production
 end
 ```
 
-**Query longa em arquivo:**
+**Long query from a file:**
 
 ```bash
-dbq -e dev -d mysql - < relatorio.sql
+dbq -e dev -d mysql - < report.sql
 ```
 
-**Extrair um campo com `jq`:**
+**Pull one field out with `jq`:**
 
 ```bash
 dbq -e dev -d mongo 'db.plans.find({}, { name: 1 })' | jq -r '.rows[].name'
 ```
 
-**Checar se uma query é aceita, sem rodar:** invoque contra uma env qualquer. Se sair com `3`, o guard recusou — e nenhuma conexão foi aberta.
+**Check whether a query would be accepted, without running it:** invoke it against any environment. Exit `3` means the guard refused — and no connection was ever opened.
 
 ---
 
-## Solução de problemas
+## Troubleshooting
 
-| Sintoma | Causa provável |
+| Symptom | Likely cause |
 |---|---|
-| `esta com permissao 644; esperado 600` | rode o `chmod 600` no arquivo da env |
-| `nao foi possivel inferir o projeto` | você está fora do repo; passe `--project` |
-| `a env 'dev' tem varias conexoes` | passe `--db <conexao>` |
-| `nenhum banco definido para esta conexao` | passe `-D <nome>`, ou declare `database` no arquivo |
-| `'schema' e um subcomando, nao uma query` | subcomando vem antes das flags |
-| exit `4` com `ETIMEDOUT` | VPN desconectada, ou host inalcançável |
-| exit `6` | query pesada demais; filtre mais ou aumente `--timeout` |
-| resultado menor que o esperado | veja `truncated` na saída; suba o `--limit` |
+| `esta com permissao 644; esperado 600` | run `chmod 600` on the env file |
+| `nao foi possivel inferir o projeto` | you are outside the repo; pass `--project` |
+| `a env 'dev' tem varias conexoes` | pass `--db <connection>` |
+| `nenhum banco definido para esta conexao` | pass `-D <name>`, or declare `database` in the file |
+| `'schema' e um subcomando, nao uma query` | subcommands come before flags |
+| exit `4` with `ETIMEDOUT` | VPN disconnected, or host unreachable |
+| exit `6` | query too heavy; filter harder or raise `--timeout` |
+| fewer results than expected | check `truncated` in the output; raise `--limit` |
 
-Erros de resolução **listam as alternativas** no próprio texto — projeto não inferido lista os projetos, env inexistente lista as envs, banco indefinido lista os bancos do cluster. A reinvocação corrigida sai direto do erro.
+Resolution errors **list the alternatives** in the message itself — an uninferred project lists the projects, a missing environment lists the environments, an undefined database lists the cluster's databases. The corrected invocation falls straight out of the error.
 
 ---
 
-## Desenvolvimento
+## Development
 
 ```bash
 pnpm test        # vitest
 pnpm typecheck   # tsc --noEmit
 ```
 
-A suíte adversarial em `tests/guards/` é a invariante do projeto: nenhum caso dela pode ser pulado ou marcado como skip para desbloquear build.
+The adversarial suite in `tests/guards/` is the project's invariant: not one of its cases may be skipped or marked `.skip` to unblock a build.
 
-Antes de mexer no código, leia o **[AGENTS.md](AGENTS.md)** — arquitetura, a fronteira guard/engine, restrições do type stripping e onde adicionar cada tipo de código.
+Before touching the code, read **[AGENTS.md](AGENTS.md)** — architecture, the guard/engine boundary, type-stripping constraints, and where each kind of code belongs.
 
-Documentos: [AGENTS.md](AGENTS.md) · [design](docs/specs/2026-09-03-dbq-design.md) · [plano de implementação](docs/plans/2026-09-03-dbq.md)
+Documents: [AGENTS.md](AGENTS.md) · [design](docs/specs/2026-09-03-dbq-design.md) · [implementation plan](docs/plans/2026-09-03-dbq.md)
 
 ---
 
-## Escopo
+## Scope
 
-**Dentro:** MySQL, MongoDB, queries de leitura, descoberta de schema, config por projeto e ambiente.
+**In:** MySQL, MongoDB, read queries, schema discovery, per-project and per-environment configuration.
 
-**Fora:** PostgreSQL, OpenSearch, Redis, escrita de qualquer natureza, prompts interativos.
+**Out:** PostgreSQL, OpenSearch, Redis, writes of any kind, interactive prompts.
 
-Expansão de `${VAR}` nas URIs — para tirar senha de produção do texto puro — está anotada como candidata a v2.
+`${VAR}` expansion in URIs — to keep production passwords out of plaintext — is noted as a v2 candidate.
