@@ -1,8 +1,8 @@
 # dbq — Knowledge Base
 
-**Stack**: TypeScript run directly by Node 26 (native type stripping, no build step) + Commander + mysql2 + pg + mongodb + acorn + Vitest + pnpm
+**Stack**: TypeScript run directly by Node 26 (native type stripping, no build step) + Commander + mysql2 + pg + mongodb + redis + acorn + Vitest + pnpm
 
-A read-only query runner for MySQL, PostgreSQL and MongoDB. The primary consumer is an **AI agent**, not a person — that inverts the usual CLI priorities and explains nearly every design decision here.
+A read-only query runner for MySQL, PostgreSQL, MongoDB and bounded Redis inspection. The primary consumer is an **AI agent**, not a person — that inverts the usual CLI priorities and explains nearly every design decision here.
 
 ## Quick Start
 
@@ -36,14 +36,16 @@ src/
     resolveProject.ts     XDG root, listing, project detection from cwd
     loadEnv.ts            reads/validates the env file, resolves --db and --database
   guards/
-    types.ts              SqlPlan, MongoPlan — the guard → engine contract
-    sql.ts                validates a MySQL string     (pure, zero I/O)
+    types.ts              query plans — the guard → engine contract
+    sql.ts                validates a MySQL string      (pure, zero I/O)
     postgres.ts           validates a PostgreSQL string (pure, zero I/O)
     mongo.ts              parses an AST via acorn       (pure, zero I/O)
+    redis.ts              parses a JSON command array   (pure, zero I/O)
   engines/
     mysql.ts              runs what the guard approved; truncates while streaming
     postgres.ts           same, inside a BEGIN READ ONLY transaction
     mongo.ts              same; applies limit(n+1) and maxTimeMS
+    redis.ts              runs whitelisted bounded reads; caps scans, ranges and GET
   schema/
     mysql.ts              SHOW TABLES / DESCRIBE
     postgres.ts           information_schema, results qualified as schema.table
@@ -61,7 +63,7 @@ The engine receives an already-validated structure — a collection, an operatio
 
 That is what makes read-only structural rather than hopeful, and it is why the guards are pure functions: the suite protecting the invariant runs with no database at all.
 
-**When working here:** if you find yourself passing a raw string into `engines/`, stop. The right type is `SqlPlan` or `MongoPlan`.
+**When working here:** if you find yourself passing a raw string into `engines/`, stop. Pass the engine's validated query plan.
 
 ### Flow
 
@@ -137,6 +139,7 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 | What | Where | Don't forget |
 |---|---|---|
 | New Mongo read operation | `MONGO_READ_OPS` in `guards/types.ts` + a `case` in `engines/mongo.ts` | a test in the passing corpus |
+| New Redis read command | `REDIS_READ_COMMANDS` + command-specific validation + `engines/redis.ts` | prove its response is bounded; add passing and adversarial tests |
 | New forbidden operator | `FORBIDDEN_KEYS` in `guards/types.ts` | an adversarial test, including nested |
 | New forbidden SQL fragment | `FORBIDDEN_FRAGMENTS` in `guards/sql.ts` | an adversarial test |
 | New subcommand | `src/cli.ts` + the `SUBCOMMANDS` array | that array feeds the subcommand-as-query refusal |
@@ -162,7 +165,7 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 - PostgreSQL lexes `"` as an identifier quote and supports `$$` dollar quoting, so it needs its own normaliser. Reusing the MySQL one produces both false positives and false negatives.
 - `--explain` must never add `ANALYZE` on PostgreSQL: `EXPLAIN ANALYZE` executes the statement.
 - Engines fetch `n + 1` rows on purpose — that is how `truncated` is detected without an extra `COUNT`.
-- The URI path **never** determines the database. Only the `database` field and the `-D` flag do.
+- SQL/MongoDB ignore the URI path when resolving an explicit database; Redis is the exception, and its logical database belongs in the URI path.
 
 ## Documentation
 

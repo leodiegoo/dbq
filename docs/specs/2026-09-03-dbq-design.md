@@ -309,6 +309,30 @@ result before the ceiling could be applied, which is precisely the volume
 problem the ceiling exists to prevent. Utility statements (`SHOW`, `EXPLAIN`)
 are not cursorable and return few rows, so they are buffered.
 
+## Revision of 2026-09-22 — bounded Redis inspection
+
+Redis support was added after the original rejection, but not as a generic
+command runner. The rejected design remains rejected: Redis still has no shared
+query language, schema, or row model, and read-only alone does not make commands
+such as `KEYS *` operationally safe.
+
+The supported interface is a JSON array (`["GET", "key"]`). A pure guard parses
+it before any connection opens and emits a `RedisPlan`; the engine never receives
+raw input. The command allowlist is deliberately narrow: scalar metadata,
+bounded ranges, and cursor-based scans. Writes, `KEYS`, scripts/functions,
+`SORT`, transactions, pub/sub, administration, and unknown commands are refused.
+
+`--limit` caps range and scan items and may not be disabled for Redis. A scan
+executes one page and returns its next cursor instead of walking the whole keyspace.
+`GET` is executed through `STRLEN` plus `GETRANGE`, with a separate `--max-bytes` ceiling,
+so one cache blob cannot consume an agent's context. Redis does not participate
+in `schema`, `databases`, or `--explain`; those paths fail before connecting.
+The logical database number belongs in the Redis URI path.
+
+The operational second layer is a Redis ACL user limited to the same commands.
+The guard prevents accidental misuse; server permissions protect against a bug
+in the guard.
+
 ## Recorded decisions
 
 | Decision | Rejected alternative | Reason |
@@ -322,4 +346,4 @@ are not cursorable and return few rows, so they are buffered.
 | No Clack, no ora | An interactive CLI | A prompt hangs with no TTY; a spinner contaminates stdout |
 | A dedicated PostgreSQL guard | Reusing the MySQL guard | Data-modifying CTEs and a different lexer; reuse would have been a security bug |
 | PostgreSQL wrapped in BEGIN READ ONLY | Trusting the guard alone | The server enforces it, so a parser hole is not a guarantee hole |
-| Redis rejected | A command whitelist engine | No query language, no schema, no rows; its hazard is blocking, not writing |
+| Generic Redis engine rejected; bounded inspector added later | Arbitrary read-command execution | Redis needs command-specific limits; read-only does not prevent blocking operations |

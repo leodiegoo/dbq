@@ -4,6 +4,7 @@ import { DbqError, scrubUri } from '../errors.ts';
 import { listEnvs } from './resolveProject.ts';
 import {
   DEFAULT_LIMIT,
+  DEFAULT_MAX_BYTES,
   DEFAULT_TIMEOUT_MS,
   type Connection,
   type EnvConfig,
@@ -24,6 +25,7 @@ const validateConnection = (name: string, raw: unknown): Connection => {
   if (typeof uri !== 'string' || uri.length === 0) usage(`connection '${name}' needs a 'uri'`);
 
   if (raw.engine === 'mysql') return { engine: 'mysql', uri: uri as string };
+  if (raw.engine === 'redis') return { engine: 'redis', uri: uri as string };
 
   if (raw.engine === 'postgres') {
     const database = raw.database;
@@ -49,7 +51,7 @@ const validateConnection = (name: string, raw: unknown): Connection => {
 
   return usage(
     `engine '${String(raw.engine)}' is not supported on connection '${name}'`,
-    "use 'mysql', 'postgres' or 'mongodb'",
+    "use 'mysql', 'postgres', 'mongodb' or 'redis'",
   );
 };
 
@@ -60,6 +62,7 @@ export const loadEnv = (opts: {
   db?: string;
   database?: string;
   limit?: number;
+  maxBytes?: number;
   timeoutMs?: number;
 }): ResolvedConnection => {
   const file = join(opts.root, opts.project, `${opts.env}.json`);
@@ -108,13 +111,19 @@ export const loadEnv = (opts: {
   }
 
   const connection = validateConnection(selected as string, rawConnection);
+  if (connection.engine === 'redis' && opts.database !== undefined) {
+    usage('--database is not supported for Redis', 'put the logical database number in the Redis URI path');
+  }
   const fileDefaults = config.defaults ?? {};
 
   return {
     name: selected as string,
     connection,
-    database: opts.database ?? (connection.engine === 'mysql' ? undefined : connection.database),
+    database:
+      opts.database ??
+      (connection.engine === 'postgres' || connection.engine === 'mongodb' ? connection.database : undefined),
     limit: opts.limit ?? fileDefaults.limit ?? DEFAULT_LIMIT,
+    maxBytes: opts.maxBytes ?? fileDefaults.maxBytes ?? DEFAULT_MAX_BYTES,
     timeoutMs: opts.timeoutMs ?? fileDefaults.timeoutMs ?? DEFAULT_TIMEOUT_MS,
   };
 };

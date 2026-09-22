@@ -5,9 +5,10 @@ export type Envelope = {
   project: string;
   env: string;
   db: string;
-  engine: 'mysql' | 'postgres' | 'mongodb';
+  engine: 'mysql' | 'postgres' | 'mongodb' | 'redis';
   rowCount: number;
   truncated: boolean;
+  cursor?: string;
   elapsedMs: number;
   rows: unknown[];
 };
@@ -22,7 +23,9 @@ export const applyLimit = <T>(rows: T[], limit: number): { rows: T[]; truncated:
  * RegExp, Buffer, BigInt. Without this the consumer gets `{}` where an id
  * should be — worse than an error, because it looks like valid data.
  */
-const replacer = function (this: unknown, key: string, value: unknown): unknown {
+type JsonReplacerValue = object | string | number | boolean | null | undefined;
+
+const replacer = function (this: unknown, key: string, value: unknown): JsonReplacerValue {
   // JSON.stringify calls toJSON before the replacer, so a Date arrives as a
   // string: the raw value has to come from the parent object.
   const original = (this as Record<string, unknown>)[key];
@@ -30,7 +33,9 @@ const replacer = function (this: unknown, key: string, value: unknown): unknown 
   if (original instanceof RegExp) return original.toString();
   if (typeof original === 'bigint') return original.toString();
   if (original instanceof Uint8Array) return Buffer.from(original).toString('base64');
-  return value;
+  if (value === null || value === undefined || typeof value === 'object') return value;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  return String(value);
 };
 
 export const formatJson = (envelope: Envelope): string => JSON.stringify(envelope, replacer, 2);

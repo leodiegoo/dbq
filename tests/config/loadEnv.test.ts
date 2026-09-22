@@ -54,6 +54,7 @@ describe('loadEnv', () => {
     const root = writeEnv(mysqlEnv);
     const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
     expect(resolved.limit).toBe(500);
+    expect(resolved.maxBytes).toBe(1_000_000);
     expect(resolved.timeoutMs).toBe(30_000);
   });
 
@@ -74,6 +75,14 @@ describe('loadEnv', () => {
   it('should be accepting limit zero as an explicit uncapped request', () => {
     const root = writeEnv(bothEnv);
     expect(loadEnv({ root, project: 'proj', env: 'dev', db: 'mysql', limit: 0 }).limit).toBe(0);
+  });
+
+  it('should be applying the maxBytes flag over the file default', () => {
+    const root = writeEnv({
+      connections: mysqlEnv.connections,
+      defaults: { maxBytes: 2000 },
+    });
+    expect(loadEnv({ root, project: 'proj', env: 'dev', maxBytes: 1000 }).maxBytes).toBe(1000);
   });
 
   it('should be requiring --db when the env declares more than one connection', () => {
@@ -113,8 +122,20 @@ describe('loadEnv', () => {
   });
 
   it('should be refusing an unsupported engine', () => {
-    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://h:6379' } } });
+    const root = writeEnv({ connections: { db: { engine: 'oracle', uri: 'oracle://h:1521' } } });
     expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev' }))).toBe('USAGE');
+  });
+
+  it('should be accepting a redis connection', () => {
+    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } } });
+    const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
+    expect(resolved.connection).toEqual({ engine: 'redis', uri: 'redis://u:p@h:6379/3' });
+    expect(resolved.database).toBeUndefined();
+  });
+
+  it('should be refusing --database for redis because the logical database belongs in the URI', () => {
+    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } } });
+    expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev', database: '1' }))).toBe('USAGE');
   });
 
   it('should be accepting a postgres connection', () => {

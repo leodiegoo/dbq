@@ -1,7 +1,7 @@
 {
   "name": "dbq",
   "version": "0.1.0",
-  "description": "Executor read-only de queries SQL e MongoDB",
+  "description": "Read-only query runner for SQL, MongoDB and Redis",
   "type": "module",
   "bin": {
     "dbq": "./src/cli.ts"
@@ -21,7 +21,8 @@
     "mysql2": "^3.12.0",
     "pg": "^8.23.0",
     "pg-cursor": "^2.22.0",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "redis": "^6.2.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

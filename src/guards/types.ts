@@ -29,6 +29,35 @@ export type MongoModifiers = {
 
 export type SqlPlan = { kind: 'sql'; statement: string };
 
+export const REDIS_READ_COMMANDS = [
+  'GET',
+  'EXISTS',
+  'TYPE',
+  'TTL',
+  'PTTL',
+  'STRLEN',
+  'HLEN',
+  'HEXISTS',
+  'LLEN',
+  'SCARD',
+  'ZCARD',
+  'ZSCORE',
+  'LRANGE',
+  'ZRANGE',
+  'SCAN',
+  'HSCAN',
+  'SSCAN',
+  'ZSCAN',
+] as const;
+
+export type RedisReadCommand = (typeof REDIS_READ_COMMANDS)[number];
+
+export type RedisPlan = {
+  kind: 'redis';
+  command: RedisReadCommand;
+  args: string[];
+};
+
 export type MongoPlan = {
   kind: 'mongo';
   collection: string;
@@ -37,4 +66,4 @@ export type MongoPlan = {
   modifiers: MongoModifiers;
 };
 
-export type QueryPlan = SqlPlan | MongoPlan;
+export type QueryPlan = SqlPlan | MongoPlan | RedisPlan;

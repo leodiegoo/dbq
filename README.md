@@ -1,6 +1,6 @@
 # dbq
 
-A **read-only** query runner for MySQL, PostgreSQL and MongoDB, configured per environment and callable from any directory.
+A **read-only** query runner for MySQL, PostgreSQL, MongoDB and Redis, configured per environment and callable from any directory.
 
 Built to be driven by an AI agent: output is parseable JSON, errors carry an actionable hint, exit codes distinguish "rewrite the query" from "wrong connection" — and **no code path can write to the database**.
 
@@ -52,7 +52,7 @@ Not a single network packet left the machine for that command.
 ## Requirements
 
 - **Node >= 26.** The binary points straight at a `.ts` file and Node strips the types at runtime — no build step, no `dist/`.
-- MySQL, PostgreSQL and/or MongoDB reachable over the network (VPN, if that applies).
+- MySQL, PostgreSQL, MongoDB and/or Redis reachable over the network (VPN, if that applies).
 
 ---
 
@@ -114,9 +114,13 @@ cat > ~/.config/dbq/my-project/dev.json <<'EOF'
       "engine": "mongodb",
       "uri": "mongodb://reader:password@10.0.0.2:27017",
       "database": "mydb"
+    },
+    "cache": {
+      "engine": "redis",
+      "uri": "redis://reader:password@10.0.0.3:6379/0"
     }
   },
-  "defaults": { "limit": 500, "timeoutMs": 30000 }
+  "defaults": { "limit": 500, "maxBytes": 1000000, "timeoutMs": 30000 }
 }
 EOF
 
@@ -135,10 +139,11 @@ hint: run: chmod 600 /Users/…/dev.json
 | Field | Required | What it is |
 |---|---|---|
 | `connections` | yes | map of named connections |
-| `connections.<name>.engine` | yes | `"mysql"`, `"postgres"` or `"mongodb"` |
-| `connections.<name>.uri` | yes | full connection URI |
-| `connections.<name>.database` | no | **default** database for this connection |
-| `defaults.limit` | no | row ceiling (built-in: `500`) |
+| `connections.<name>.engine` | yes | `"mysql"`, `"postgres"`, `"mongodb"` or `"redis"` |
+| `connections.<name>.uri` | yes | full connection URI; Redis logical DB belongs in its URI path |
+| `connections.<name>.database` | no | **default** database for SQL/MongoDB connections |
+| `defaults.limit` | no | row/item ceiling (built-in: `500`) |
+| `defaults.maxBytes` | no | Redis string-value ceiling (built-in: `1000000`) |
 | `defaults.timeoutMs` | no | statement timeout (built-in: `30000`) |
 
 **Precedence:** invocation flag > file `defaults` > built-in default.
@@ -209,7 +214,8 @@ dbq [options] <query>
 | `-e, --env <name>` | — | **required** |
 | `-d, --db <connection>` | the env's only one | required when there is more than one |
 | `-D, --database <name>` | the `database` field | database to query, per invocation |
-| `-l, --limit <n>` | `500` | row ceiling; `0` disables it |
+| `-l, --limit <n>` | `500` | row/item ceiling; `0` disables it except for Redis |
+| `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables it |
 | `-t, --timeout <ms>` | `30000` | statement timeout |
 | `-f, --format <json\|table>` | `json` | output format |
 | `-x, --explain` | off | run `EXPLAIN` / `.explain()` instead |
@@ -234,6 +240,21 @@ dbq -e dev -d mongo 'db.companies.find({ active: true })'
 dbq -e dev -d mongo 'db.companies.find({}, { name: 1 }).sort({ name: 1 }).limit(20)'
 dbq -e dev -d mongo 'db.orders.aggregate([{ $match: { paid: true } }, { $group: { _id: "$userId", n: { $sum: 1 } } }])'
 ```
+
+### Redis
+
+Redis commands are JSON arrays, parsed and validated before connecting:
+
+```bash
+dbq -e dev -d cache '["GET", "user:42"]'
+dbq -e dev -d cache '["TTL", "user:42"]'
+dbq -e dev -d cache '["SCAN", "0", "MATCH", "user:*", "COUNT", 50]'
+dbq -e dev -d cache '["HSCAN", "user:42", "0"]'
+```
+
+The logical database number belongs in the URI (`redis://…/3`); `--database`,
+`--explain`, `schema`, and `databases` are not supported for Redis. Scan commands
+execute one bounded page and return its next `cursor` in the JSON envelope.
 
 ### Query from stdin
 
@@ -346,6 +367,19 @@ server-side for the same reason.
 Note that `$$ … $$` dollar quoting is string syntax, not execution:
 `SELECT $$ DROP TABLE t $$` returns the text and is accepted, exactly like
 `SELECT 'DROP TABLE t'`. Execution enters through `DO`, which is refused.
+
+### Redis
+
+Redis accepts only a JSON array beginning with one of these commands:
+
+`GET`, `EXISTS`, `TYPE`, `TTL`, `PTTL`, `STRLEN`, `HLEN`, `HEXISTS`, `LLEN`,
+`SCARD`, `ZCARD`, `ZSCORE`, `LRANGE`, `ZRANGE`, `SCAN`, `HSCAN`, `SSCAN`, `ZSCAN`.
+
+Everything else is refused before connecting. In particular, `KEYS`, scripts,
+functions, transactions, pub/sub, administration, `SORT`, and all write commands
+are unavailable. Range and scan results are capped by `--limit`; `GET` is fetched
+with `GETRANGE` under `--max-bytes`. Use a Redis ACL user restricted to the same
+command surface as defence in depth.
 
 ### MongoDB
 
@@ -589,12 +623,12 @@ Documents: [AGENTS.md](AGENTS.md) · [design](docs/specs/2026-09-03-dbq-design.m
 
 ## Scope
 
-**In:** MySQL, PostgreSQL, MongoDB, read queries, schema discovery, per-project and per-environment configuration.
+**In:** MySQL, PostgreSQL, MongoDB, bounded Redis inspection, read queries, schema discovery for database engines, per-project and per-environment configuration.
 
-**Out:** Redis, OpenSearch, writes of any kind, interactive prompts.
+**Out:** arbitrary Redis commands, OpenSearch, writes of any kind, interactive prompts.
 
-Redis was considered and deliberately left out: it has no query language, no
-schema and no rows, so `schema` and the row ceiling have no meaning there — and
-its real hazard is not writing but `KEYS *` blocking a single-threaded server.
+Redis support is intentionally narrower than the database engines: it has no
+`schema`, `databases`, or `--explain` flow, and blocking or unbounded command
+surfaces such as `KEYS` are refused.
 
 `${VAR}` expansion in URIs — to keep production passwords out of plaintext — is noted as a v2 candidate.

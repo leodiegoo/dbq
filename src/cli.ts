@@ -6,9 +6,11 @@ import { loadEnv } from './config/loadEnv.ts';
 import { guardSql } from './guards/sql.ts';
 import { guardPostgres } from './guards/postgres.ts';
 import { guardMongo } from './guards/mongo.ts';
+import { guardRedis } from './guards/redis.ts';
 import { executeMysql } from './engines/mysql.ts';
 import { executeMongo } from './engines/mongo.ts';
 import { executePostgres } from './engines/postgres.ts';
+import { executeRedis } from './engines/redis.ts';
 import { mysqlSchema } from './schema/mysql.ts';
 import { mongoSchema } from './schema/mongo.ts';
 import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
@@ -24,6 +26,7 @@ type CommonOptions = {
   db?: string;
   database?: string;
   limit?: number;
+  maxBytes?: number;
   timeout?: number;
   format: Format;
   explain?: boolean;
@@ -56,6 +59,7 @@ const resolve = (opts: CommonOptions) => {
     db: opts.db,
     database: opts.database,
     limit: opts.limit,
+    maxBytes: opts.maxBytes,
     timeoutMs: opts.timeout,
   });
   return { project, resolved };
@@ -92,7 +96,7 @@ const rejectSubcommandAsQuery = (raw: string): void => {
 
 const program = new Command();
 
-program.name('dbq').description('Read-only query runner for SQL and MongoDB').version('0.1.0');
+program.name('dbq').description('Read-only query runner for SQL, MongoDB and Redis').version('0.1.0');
 
 const withCommonOptions = (command: Command): Command =>
   command
@@ -110,8 +114,9 @@ withCommonOptions(
   program
     .command('run', { isDefault: true })
     .description('run a read query (default command)')
-    .argument('<query>', "SQL query, a db.<collection>.<op>(...) expression, or '-' to read stdin")
+    .argument('<query>', "SQL, db.<collection>.<op>(...), a Redis JSON command, or '-' to read stdin")
     .option('-l, --limit <n>', 'ceiling on returned rows; 0 disables it', integer)
+    .option('--max-bytes <n>', 'Redis string-value ceiling', integer)
     .option('-x, --explain', 'run EXPLAIN / .explain() instead of the query'),
 ).action(async (query: string, opts: CommonOptions) => {
   try {
@@ -119,21 +124,33 @@ withCommonOptions(
     rejectSubcommandAsQuery(raw);
     const { project, resolved } = resolve(opts);
     const { connection } = resolved;
+    if (connection.engine === 'redis' && opts.explain === true) {
+      throw new DbqError('USAGE', '--explain is not supported for Redis');
+    }
+    if (connection.engine === 'redis' && resolved.limit === 0) {
+      throw new DbqError('USAGE', '--limit 0 is not supported for Redis', 'use a positive result ceiling');
+    }
     const started = Date.now();
 
     const engineOptions = {
       limit: resolved.limit,
+      maxBytes: resolved.maxBytes,
       timeoutMs: resolved.timeoutMs,
       explain: opts.explain === true,
       database: resolved.database,
     };
 
-    const { rows, truncated } =
-      connection.engine === 'mysql'
-        ? await executeMysql(connection, guardSql(raw), engineOptions)
-        : connection.engine === 'postgres'
-          ? await executePostgres(connection, guardPostgres(raw), engineOptions)
-          : await executeMongo(connection, guardMongo(raw), engineOptions);
+    let result;
+    if (connection.engine === 'mysql') result = await executeMysql(connection, guardSql(raw), engineOptions);
+    else if (connection.engine === 'postgres') {
+      result = await executePostgres(connection, guardPostgres(raw), engineOptions);
+    } else if (connection.engine === 'mongodb') {
+      result = await executeMongo(connection, guardMongo(raw), engineOptions);
+    } else {
+      result = await executeRedis(connection, guardRedis(raw), engineOptions);
+    }
+    const { rows, truncated } = result;
+    const cursor = connection.engine === 'redis' ? (result as { cursor?: string }).cursor : undefined;
 
     emit(
       {
@@ -143,6 +160,7 @@ withCommonOptions(
         engine: connection.engine,
         rowCount: rows.length,
         truncated,
+        ...(cursor === undefined ? {} : { cursor }),
         elapsedMs: Date.now() - started,
         rows,
       },
@@ -186,13 +204,15 @@ withCommonOptions(
     const { connection } = resolved;
     const started = Date.now();
 
+    if (connection.engine === 'redis') {
+      throw new DbqError('USAGE', 'schema is not supported for Redis', 'use SCAN with a narrow MATCH pattern');
+    }
+
     const schemaOptions = { timeoutMs: resolved.timeoutMs, database: resolved.database };
-    const rows =
-      connection.engine === 'mysql'
-        ? await mysqlSchema(connection, target, schemaOptions)
-        : connection.engine === 'postgres'
-          ? await postgresSchema(connection, target, schemaOptions)
-          : await mongoSchema(connection, target, schemaOptions);
+    let rows;
+    if (connection.engine === 'mysql') rows = await mysqlSchema(connection, target, schemaOptions);
+    else if (connection.engine === 'postgres') rows = await postgresSchema(connection, target, schemaOptions);
+    else rows = await mongoSchema(connection, target, schemaOptions);
 
     emit(
       {
@@ -230,6 +250,8 @@ withCommonOptions(
       rows = result.rows;
     } else if (connection.engine === 'postgres') {
       rows = await postgresDatabases(connection, { timeoutMs: resolved.timeoutMs });
+    } else if (connection.engine === 'redis') {
+      throw new DbqError('USAGE', 'databases is not supported for Redis', 'put the logical database number in the Redis URI path');
     } else {
       const client = new MongoClient(connection.uri, {
         serverSelectionTimeoutMS: resolved.timeoutMs,
