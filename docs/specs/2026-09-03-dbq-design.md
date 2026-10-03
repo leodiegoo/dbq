@@ -357,3 +357,35 @@ Structured errors now go to stdout in the selected format, with `code`, `message
 Per-subcommand help now includes usage examples and built-in numeric defaults. The lightweight `--version` fast path has not been added; it does not affect output format or query safety.
 
 The AXI review did not add automatic field removal, a second query for total counts, session hooks, a no-argument database connection, or generic next-step suggestions. Field removal can hide requested query data; exact totals can add unbounded work; and hooks or implicit environment selection need separate opt-in and safety contracts. The audit and fixture-only output measurements are recorded in `docs/axi-auditoria.md`.
+
+## Revision of 2026-10-03 — single structured format and explicit limits
+
+This revision supersedes the earlier output-format choices in the CLI surface,
+output, and error sections above, including the agent-oriented output revision
+from this date. Those sections preserve the original design history; this is
+the current contract.
+
+TOON is the only structured success and error format. `--format table` remains
+available for successful human-readable output; errors always use TOON on
+stdout, even when table output was requested. The `--json` option and
+`--format json` value are removed from `run`, `envs`, `schema`, and `databases`.
+Invoking either form is a `USAGE` error with exit code 2, emitted as TOON before
+configuration resolution or a connection attempt. Environment configuration
+files continue to use JSON.
+
+Consumers that parsed JSON output must remove those format requests and decode
+TOON, for example with `decode` from `@toon-format/toon`. They should branch on
+the envelope's `rows` or an error's `code`; process exit codes remain the stable
+status contract. `--format table` is for people and is not a machine-readable
+contract.
+
+Structured output remains bounded by default. Text fields are capped at 1,000
+Unicode code points; `--full` bypasses that text cap only. `--limit 0` disables
+the SQL and MongoDB row ceiling, while Redis refuses it to keep its scan and
+range bounds. `--max-bytes 0` disables the Redis GET byte ceiling. These escape
+hatches are documented beside the options. The validation-before-connect
+order, read-only guards, and Redis bounded scan behavior remain unchanged.
+
+The AXI audit at `docs/axi-auditoria.md` records the decision and evidence for
+each of the ten principles, including the contract or safety reason behind
+each adaptation.

@@ -16,9 +16,9 @@ import { mongoSchema } from './schema/mongo.ts';
 import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
 import { listDatabases } from './engines/mongo.ts';
 import { MongoClient } from 'mongodb';
-import { formatError, formatJson, formatJsonValue, formatTable, formatToon, formatToonValue, truncateContent, type Envelope } from './output/envelope.ts';
+import { formatError, formatTable, formatToon, formatToonValue, formatValueTable, truncateContent, type Envelope } from './output/envelope.ts';
 
-type Format = 'json' | 'table' | 'toon';
+type Format = 'table' | 'toon';
 
 type CommonOptions = {
   project?: string;
@@ -29,7 +29,6 @@ type CommonOptions = {
   maxBytes?: number;
   timeout?: number;
   format: Format;
-  json?: boolean;
   full?: boolean;
   explain?: boolean;
 };
@@ -41,8 +40,8 @@ const integer = (raw: string): number => {
 };
 
 const format = (raw: string): Format => {
-  if (raw !== 'json' && raw !== 'table' && raw !== 'toon') {
-    throw new InvalidArgumentError("expected 'toon', 'json' or 'table'");
+  if (raw !== 'table' && raw !== 'toon') {
+    throw new InvalidArgumentError("expected 'toon' or 'table'");
   }
   return raw;
 };
@@ -72,13 +71,13 @@ const resolve = (opts: CommonOptions) => {
 const emit = (envelope: Envelope, output: Format, full = false): void => {
   const color = output === 'table' && process.stdout.isTTY === true;
   const limited = truncateContent(envelope, full).value as Envelope;
-  const rendered = output === 'json' ? formatJson(limited) : output === 'table' ? formatTable(limited, color) : formatToon(limited);
+  const rendered = output === 'table' ? formatTable(limited, color) : formatToon(limited);
   process.stdout.write(`${rendered}\n`);
 };
 
-const fail = (err: unknown, output: Format): never => {
+const fail = (err: unknown): never => {
   const dbqError = toDbqError(err);
-  process.stdout.write(`${formatError(dbqError, output)}\n`);
+  process.stdout.write(`${formatError(dbqError)}\n`);
   process.exit(dbqError.exitCode);
 };
 
@@ -107,12 +106,7 @@ program.name('dbq').description('Read-only query runner for SQL, MongoDB and Red
 const handleCliError = (err: { code: string; message: string; exitCode: number }): never => {
   if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
   const usageError = new DbqError('USAGE', err.message, 'run `dbq --help` for valid commands and flags');
-  const args = process.argv.slice(2);
-  const formatArgIndex = args.indexOf('--format');
-  const formatValue = args.find((arg) => arg.startsWith('--format='))?.slice('--format='.length)
-    ?? (formatArgIndex < 0 ? undefined : args[formatArgIndex + 1]);
-  const output: Format = args.includes('--json') ? 'json' : formatValue === 'table' ? 'table' : 'toon';
-  process.stdout.write(`${formatError(usageError, output)}\n`);
+  process.stdout.write(`${formatError(usageError)}\n`);
   process.exit(2);
 };
 
@@ -126,9 +120,8 @@ const withCommonOptions = (command: Command): Command =>
     .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
     .option('-D, --database <name>', 'database to query; overrides the env file')
     .option('-t, --timeout <ms>', 'statement timeout (default: 30000)', integer)
-    .option('-f, --format <format>', 'toon, json or table', format, 'toon')
-    .option('--full', 'show complete text fields instead of truncating them')
-    .option('--json', 'emit JSON for compatibility');
+    .option('-f, --format <format>', 'toon or table', format, 'toon')
+    .option('--full', 'bypass text-field truncation; row and Redis byte limits still apply');
 
 // Default subcommand: `dbq "SELECT 1"` lands here, while `dbq envs` and
 // `dbq schema` are still routed by name. The common options must live on the
@@ -138,8 +131,8 @@ withCommonOptions(
     .command('run', { isDefault: true })
     .description('run a read query (default command)')
     .argument('<query>', "SQL, db.<collection>.<op>(...), a Redis JSON command, or '-' to read stdin")
-    .option('-l, --limit <n>', 'ceiling on returned rows; 0 disables it (default: 500)', integer)
-    .option('--max-bytes <n>', 'Redis string-value ceiling (default: 1000000)', integer)
+    .option('-l, --limit <n>', 'row/item ceiling; 0 disables it for SQL and MongoDB (default: 500)', integer)
+    .option('--max-bytes <n>', 'Redis GET byte ceiling; 0 disables it (default: 1000000)', integer)
     .option('-x, --explain', 'run EXPLAIN / .explain() instead of the query'),
 ).addHelpText('after', `
 Examples:
@@ -192,39 +185,34 @@ Examples:
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.json === true ? 'json' : opts.format,
+      opts.format,
       opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.json === true ? 'json' : opts.format);
+    fail(err);
   }
 });
 
 configureErrors(program
   .command('envs')
   .description('list configured projects and environments')
-  .option('-f, --format <format>', 'toon, json or table', format, 'toon')
-  .option('--json', 'emit JSON for compatibility')
+  .option('-f, --format <format>', 'toon or table', format, 'toon')
   .addHelpText('after', `
 Examples:
   dbq envs
-  dbq envs --json
+  dbq envs --format table
 `))
-  .action((opts: { format: Format; json?: boolean }) => {
+  .action((opts: { format: Format }) => {
     try {
       const root = configRoot();
       const rows = listProjects(root).flatMap((project) =>
         listEnvs(root, project).map((env) => ({ project, env })),
       );
 
-      if (opts.json === true || opts.format === 'json') {
-        process.stdout.write(`${formatJsonValue({ root, rows })}\n`);
-        return;
-      }
-
-      process.stdout.write(`${formatToonValue({ root, rows })}\n`);
+      const value = { root, rows };
+      process.stdout.write(`${opts.format === 'table' ? formatValueTable(value, process.stdout.isTTY === true) : formatToonValue(value)}\n`);
     } catch (err) {
-      fail(err, opts.json === true ? 'json' : opts.format);
+      fail(err);
     }
   });
 
@@ -264,11 +252,11 @@ Examples:
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.json === true ? 'json' : opts.format,
+      opts.format,
       opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.json === true ? 'json' : opts.format);
+    fail(err);
   }
 });
 
@@ -320,11 +308,11 @@ Examples:
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.json === true ? 'json' : opts.format,
+      opts.format,
       opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.json === true ? 'json' : opts.format);
+    fail(err);
   }
 });
 
@@ -334,6 +322,6 @@ configureErrors(program);
 try {
   await program.parseAsync();
 } catch (err) {
-  if (err instanceof DbqError) fail(err, 'toon');
+  if (err instanceof DbqError) fail(err);
   throw err;
 }

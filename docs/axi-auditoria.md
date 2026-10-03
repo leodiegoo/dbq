@@ -4,22 +4,22 @@ Measurements use fixed local fixtures; none opens a database connection. Paths a
 
 ## Principle-by-principle audit
 
-| # | Principle | Current behavior and evidence | Gap | Decision |
+| # | Principle | Current behavior and evidence | Adaptation or gap | Decision |
 |---:|---|---|---|---|
-| 1 | Token-efficient output | `src/cli.ts:72-76` serializes envelopes at the output boundary. A local `dbq envs` run emitted `rows[10]{project,env}:`; the empty-state CLI test verifies `rows: []`. | The previous default repeated JSON field names for every row. | **Applied:** TOON default, with `--json` and `--format json` compatibility. |
-| 2 | Minimal default schemas | Mongo applies a requested projection at `src/engines/mongo.ts:59-63`; the TOON formatter outputs fixture rows as `rows[2]{id,name}:`. | Automatically dropping fields could remove values the query explicitly asked for. A generic `--fields` policy needs a contract for schema discovery and query results. | **Skipped:** keep query results faithful; consider opt-in projection after defining per-engine semantics. |
-| 3 | Content truncation | `src/output/envelope.ts` truncates text leaves at 1,000 Unicode code points and marks the original size; `src/cli.ts:124-126` exposes `--full`. The output test checks both the marker and full-text escape hatch. | Before this change, row limits and Redis `--max-bytes` bounded item counts and values, but arbitrary returned text fields were not capped. | **Applied:** text cap is independent of the existing row ceiling. |
-| 4 | Pre-computed aggregates | Envelopes include `rowCount`, `truncated`, and, for Redis scans, `cursor` (`src/output/envelope.ts:5-15`, `src/engines/redis.ts:77-89`). The fixed fixtures include those output fields. | `rowCount` is the returned page size, not a total count. Fetching an exact total would require an extra potentially expensive query and conflict with bounded reads. | **Partially met:** retain cheap page metadata; do not run a second count query. |
-| 5 | Definitive empty states | `src/output/envelope.ts:89-96` renders `0 rows`; JSON/TOON envelopes retain `rows: []`. `tests/cli/output.test.ts` observes the empty CLI output. | No meaningful gap for query output. | **Already met:** retain explicit empty output in every structured format. |
-| 6 | Structured errors and exit codes | `src/cli.ts:79-83,107-115` emits `code`, `message`, and optional `hint` to stdout. `dbq run --env dev --unknown` returned structured `USAGE`, empty stderr, and exit 2 in the CLI test. | This command has no mutations, so mutation idempotency does not apply. | **Applied where relevant:** structured stdout errors, no prompts, loud unknown-flag failure. |
-| 7 | Ambient context | `package.json:6-10` defines query and test commands; the CLI has no session hooks or installable skill. Top-level help lists `run`, `envs`, `schema`, and `databases`. | Session hooks would require explicit setup, path repair, and support for multiple agent harnesses. | **Skipped:** implement only as a separate, opt-in integration after its setup and lifecycle contract is designed. |
-| 8 | Content first | `src/cli.ts:117-126` requires `--env`. Running `dbq` with no arguments returns a structured usage error and exits 2 without opening a connection. | Showing live database content with no arguments would require choosing an environment, potentially production. | **Skipped:** preserve explicit environment selection and never open a connection from an ambiguous invocation. |
-| 9 | Contextual disclosure | Errors carry corrective hints (`src/cli.ts:79-83`); successful envelopes contain rows and metadata but no suggested commands (`src/cli.ts:72-76`). The empty result test outputs `rows: []`. | A suggested command needs the correct project, environment, connection, and target. Generic suggestions could be misleading and add tokens to complete results. | **Skipped:** add only when the next action can be derived safely from the current command and result. |
-| 10 | Consistent help | `src/cli.ts:105` enables Commander help and version output. `dbq run --help` lists all options, defaults, and three examples; the other subcommands list two each. | The version path loads the full module graph. | **Applied:** concise command references include examples and defaults. A leaf-module version fast path remains follow-up work. |
+| 1 | Token-efficient output | `src/cli.ts` encodes structured success and error output as TOON. The CLI tests observe TOON output and refusal of both JSON format requests. | Human-readable tables remain available on successful commands. | **Applied:** TOON is the only structured output format. |
+| 2 | Minimal default schemas | Mongo accepts explicit projections (`src/engines/mongo.ts`); tests and fixtures exercise compact TOON row encoding. | Automatic field removal could hide data requested by the query. A generic field policy needs per-engine semantics. | **Adapted:** preserve query results; use explicit query projection where supported. |
+| 3 | Content truncation | `src/output/envelope.ts` caps text leaves at 1,000 Unicode code points, includes the original size, and names `--full`. `tests/output/envelope.test.ts` checks the cap and full-text path. | `--full` deliberately bypasses the text cap; row and Redis byte ceilings remain separate. | **Applied:** bounded text by default with a narrow, explicit escape hatch. |
+| 4 | Pre-computed aggregates | Envelopes include `rowCount`, `truncated`, `elapsedMs`, and the Redis scan cursor (`src/engines/redis.ts`). | `rowCount` counts returned rows, not all matches. An exact count would add a potentially expensive query. | **Adapted:** report cheap page metadata and avoid a second count query. |
+| 5 | Definitive empty states | `dbq envs` emits `rows: []` in TOON; the CLI test checks this case. Tables show `0 rows`. | None for empty result output. | **Applied:** empty results are explicit in both formats. |
+| 6 | Structured errors and exit codes | Errors use TOON on stdout, including for `--format table`; unknown and removed options return `USAGE` with exit 2. CLI tests check the format and exit code. | Mutation idempotency does not apply because dbq has no mutation operation. | **Applied where relevant:** stable codes, actionable hints, no prompts, and TOON errors. |
+| 7 | Ambient context | `package.json` provides install, test and typecheck commands; help describes each subcommand. The CLI has no session hooks. | Hooks require explicit setup, path repair, and support across agent harnesses. | **Adapted:** keep ambient integrations out of the core CLI until their setup and lifecycle contract is defined. |
+| 8 | Content first | Query commands require `--env`; a no-argument invocation does not resolve a database. The usage error path is covered by CLI tests. | Selecting live database content implicitly could choose production. | **Adapted:** require explicit environment selection before database access. |
+| 9 | Contextual disclosure | Errors carry corrective hints; empty and truncated results report their state in the envelope. | Suggested follow-up commands need a safely resolved project, environment, connection and target. | **Adapted:** disclose state and safe hints; derive suggestions only when the next action is unambiguous. |
+| 10 | Consistent help | `run`, `envs`, `schema` and `databases` help show supported formats; CLI tests check that JSON options are absent. | The version path loads the full module graph. | **Applied:** current options and examples are shown; a leaf-module version fast path is unrelated follow-up work. |
 
-### Observed CLI output
+## Observed CLI output
 
-Local empty-state fixture, with its temporary config path omitted:
+Local empty-state invocation (`dbq envs`, using a temporary config root):
 
 ```text
 root: <temporary-config>/dbq
@@ -35,13 +35,13 @@ error:
   hint: run `dbq --help` for valid commands and flags
 ```
 
-The invocation exits 2 and writes nothing to stderr. The JSON compatibility path is verified by parsing `dbq envs --json` in the CLI test.
+The invocation exits 2 and writes nothing to stderr. Requests for `--json` and `--format json` are rejected before project/config resolution; their usage errors use TOON. `--format table` affects successful human output only.
 
 ## Token measurements
 
-Fixtures are generated by `scripts/measure-axi-output.ts` and use the same fixed metadata envelope in both formats. The before column uses the previous JSON serializer; the after column uses TOON. Because no dedicated tokenizer is installed, the script estimates tokens as characters divided by four, rounded up. Re-run with `node scripts/measure-axi-output.ts` to reproduce the table.
+Fixtures are generated by `scripts/measure-axi-output.ts` with the same metadata envelope. The before column is the earlier JSON serializer, retained only as a comparison fixture; the after column is TOON. Token counts estimate characters divided by four, rounded up, because no dedicated tokenizer is installed. Re-run with `node scripts/measure-axi-output.ts` to reproduce the table.
 
-| Query fixture | JSON chars | TOON chars | JSON tokens¹ | TOON tokens¹ | Savings |
+| Query fixture | JSON baseline chars | TOON chars | JSON baseline tokens¹ | TOON tokens¹ | Savings |
 |---|---:|---:|---:|---:|---:|
 | Mongo find · 20 documents | 1,924 | 649 | 481 | 163 | 66.1% |
 | Mongo aggregate · grouped counts | 267 | 141 | 67 | 36 | 46.3% |
@@ -52,9 +52,9 @@ Fixtures are generated by `scripts/measure-axi-output.ts` and use the same fixed
 
 ¹ Character-count estimate, not a model tokenizer measurement. These fixtures save 70.9%; nested or irregular rows may save less.
 
-## JSON consumers and migration
+## Migrating consumers to TOON
 
-`--json` and `--format json` preserve the previous JSON output for scripts that parse `dbq`. The consumer repository and its automation specs were not present in this worktree, so their individual readers could not be inventoried. Before removing compatibility later, search that repository's automation specs, agent memories, and scripts for `dbq` invocations and JSON parsing; keep `--json` on every parser until each one is migrated to TOON. Update the corresponding agent memories and automation specs in that repository to name the chosen format.
+Remove `--json` and `--format json` from invocations. Decode successful output and structured errors with a TOON decoder such as `decode` from `@toon-format/toon`; branch on the envelope's `rows` or the error's `code`, and continue to use process exit codes as the stable status contract. `--format table` is intended for people and must not be parsed by scripts. Environment configuration files remain JSON.
 
 ## Reference implementations checked
 

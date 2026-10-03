@@ -39,10 +39,6 @@ const replacer = function (this: unknown, key: string, value: unknown): JsonRepl
   return String(value);
 };
 
-export const formatJsonValue = (value: unknown): string => JSON.stringify(value, replacer, 2);
-
-export const formatJson = (envelope: Envelope): string => formatJsonValue(envelope);
-
 export const formatToonValue = (value: unknown): string =>
   encode(JSON.parse(JSON.stringify(value, replacer)) as unknown);
 
@@ -82,21 +78,21 @@ const cell = (value: unknown): string => {
   return String(value);
 };
 
-export const formatTable = (envelope: Envelope, color: boolean): string => {
+const formatRows = (rows: unknown[], color: boolean): string[] => {
   const paint = (text: string): string => (color ? pc.bold(text) : text);
   const lines: string[] = [];
 
-  if (envelope.rows.length === 0) {
+  if (rows.length === 0) {
     lines.push('0 rows');
   } else {
     const columns: string[] = [];
-    for (const row of envelope.rows) {
+    for (const row of rows) {
       if (typeof row !== 'object' || row === null) continue;
       for (const key of Object.keys(row)) if (!columns.includes(key)) columns.push(key);
     }
 
     const header = columns.length > 0 ? columns : ['value'];
-    const body = envelope.rows.map((row) =>
+    const body = rows.map((row) =>
       columns.length > 0 ? header.map((key) => cell((row as Record<string, unknown>)[key])) : [cell(row)],
     );
 
@@ -115,25 +111,26 @@ export const formatTable = (envelope: Envelope, color: boolean): string => {
     for (const cells of body) lines.push(render(cells));
   }
 
+  return lines;
+};
+
+export const formatTable = (envelope: Envelope, color: boolean): string => {
+  const lines = formatRows(envelope.rows, color);
   const suffix = envelope.truncated ? ' (truncated)' : '';
   lines.push('');
   lines.push(
     `${envelope.rowCount} row(s)${suffix} in ${envelope.elapsedMs}ms — ${envelope.project}/${envelope.env}/${envelope.db}`,
   );
-
   return lines.join('\n');
 };
 
-export const formatError = (err: DbqError, format: 'json' | 'table' | 'toon'): string => {
+export const formatValueTable = (value: { root: string; rows: unknown[] }, color: boolean): string =>
+  [`root: ${value.root}`, '', ...formatRows(value.rows, color)].join('\n');
+
+export const formatError = (err: DbqError): string => {
   const payload =
     err.hint === undefined
       ? { code: err.code, message: err.message }
       : { code: err.code, message: err.message, hint: err.hint };
-  if (format === 'json') {
-    return JSON.stringify({ error: payload }, null, 2);
-  }
-  if (format === 'toon') return formatToonValue({ error: payload });
-
-  const hint = err.hint === undefined ? '' : `\nhint: ${err.hint}`;
-  return `${err.code}: ${err.message}${hint}`;
+  return formatToonValue({ error: payload });
 };

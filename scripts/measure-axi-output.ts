@@ -1,4 +1,4 @@
-import { formatJsonValue, formatToonValue, type Envelope } from '../src/output/envelope.ts';
+import { formatToonValue, type Envelope } from '../src/output/envelope.ts';
 
 const samples: { name: string; engine: Envelope['engine']; rows: unknown[]; cursor?: string }[] = [
   {
@@ -67,7 +67,7 @@ console.log('|---|---:|---:|---:|---:|---:|');
 
 for (const sample of samples) {
   const value = envelope(sample.engine, sample.rows, sample.cursor);
-  const before = formatJsonValue(value).length;
+  const before = JSON.stringify(value, null, 2).length;
   const after = formatToonValue(value).length;
   const beforeTokens = Math.ceil(before / 4);
   const afterTokens = Math.ceil(after / 4);

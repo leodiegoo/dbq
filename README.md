@@ -2,7 +2,7 @@
 
 A **read-only** query runner for MySQL, PostgreSQL, MongoDB and Redis, configured per environment and callable from any directory.
 
-Built for AI agents: output is compact TOON by default, JSON stays available with `--json`, and errors carry actionable hints and distinct exit codes. **No code path can write to the database.**
+Built for AI agents: structured output uses compact TOON, errors carry actionable hints and distinct exit codes, and `--format table` gives people a readable view. **No code path can write to the database.**
 
 ```bash
 dbq --env dev "SELECT id, name FROM companies WHERE active = 1"
@@ -37,8 +37,11 @@ Handing an AI agent direct database access creates two independent problems.
 **The first is destruction.** An agent with the wrong context runs `DELETE` against production with no ill intent whatsoever. The usual answer — "trust the prompt" — is not an answer. `dbq` refuses writes **structurally**: the query is validated before any connection is opened, and no flag, environment variable or config field unlocks it.
 
 ```bash
-$ dbq --json --env production 'db.plans.drop()'
-{ "error": { "code": "READONLY_VIOLATION", "message": "operation 'drop' is not allowed", … } }
+$ dbq --env production 'db.plans.drop()'
+error:
+  code: READONLY_VIOLATION
+  message: operation 'drop' is not allowed
+  hint: "read operations: find, findOne, aggregate, countDocuments, distinct"
 $ echo $?
 3
 ```
@@ -217,9 +220,9 @@ dbq [options] <query>
 | `-l, --limit <n>` | `500` | row/item ceiling; `0` disables it except for Redis |
 | `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables it |
 | `-t, --timeout <ms>` | `30000` | statement timeout |
-| `-f, --format <toon\|json\|table>` | `toon` | output format |
-| `--json` | off | shorthand for `--format json`; keeps existing parsers working |
-| `--full` | off | include complete text fields instead of truncating each at 1,000 characters |
+| `-f, --format <toon\|table>` | `toon` | TOON for structured output; table for human reading |
+| `--full` | off | bypasses the 1,000-character text-field cap; row and Redis byte limits still apply |
+| `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables this cap |
 | `-x, --explain` | off | run `EXPLAIN` / `.explain()` instead |
 
 ### SQL
@@ -434,12 +437,21 @@ This exists because the operation whitelist **cannot reach** those cases: a pipe
 | `find({})` over 134 docs | 3 | 3 rows, `truncated: true` |
 | `find({}).limit(2)` | 3 | 2 rows, `truncated: false` |
 
-`--limit 0` disables the ceiling, explicitly.
+`--limit 0` disables the row/item ceiling for SQL and MongoDB. Redis refuses `--limit 0` for every command because scans and ranges must stay bounded. With SQL or MongoDB, use `--limit 0` only when an unbounded result is intended.
 
 When it truncates, the output says so — the consumer knows to refine instead of believing it saw everything:
 
-```json
-{ "rowCount": 3, "truncated": true, "elapsedMs": 54, "rows": [ … ] }
+```text
+project: my-project
+env: dev
+db: mysql
+engine: mysql
+rowCount: 2
+truncated: true
+elapsedMs: 54
+rows[2]{id,name}:
+  530,Acme
+  470,Globex
 ```
 
 The injected ceiling means `dbq` does not literally honour a `LIMIT 5000`. That is deliberate: the two mistakes cost asymmetrically — injecting too small a limit costs one re-invocation, injecting none costs the session.
@@ -463,25 +475,16 @@ rows[2]{id,name}:
   470,Globex
 ```
 
-Use `--json` or `--format json` when a script needs the previous JSON envelope:
+TOON is the only structured output format. Scripts that previously requested JSON should remove `--json` or `--format json` and decode TOON. For JavaScript consumers, `@toon-format/toon` provides a decoder:
 
-```json
-{
-  "project": "my-project",
-  "env": "dev",
-  "db": "mysql",
-  "engine": "mysql",
-  "rowCount": 2,
-  "truncated": true,
-  "elapsedMs": 54,
-  "rows": [
-    { "id": 530, "name": "Acme" },
-    { "id": 470, "name": "Globex" }
-  ]
-}
+```js
+import { decode } from '@toon-format/toon';
+
+const result = decode(stdout);
+const rows = result.rows;
 ```
 
-`Date`, `RegExp`, `ObjectId`, `BigInt` and `Buffer` are serialised readably — without that the consumer would receive `{}` where an id should be, which is worse than an error because it looks like valid data. Text fields longer than 1,000 characters include a size marker and a `--full` hint; `--full` returns them whole.
+The envelope carries `rows`, `rowCount`, `truncated`, and `elapsedMs`. `Date`, `RegExp`, `ObjectId`, `BigInt` and `Buffer` are serialised readably. Text fields longer than 1,000 characters include their full size and a `--full` hint; `--full` returns complete text, while row and Redis byte ceilings remain in force. Configuration files remain JSON.
 
 **Table**, for human eyes:
 
@@ -498,7 +501,7 @@ id   name
 2 row(s) in 49ms — my-project/dev/mysql
 ```
 
-Errors use the same structured format on stdout as successful results, with `code`, `message` and an optional `hint`. Exit codes remain the stable contract. Colour appears only with `--format table` **and** stdout being a TTY. Neither TOON nor JSON receives ANSI.
+Errors always use TOON on stdout, including when `--format table` is requested. They carry `code`, `message` and an optional `hint`; exit codes remain the stable contract. Colour appears only on successful `--format table` output when stdout is a TTY. `--json` and `--format json` are unknown/invalid options and exit 2 before configuration resolution or connection.
 
 ---
 

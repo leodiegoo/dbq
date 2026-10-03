@@ -51,7 +51,7 @@ src/
     postgres.ts           information_schema, results qualified as schema.table
     mongo.ts              listCollections / shape inferred from a sample
   output/
-    envelope.ts           truncation, serialisable JSON, table, error
+    envelope.ts           text truncation, TOON, table and error formatting
   errors.ts               DbqError, codes → exit codes, scrubUri
 ```
 
@@ -95,9 +95,11 @@ Node erases types at runtime but **does not transform code**. That rules out:
 
 ### Output
 
-- **TOON is the default output.** Keep JSON available through `--json` and `--format json`; neither structured format may receive ANSI. Colour only with `--format table` **and** `process.stdout.isTTY`.
-- **Long text fields truncate at 1,000 characters** and include their full size and a `--full` hint. Keep structural row limits separate from text truncation.
-- **Structured errors go to stdout** in the selected format and carry an actionable `hint`; exit code and error `code` remain the stable contract.
+- **TOON is the only structured output.** `--format table` is for successful human-readable output. Errors always use TOON on stdout, even when table output was requested. Colour only successful tables when `process.stdout.isTTY`.
+- **Long text fields truncate at 1,000 characters** and include their full size and a `--full` hint. `--full` disables text truncation only; keep structural row and Redis byte limits separate.
+- **Unbounded output is explicit.** `--limit 0` disables the row ceiling for SQL and MongoDB; Redis refuses it. `--max-bytes 0` disables the Redis GET byte ceiling. Explain these effects wherever the options are documented.
+- **Unknown or removed output formats are usage errors.** `--json` and `--format json` exit 2 before configuration resolution or connection.
+- **Structured errors go to stdout** in TOON and carry an actionable `hint`; exit code and error `code` remain the stable contract.
 - **Nothing blocks waiting on a TTY.** No prompts, no spinners — a command that *hangs* is the worst failure mode for an automated tool. `@clack/prompts` and `ora` were deliberately rejected for this reason.
 - **Every error carries an actionable `hint`.** It is the field that makes the agent's second attempt correct instead of its fifth.
 - **Credentials never reach output.** Every driver message passes through `scrubUri`. Drivers love echoing the entire connection string when auth fails.
