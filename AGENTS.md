@@ -95,10 +95,12 @@ Node erases types at runtime but **does not transform code**. That rules out:
 
 ### Output
 
-- **JSON never receives ANSI.** Colour only with `--format table` **and** `process.stdout.isTTY`. One escape byte in JSON breaks the consumer's `JSON.parse`.
+- **TOON is the default output.** Keep JSON available through `--json` and `--format json`; neither structured format may receive ANSI. Colour only with `--format table` **and** `process.stdout.isTTY`.
+- **Long text fields truncate at 1,000 characters** and include their full size and a `--full` hint. Keep structural row limits separate from text truncation.
+- **Structured errors go to stdout** in the selected format and carry an actionable `hint`; exit code and error `code` remain the stable contract.
 - **Nothing blocks waiting on a TTY.** No prompts, no spinners — a command that *hangs* is the worst failure mode for an automated tool. `@clack/prompts` and `ora` were deliberately rejected for this reason.
 - **Every error carries an actionable `hint`.** It is the field that makes the agent's second attempt correct instead of its fifth.
-- **Credentials never reach stderr.** Every message passes through `scrubUri`. Drivers love echoing the entire connection string when auth fails.
+- **Credentials never reach output.** Every driver message passes through `scrubUri`. Drivers love echoing the entire connection string when auth fails.
 
 ### Errors and exit codes
 
@@ -154,7 +156,7 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 - Use `eval`, `new Function` or `vm` to interpret a query — the Mongo guard is a **parsed** AST, never an evaluated one; it was the most important design decision in the project.
 - Pass a raw user string into `engines/`.
 - Reorder `argv` yourself to "fix" subcommand ordering — it breaks for anyone with a connection of the same name.
-- Write ANSI to stdout when the format is JSON.
+- Write ANSI to stdout when output is structured.
 - Interpolate a user value into SQL. The one interpolation that exists (`schema/mysql.ts`) is preceded by an `^[A-Za-z0-9_$]+$` allowlist; if you need another, replicate the allowlist or don't interpolate.
 - Delete or skip a test to make a build pass.
 

@@ -347,3 +347,13 @@ in the guard.
 | A dedicated PostgreSQL guard | Reusing the MySQL guard | Data-modifying CTEs and a different lexer; reuse would have been a security bug |
 | PostgreSQL wrapped in BEGIN READ ONLY | Trusting the guard alone | The server enforces it, so a parser hole is not a guarantee hole |
 | Generic Redis engine rejected; bounded inspector added later | Arbitrary read-command execution | Redis needs command-specific limits; read-only does not prevent blocking operations |
+
+## Revision of 2026-10-03 — agent-oriented output
+
+The default structured output is now TOON, encoded at the output boundary. `--json` and `--format json` preserve the earlier JSON envelope for existing scripts; `--format table` remains available for people. Text values longer than 1,000 Unicode code points are shortened with their full size and a `--full` hint. The existing row ceiling and Redis byte ceiling remain independent.
+
+Structured errors now go to stdout in the selected format, with `code`, `message`, and an optional `hint`. Unknown flags are reported as `USAGE` and exit 2. The never-write guard, validation-before-connect order, credential scrubbing, and the distinct exit-code meanings remain unchanged.
+
+Per-subcommand help now includes usage examples and built-in numeric defaults. The lightweight `--version` fast path has not been added; it does not affect output format or query safety.
+
+The AXI review did not add automatic field removal, a second query for total counts, session hooks, a no-argument database connection, or generic next-step suggestions. Field removal can hide requested query data; exact totals can add unbounded work; and hooks or implicit environment selection need separate opt-in and safety contracts. The audit and fixture-only output measurements are recorded in `docs/axi-auditoria.md`.

@@ -2,7 +2,7 @@
 
 A **read-only** query runner for MySQL, PostgreSQL, MongoDB and Redis, configured per environment and callable from any directory.
 
-Built to be driven by an AI agent: output is parseable JSON, errors carry an actionable hint, exit codes distinguish "rewrite the query" from "wrong connection" — and **no code path can write to the database**.
+Built for AI agents: output is compact TOON by default, JSON stays available with `--json`, and errors carry actionable hints and distinct exit codes. **No code path can write to the database.**
 
 ```bash
 dbq --env dev "SELECT id, name FROM companies WHERE active = 1"
@@ -37,7 +37,7 @@ Handing an AI agent direct database access creates two independent problems.
 **The first is destruction.** An agent with the wrong context runs `DELETE` against production with no ill intent whatsoever. The usual answer — "trust the prompt" — is not an answer. `dbq` refuses writes **structurally**: the query is validated before any connection is opened, and no flag, environment variable or config field unlocks it.
 
 ```bash
-$ dbq --env production 'db.plans.drop()'
+$ dbq --json --env production 'db.plans.drop()'
 { "error": { "code": "READONLY_VIOLATION", "message": "operation 'drop' is not allowed", … } }
 $ echo $?
 3
@@ -217,7 +217,9 @@ dbq [options] <query>
 | `-l, --limit <n>` | `500` | row/item ceiling; `0` disables it except for Redis |
 | `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables it |
 | `-t, --timeout <ms>` | `30000` | statement timeout |
-| `-f, --format <json\|table>` | `json` | output format |
+| `-f, --format <toon\|json\|table>` | `toon` | output format |
+| `--json` | off | shorthand for `--format json`; keeps existing parsers working |
+| `--full` | off | include complete text fields instead of truncating each at 1,000 characters |
 | `-x, --explain` | off | run `EXPLAIN` / `.explain()` instead |
 
 ### SQL
@@ -446,7 +448,22 @@ The injected ceiling means `dbq` does not literally honour a `LIMIT 5000`. That 
 
 ## Output
 
-**JSON** by default, in an envelope with metadata:
+**TOON** by default, in an envelope with metadata and compact tabular rows:
+
+```text
+project: my-project
+env: dev
+db: mysql
+engine: mysql
+rowCount: 2
+truncated: true
+elapsedMs: 54
+rows[2]{id,name}:
+  530,Acme
+  470,Globex
+```
+
+Use `--json` or `--format json` when a script needs the previous JSON envelope:
 
 ```json
 {
@@ -464,7 +481,7 @@ The injected ceiling means `dbq` does not literally honour a `LIMIT 5000`. That 
 }
 ```
 
-`Date`, `RegExp`, `ObjectId`, `BigInt` and `Buffer` are serialised readably — without that the consumer would receive `{}` where an id should be, which is worse than an error because it looks like valid data.
+`Date`, `RegExp`, `ObjectId`, `BigInt` and `Buffer` are serialised readably — without that the consumer would receive `{}` where an id should be, which is worse than an error because it looks like valid data. Text fields longer than 1,000 characters include a size marker and a `--full` hint; `--full` returns them whole.
 
 **Table**, for human eyes:
 
@@ -481,7 +498,7 @@ id   name
 2 row(s) in 49ms — my-project/dev/mysql
 ```
 
-Colour appears only with `--format table` **and** stdout being a TTY. JSON never receives ANSI: one escape byte would break the consumer's `JSON.parse`.
+Errors use the same structured format on stdout as successful results, with `code`, `message` and an optional `hint`. Exit codes remain the stable contract. Colour appears only with `--format table` **and** stdout being a TTY. Neither TOON nor JSON receives ANSI.
 
 ---
 

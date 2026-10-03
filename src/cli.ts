@@ -107,7 +107,12 @@ program.name('dbq').description('Read-only query runner for SQL, MongoDB and Red
 const handleCliError = (err: { code: string; message: string; exitCode: number }): never => {
   if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
   const usageError = new DbqError('USAGE', err.message, 'run `dbq --help` for valid commands and flags');
-  process.stdout.write(`${formatError(usageError, 'toon')}\n`);
+  const args = process.argv.slice(2);
+  const formatArgIndex = args.indexOf('--format');
+  const formatValue = args.find((arg) => arg.startsWith('--format='))?.slice('--format='.length)
+    ?? (formatArgIndex < 0 ? undefined : args[formatArgIndex + 1]);
+  const output: Format = args.includes('--json') ? 'json' : formatValue === 'table' ? 'table' : 'toon';
+  process.stdout.write(`${formatError(usageError, output)}\n`);
   process.exit(2);
 };
 
@@ -120,7 +125,7 @@ const withCommonOptions = (command: Command): Command =>
     .requiredOption('-e, --env <name>', 'environment to use')
     .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
     .option('-D, --database <name>', 'database to query; overrides the env file')
-    .option('-t, --timeout <ms>', 'statement timeout', integer)
+    .option('-t, --timeout <ms>', 'statement timeout (default: 30000)', integer)
     .option('-f, --format <format>', 'toon, json or table', format, 'toon')
     .option('--full', 'show complete text fields instead of truncating them')
     .option('--json', 'emit JSON for compatibility');
@@ -133,10 +138,15 @@ withCommonOptions(
     .command('run', { isDefault: true })
     .description('run a read query (default command)')
     .argument('<query>', "SQL, db.<collection>.<op>(...), a Redis JSON command, or '-' to read stdin")
-    .option('-l, --limit <n>', 'ceiling on returned rows; 0 disables it', integer)
-    .option('--max-bytes <n>', 'Redis string-value ceiling', integer)
+    .option('-l, --limit <n>', 'ceiling on returned rows; 0 disables it (default: 500)', integer)
+    .option('--max-bytes <n>', 'Redis string-value ceiling (default: 1000000)', integer)
     .option('-x, --explain', 'run EXPLAIN / .explain() instead of the query'),
-).action(async (query: string, opts: CommonOptions) => {
+).addHelpText('after', `
+Examples:
+  dbq run --env <env> "SELECT id, name FROM companies"
+  dbq run --env <env> --db <mongo> 'db.companies.find({ active: true }).limit(10)'
+  dbq run --env <env> --db <cache> '["SCAN","0","MATCH","cache:*"]'
+`).action(async (query: string, opts: CommonOptions) => {
   try {
     const raw = query === '-' ? await readStdin() : query;
     rejectSubcommandAsQuery(raw);
@@ -194,7 +204,12 @@ configureErrors(program
   .command('envs')
   .description('list configured projects and environments')
   .option('-f, --format <format>', 'toon, json or table', format, 'toon')
-  .option('--json', 'emit JSON for compatibility'))
+  .option('--json', 'emit JSON for compatibility')
+  .addHelpText('after', `
+Examples:
+  dbq envs
+  dbq envs --json
+`))
   .action((opts: { format: Format; json?: boolean }) => {
     try {
       const root = configRoot();
@@ -209,7 +224,7 @@ configureErrors(program
 
       process.stdout.write(`${formatToonValue({ root, rows })}\n`);
     } catch (err) {
-      fail(err, opts.format);
+      fail(err, opts.json === true ? 'json' : opts.format);
     }
   });
 
@@ -218,7 +233,11 @@ withCommonOptions(
     .command('schema')
     .description('list tables/collections, or detail one of them')
     .argument('[target]', 'table or collection name'),
-).action(async (target: string | undefined, opts: CommonOptions) => {
+).addHelpText('after', `
+Examples:
+  dbq schema --env <env> --db <connection>
+  dbq schema --env <env> --db <connection> <table-or-collection>
+`).action(async (target: string | undefined, opts: CommonOptions) => {
   try {
     const { project, resolved } = resolve(opts);
     const { connection } = resolved;
@@ -255,7 +274,11 @@ withCommonOptions(
 
 withCommonOptions(
   program.command('databases').description('list the databases available on the connection'),
-).action(async (opts: CommonOptions) => {
+).addHelpText('after', `
+Examples:
+  dbq databases --env <env> --db <connection>
+  dbq databases --project <project> --env <env> --db <connection>
+`).action(async (opts: CommonOptions) => {
   try {
     const { project, resolved } = resolve(opts);
     const { connection } = resolved;
