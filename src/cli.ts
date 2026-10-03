@@ -16,9 +16,9 @@ import { mongoSchema } from './schema/mongo.ts';
 import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
 import { listDatabases } from './engines/mongo.ts';
 import { MongoClient } from 'mongodb';
-import { formatError, formatJson, formatTable, type Envelope } from './output/envelope.ts';
+import { formatError, formatJson, formatJsonValue, formatTable, formatToon, formatToonValue, type Envelope } from './output/envelope.ts';
 
-type Format = 'json' | 'table';
+type Format = 'json' | 'table' | 'toon';
 
 type CommonOptions = {
   project?: string;
@@ -29,6 +29,7 @@ type CommonOptions = {
   maxBytes?: number;
   timeout?: number;
   format: Format;
+  json?: boolean;
   explain?: boolean;
 };
 
@@ -39,7 +40,9 @@ const integer = (raw: string): number => {
 };
 
 const format = (raw: string): Format => {
-  if (raw !== 'json' && raw !== 'table') throw new InvalidArgumentError("expected 'json' or 'table'");
+  if (raw !== 'json' && raw !== 'table' && raw !== 'toon') {
+    throw new InvalidArgumentError("expected 'toon', 'json' or 'table'");
+  }
   return raw;
 };
 
@@ -67,12 +70,13 @@ const resolve = (opts: CommonOptions) => {
 
 const emit = (envelope: Envelope, output: Format): void => {
   const color = output === 'table' && process.stdout.isTTY === true;
-  process.stdout.write(`${output === 'json' ? formatJson(envelope) : formatTable(envelope, color)}\n`);
+  const rendered = output === 'json' ? formatJson(envelope) : output === 'table' ? formatTable(envelope, color) : formatToon(envelope);
+  process.stdout.write(`${rendered}\n`);
 };
 
 const fail = (err: unknown, output: Format): never => {
   const dbqError = toDbqError(err);
-  process.stderr.write(`${formatError(dbqError, output)}\n`);
+  process.stderr.write(`${formatError(dbqError, output === 'table' ? 'table' : 'json')}\n`);
   process.exit(dbqError.exitCode);
 };
 
@@ -105,7 +109,8 @@ const withCommonOptions = (command: Command): Command =>
     .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
     .option('-D, --database <name>', 'database to query; overrides the env file')
     .option('-t, --timeout <ms>', 'statement timeout', integer)
-    .option('-f, --format <format>', 'json or table', format, 'json');
+    .option('-f, --format <format>', 'toon, json or table', format, 'toon')
+    .option('--json', 'emit JSON for compatibility');
 
 // Default subcommand: `dbq "SELECT 1"` lands here, while `dbq envs` and
 // `dbq schema` are still routed by name. The common options must live on the
@@ -164,7 +169,7 @@ withCommonOptions(
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.format,
+      opts.json === true ? 'json' : opts.format,
     );
   } catch (err) {
     fail(err, opts.format);
@@ -174,20 +179,21 @@ withCommonOptions(
 program
   .command('envs')
   .description('list configured projects and environments')
-  .option('-f, --format <format>', 'json or table', format, 'json')
-  .action((opts: { format: Format }) => {
+  .option('-f, --format <format>', 'toon, json or table', format, 'toon')
+  .option('--json', 'emit JSON for compatibility')
+  .action((opts: { format: Format; json?: boolean }) => {
     try {
       const root = configRoot();
       const rows = listProjects(root).flatMap((project) =>
         listEnvs(root, project).map((env) => ({ project, env })),
       );
 
-      if (opts.format === 'json') {
-        process.stdout.write(`${JSON.stringify({ root, rows }, null, 2)}\n`);
+      if (opts.json === true || opts.format === 'json') {
+        process.stdout.write(`${formatJsonValue({ root, rows })}\n`);
         return;
       }
 
-      process.stdout.write(`${root}\n${rows.map((row) => `  ${row.project}/${row.env}`).join('\n')}\n`);
+      process.stdout.write(`${formatToonValue({ root, rows })}\n`);
     } catch (err) {
       fail(err, opts.format);
     }
@@ -225,7 +231,7 @@ withCommonOptions(
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.format,
+      opts.json === true ? 'json' : opts.format,
     );
   } catch (err) {
     fail(err, opts.format);
@@ -276,7 +282,7 @@ withCommonOptions(
         elapsedMs: Date.now() - started,
         rows,
       },
-      opts.format,
+      opts.json === true ? 'json' : opts.format,
     );
   } catch (err) {
     fail(err, opts.format);

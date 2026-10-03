@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyLimit, formatError, formatJson, formatTable, type Envelope } from '../../src/output/envelope.ts';
+import { applyLimit, formatError, formatJson, formatTable, formatToon, type Envelope } from '../../src/output/envelope.ts';
 import { DbqError } from '../../src/errors.ts';
 
 const envelope = (rows: unknown[], truncated = false): Envelope => ({
@@ -47,6 +47,18 @@ describe('formatJson', () => {
 
   it('should never be emitting ansi escapes', () => {
     expect(formatJson(envelope([{ id: 1 }]))).not.toContain('\u001b');
+  });
+});
+
+describe('formatToon', () => {
+  it('should be encoding row arrays as a compact table with metadata', () => {
+    expect(formatToon(envelope([{ id: 1, name: 'Ada' }, { id: 2, name: 'Lin' }]))).toBe(
+      'project: proj\nenv: dev\ndb: mysql\nengine: mysql\nrowCount: 2\ntruncated: false\nelapsedMs: 12\nrows[2]{id,name}:\n  1,Ada\n  2,Lin',
+    );
+  });
+
+  it('should be reporting an explicit empty result', () => {
+    expect(formatToon(envelope([]))).toContain('rows: []');
   });
 });
 

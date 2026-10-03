@@ -1,4 +1,5 @@
 import pc from 'picocolors';
+import { encode } from '@toon-format/toon';
 import type { DbqError } from '../errors.ts';
 
 export type Envelope = {
@@ -38,7 +39,14 @@ const replacer = function (this: unknown, key: string, value: unknown): JsonRepl
   return String(value);
 };
 
-export const formatJson = (envelope: Envelope): string => JSON.stringify(envelope, replacer, 2);
+export const formatJsonValue = (value: unknown): string => JSON.stringify(value, replacer, 2);
+
+export const formatJson = (envelope: Envelope): string => formatJsonValue(envelope);
+
+export const formatToonValue = (value: unknown): string =>
+  encode(JSON.parse(JSON.stringify(value, replacer)) as unknown);
+
+export const formatToon = (envelope: Envelope): string => formatToonValue(envelope);
 
 const cell = (value: unknown): string => {
   if (value === null || value === undefined) return '';
