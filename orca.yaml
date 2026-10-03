@@ -1,0 +1,8 @@
+scripts:
+  setup: |
+    orq project trust
+    main=$(git worktree list --porcelain | awk 'NR==1{print $2}'); if [ -n "$main" ] && [ "$main" != "$(pwd -P)" ] && [ -d "$main/.scratch" ]; then mkdir -p .scratch && rsync -a --ignore-existing "$main/.scratch/" .scratch/; fi || echo "sync of .scratch failed"
+    pnpm install --frozen-lockfile
+    graphify update . >/dev/null 2>&1 || echo "graphify update failed"
+  archive: |
+    main=$(git worktree list --porcelain | awk 'NR==1{print $2}'); if [ -n "$main" ] && [ "$main" != "$(pwd -P)" ] && [ -d .scratch ]; then mkdir -p "$main/.scratch" && rsync -a --update .scratch/ "$main/.scratch/"; fi || echo "copy of .scratch back failed"
