@@ -16,7 +16,7 @@ import { mongoSchema } from './schema/mongo.ts';
 import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
 import { listDatabases } from './engines/mongo.ts';
 import { MongoClient } from 'mongodb';
-import { formatError, formatJson, formatJsonValue, formatTable, formatToon, formatToonValue, type Envelope } from './output/envelope.ts';
+import { formatError, formatJson, formatJsonValue, formatTable, formatToon, formatToonValue, truncateContent, type Envelope } from './output/envelope.ts';
 
 type Format = 'json' | 'table' | 'toon';
 
@@ -30,6 +30,7 @@ type CommonOptions = {
   timeout?: number;
   format: Format;
   json?: boolean;
+  full?: boolean;
   explain?: boolean;
 };
 
@@ -68,15 +69,16 @@ const resolve = (opts: CommonOptions) => {
   return { project, resolved };
 };
 
-const emit = (envelope: Envelope, output: Format): void => {
+const emit = (envelope: Envelope, output: Format, full = false): void => {
   const color = output === 'table' && process.stdout.isTTY === true;
-  const rendered = output === 'json' ? formatJson(envelope) : output === 'table' ? formatTable(envelope, color) : formatToon(envelope);
+  const limited = truncateContent(envelope, full).value as Envelope;
+  const rendered = output === 'json' ? formatJson(limited) : output === 'table' ? formatTable(limited, color) : formatToon(limited);
   process.stdout.write(`${rendered}\n`);
 };
 
 const fail = (err: unknown, output: Format): never => {
   const dbqError = toDbqError(err);
-  process.stderr.write(`${formatError(dbqError, output === 'table' ? 'table' : 'json')}\n`);
+  process.stdout.write(`${formatError(dbqError, output)}\n`);
   process.exit(dbqError.exitCode);
 };
 
@@ -102,14 +104,25 @@ const program = new Command();
 
 program.name('dbq').description('Read-only query runner for SQL, MongoDB and Redis').version('0.1.0');
 
+const handleCliError = (err: { code: string; message: string; exitCode: number }): never => {
+  if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
+  const usageError = new DbqError('USAGE', err.message, 'run `dbq --help` for valid commands and flags');
+  process.stdout.write(`${formatError(usageError, 'toon')}\n`);
+  process.exit(2);
+};
+
+const configureErrors = (command: Command): Command =>
+  command.configureOutput({ writeErr: () => undefined }).exitOverride(handleCliError);
+
 const withCommonOptions = (command: Command): Command =>
-  command
+  configureErrors(command)
     .option('-p, --project <name>', 'project under ~/.config/dbq (default: inferred from cwd)')
     .requiredOption('-e, --env <name>', 'environment to use')
     .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
     .option('-D, --database <name>', 'database to query; overrides the env file')
     .option('-t, --timeout <ms>', 'statement timeout', integer)
     .option('-f, --format <format>', 'toon, json or table', format, 'toon')
+    .option('--full', 'show complete text fields instead of truncating them')
     .option('--json', 'emit JSON for compatibility');
 
 // Default subcommand: `dbq "SELECT 1"` lands here, while `dbq envs` and
@@ -170,17 +183,18 @@ withCommonOptions(
         rows,
       },
       opts.json === true ? 'json' : opts.format,
+      opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.format);
+    fail(err, opts.json === true ? 'json' : opts.format);
   }
 });
 
-program
+configureErrors(program
   .command('envs')
   .description('list configured projects and environments')
   .option('-f, --format <format>', 'toon, json or table', format, 'toon')
-  .option('--json', 'emit JSON for compatibility')
+  .option('--json', 'emit JSON for compatibility'))
   .action((opts: { format: Format; json?: boolean }) => {
     try {
       const root = configRoot();
@@ -232,9 +246,10 @@ withCommonOptions(
         rows,
       },
       opts.json === true ? 'json' : opts.format,
+      opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.format);
+    fail(err, opts.json === true ? 'json' : opts.format);
   }
 });
 
@@ -283,21 +298,19 @@ withCommonOptions(
         rows,
       },
       opts.json === true ? 'json' : opts.format,
+      opts.full === true,
     );
   } catch (err) {
-    fail(err, opts.format);
+    fail(err, opts.json === true ? 'json' : opts.format);
   }
 });
 
 // Commander exits with 1 on usage errors; the spec reserves 2 for that.
-program.exitOverride((err) => {
-  if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
-  process.exit(err.exitCode === 0 ? 0 : 2);
-});
+configureErrors(program);
 
 try {
   await program.parseAsync();
 } catch (err) {
-  if (err instanceof DbqError) fail(err, 'json');
+  if (err instanceof DbqError) fail(err, 'toon');
   throw err;
 }

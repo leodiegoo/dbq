@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyLimit, formatError, formatJson, formatTable, formatToon, type Envelope } from '../../src/output/envelope.ts';
+import { applyLimit, formatError, formatJson, formatTable, formatToon, truncateContent, type Envelope } from '../../src/output/envelope.ts';
 import { DbqError } from '../../src/errors.ts';
 
 const envelope = (rows: unknown[], truncated = false): Envelope => ({
@@ -90,6 +90,12 @@ describe('formatError', () => {
     expect(parsed.error.hint).toBe('use find');
   });
 
+  it('should be encoding a structured TOON error with its corrective hint', () => {
+    expect(formatError(new DbqError('USAGE', 'unknown flag', 'valid flags: --env'), 'toon')).toBe(
+      'error:\n  code: USAGE\n  message: unknown flag\n  hint: "valid flags: --env"',
+    );
+  });
+
   it('should be omitting the hint key when there is none', () => {
     const parsed = JSON.parse(formatError(new DbqError('USAGE', 'x'), 'json'));
     expect('hint' in parsed.error).toBe(false);
@@ -99,5 +105,21 @@ describe('formatError', () => {
     const out = formatError(new DbqError('TIMEOUT', 'timed out', 'filter harder'), 'table');
     expect(out).toContain('TIMEOUT');
     expect(out).toContain('filter harder');
+  });
+});
+
+describe('truncateContent', () => {
+  it('should be preserving short text and marking the full size of long text', () => {
+    expect(truncateContent({ note: 'abcdefghij' }, false, 5)).toEqual({
+      value: { note: 'abcde… (truncated; 10 characters total; use --full)' },
+      truncated: true,
+    });
+  });
+
+  it('should be returning the complete text when --full is enabled', () => {
+    expect(truncateContent({ note: 'abcdefghij' }, true, 5)).toEqual({
+      value: { note: 'abcdefghij' },
+      truncated: false,
+    });
   });
 });

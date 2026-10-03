@@ -48,6 +48,33 @@ export const formatToonValue = (value: unknown): string =>
 
 export const formatToon = (envelope: Envelope): string => formatToonValue(envelope);
 
+export const truncateContent = (
+  value: unknown,
+  full: boolean,
+  maxCharacters = 1_000,
+): { value: unknown; truncated: boolean } => {
+  const normalized = JSON.parse(JSON.stringify(value, replacer)) as unknown;
+  if (full) return { value: normalized, truncated: false };
+
+  let truncated = false;
+  const visit = (entry: unknown): unknown => {
+    if (typeof entry === 'string') {
+      const characters = Array.from(entry);
+      if (characters.length > maxCharacters) {
+        truncated = true;
+        return `${characters.slice(0, maxCharacters).join('')}… (truncated; ${characters.length} characters total; use --full)`;
+      }
+    }
+    if (Array.isArray(entry)) return entry.map(visit);
+    if (typeof entry === 'object' && entry !== null) {
+      return Object.fromEntries(Object.entries(entry).map(([key, child]) => [key, visit(child)]));
+    }
+    return entry;
+  };
+
+  return { value: visit(normalized), truncated };
+};
+
 const cell = (value: unknown): string => {
   if (value === null || value === undefined) return '';
   if (value instanceof Date) return value.toISOString();
@@ -97,14 +124,15 @@ export const formatTable = (envelope: Envelope, color: boolean): string => {
   return lines.join('\n');
 };
 
-export const formatError = (err: DbqError, format: 'json' | 'table'): string => {
+export const formatError = (err: DbqError, format: 'json' | 'table' | 'toon'): string => {
+  const payload =
+    err.hint === undefined
+      ? { code: err.code, message: err.message }
+      : { code: err.code, message: err.message, hint: err.hint };
   if (format === 'json') {
-    const payload =
-      err.hint === undefined
-        ? { code: err.code, message: err.message }
-        : { code: err.code, message: err.message, hint: err.hint };
     return JSON.stringify({ error: payload }, null, 2);
   }
+  if (format === 'toon') return formatToonValue({ error: payload });
 
   const hint = err.hint === undefined ? '' : `\nhint: ${err.hint}`;
   return `${err.code}: ${err.message}${hint}`;
