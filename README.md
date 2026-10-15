@@ -219,7 +219,7 @@ dbq [options] <query>
 | `-D, --database <name>` | the `database` field | database to query, per invocation |
 | `-l, --limit <n>` | `500` | row/item ceiling; `0` disables it except for Redis |
 | `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables it |
-| `-t, --timeout <ms>` | `30000` | statement timeout |
+| `-t, --timeout <ms>` | `30000` | statement timeout; on MySQL, giving up also stops the query on the server (see below) |
 | `-f, --format <toon\|table>` | `toon` | TOON for structured output; table for human reading |
 | `--full` | off | bypasses the 1,000-character text-field cap; row and Redis byte limits still apply |
 | `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables this cap |
@@ -355,6 +355,14 @@ filesystem), `nextval` / `setval` (mutate a sequence), `pg_sleep` and advisory
 locks, `dblink` (outbound connection from the server), row locks, transaction
 control, and `EXPLAIN ANALYZE` — which actually executes the statement, so
 `--explain` never adds `ANALYZE`.
+
+**MySQL stops the query on the server too.** The driver timeout only cuts the
+client, so when `dbq` gives up on a MySQL query (`--timeout`, the `--limit`
+ceiling, a stream error, or SIGINT/SIGTERM) it opens a short side connection
+with the same URI and runs `KILL QUERY <threadId>` on its own connection's
+thread, nothing else. That is the only statement besides reads that `dbq` ever
+sends. If the kill fails, the original error stays and gains a `warning:` line
+(no URI, no password). SIGINT/SIGTERM exit `130`/`143` after the kill.
 
 **And the server enforces it too.** Every PostgreSQL query runs inside:
 
