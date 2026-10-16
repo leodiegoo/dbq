@@ -1,5 +1,7 @@
 commands:
   prepare: "pnpm install --frozen-lockfile --config.strict-dep-builds=false"
+  # The project has no linter; the strict tsconfig (erasableSyntaxOnly, noUncheckedIndexedAccess) is its static check.
+  lint: "pnpm typecheck"
 test:
   prepare: true
   instructions: |
@@ -22,3 +24,68 @@ test:
        If docker is not available, mark the engine change untested with that reason.
     There is no integration test for PostgreSQL, MongoDB or Redis. Mark engine changes for them untested.
     Never point dbq at a real or production database during validation.
+document:
+  instructions: |
+    README.md owns usage, configuration and what is allowed.
+    docs/specs/2026-09-03-dbq-design.md owns the design and the why behind each decision, with rejected alternatives.
+    docs/plans/2026-09-03-dbq.md owns the implementation plan, task by task.
+    A changed design decision gets a dated revision in the spec; never rewrite the original text.
+    Everything is in English: code, comments, tests, documentation and runtime messages.
+review:
+  conversation: true
+  path_instructions:
+    - path: "src/guards/**"
+      instructions: |
+        Guards are pure functions with zero I/O and never open a connection.
+        Never use eval, new Function or vm; the Mongo guard parses an AST and never evaluates it.
+        The PostgreSQL guard checks write keywords at every position, not only the leading one, and has its own normaliser for double-quoted identifiers and dollar quoting.
+        Any new forbidden operator or fragment needs an adversarial test, including the nested case.
+    - path: "src/engines/**"
+      instructions: |
+        Engines receive a validated query plan, never a raw user string.
+        Fetch n + 1 rows so truncation is detected without an extra COUNT.
+        PostgreSQL EXPLAIN must never add ANALYZE, because it executes the statement.
+        Use toConnectionError, not toDbqError, for failures while the connection is still opening.
+    - path: "src/schema/**"
+      instructions: |
+        Never interpolate a user value into SQL unless it is preceded by an allowlist check like the ^[A-Za-z0-9_$]+$ one in schema/mysql.ts.
+    - path: "src/output/**"
+      instructions: |
+        TOON is the only structured output; table output is for successful results only and errors always use TOON on stdout.
+        Never write ANSI to stdout when output is structured.
+        Long text truncates at 1,000 characters and carries a --full hint; keep row and Redis byte limits separate from text truncation.
+    - path: "src/errors.ts"
+      instructions: |
+        Every error carries an actionable hint, and driver messages pass through scrubUri so credentials never reach output.
+        Exit codes and error.code are the stable contract; never key logic on message text.
+    - path: "src/cli.ts"
+      instructions: |
+        A new subcommand must be added to the SUBCOMMANDS array, which feeds the subcommand-as-query refusal.
+        Never reorder argv to fix subcommand ordering.
+        Nothing may block waiting on a TTY: no prompts and no spinners.
+    - path: "src/config/**"
+      instructions: |
+        A new config field needs validation in loadEnv.ts and a precedence test: flag over file over built-in.
+        When something cannot be resolved, fail and list the alternatives instead of guessing.
+    - path: "tests/guards/**"
+      instructions: |
+        This suite is the read-only invariant. Do not accept skipped, only-marked or deleted cases.
+        Every hole found becomes a test before it becomes a fix.
+        Test names begin with it should be or it should when.
+    - path: "package.json"
+      instructions: |
+        Node erases types without transforming code, so enum, namespace, parameter properties and decorators are forbidden.
+        Named exports only; the single exception is vitest.config.ts.
+        Flag any new flag, env var or field that could permit writes.
+protected_paths:
+  - "pnpm-lock.yaml"
+  - "pnpm-workspace.yaml"
+  - ".github/**"
+  - ".no-mistakes.yaml"
+  - "tests/guards/**"
+pr:
+  template: .github/pull_request_template.md
+rebase:
+  strategy: rebase
+ci:
+  revalidate_repairs: true
