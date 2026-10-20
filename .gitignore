@@ -1,3 +1,7 @@
 node_modules/
 .env
 *.log
+
+# graphify: keep the current graph, skip dated snapshots and cache
+graphify-out/20*/
+graphify-out/cache/

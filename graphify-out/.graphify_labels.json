@@ -1,0 +1,17 @@
+{
+  "0": "errors.ts",
+  "1": "loadEnv.test.ts",
+  "2": "package.json",
+  "3": "dbq",
+  "4": "cli.ts",
+  "5": "dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB",
+  "6": "guards/types.ts",
+  "7": "dbq — Knowledge Base",
+  "8": "compilerOptions",
+  "9": "loadEnv.ts",
+  "10": "engines/redis.ts",
+  "11": "DbqError",
+  "12": "AXI audit and output measurements",
+  "13": "vitest.config.ts",
+  "14": "CLAUDE.md"
+}
