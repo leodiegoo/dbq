@@ -4,7 +4,7 @@
 
 ## Evidence
 
-<!-- dbq is a CLI with no frontend: evidence is a test run or command output, not a screenshot. -->
+<!-- Changes to a frontend or data presentation, including any UI or HTML output, require Playwright E2E screenshots attached with `gh pr create --attach ./file.png#alt text` or `gh pr edit --attach ...` (gh 2.102+). Pure CLI or non-visual changes use test or command output as evidence. -->
 
 - **Before:** <!-- failing test or command output, with its exit code -->
   **After:** <!-- passing test or command output, with its exit code -->
