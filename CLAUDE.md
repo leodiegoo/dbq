@@ -1,1 +1,1 @@
-Read @AGENTS.md for instructions
+@AGENTS.md

@@ -136,7 +136,7 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 - **Names begin with `it should be` / `it should when`.**
 - **`tests/guards/` is non-negotiable.** Two corpora: queries that must pass, and an adversarial corpus that must be refused (`$out` nested inside `$facet`, `db["dr"+"op"]()`, `;DROP`, `DROP` hidden behind a comment, `INTO OUTFILE`, `$where` inside `$and`, chaining outside the whitelist). Not one case may be skipped or marked `.skip` to unblock a build — that suite **is** the invariant.
 - **Every hole found becomes a test before it becomes a fix.**
-- Engines have no unit tests: they are almost entirely I/O. The testable part — truncation — lives in `applyLimit`, covered under `tests/output/`.
+- Engines are almost entirely I/O, so most have no unit tests. The testable part — truncation — lives in `applyLimit`, covered under `tests/output/`. The exception is `tests/engines/mysql.test.ts`, which mocks the driver to cover the `KILL QUERY` on timeout.
 
 ## Where to add code
 
