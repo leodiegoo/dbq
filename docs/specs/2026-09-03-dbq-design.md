@@ -333,6 +333,25 @@ The operational second layer is a Redis ACL user limited to the same commands.
 The guard prevents accidental misuse; server permissions protect against a bug
 in the guard.
 
+## Revision of 2026-10-15 — MySQL kills the server-side query
+
+Commit `869b90a`. The driver timeout and `client.destroy()` only cut the client
+side: the query kept running on the server, and a stuck `EXPLAIN` held locks on
+production for about 50 minutes after dbq exited.
+
+When dbq gives up on a MySQL query (timeout, row ceiling, stream error, `SIGINT`
+or `SIGTERM`), it opens a short side connection and runs `KILL QUERY` on the
+thread of its own connection. The main connection cannot do it, because it is
+busy running the query. The thread id comes from the driver handshake, never
+from user input.
+
+This is the one statement dbq sends that is not a read, and it does not weaken
+the invariant: it cannot change data, it targets only dbq's own thread, and the
+engine issues it, not user input. If the kill fails, dbq writes a warning to
+stderr (or appends it to the error) saying the query may still be running.
+`ER_NO_SUCH_THREAD` counts as success, because the query is already gone.
+PostgreSQL, MongoDB and Redis are unchanged.
+
 ## Recorded decisions
 
 | Decision | Rejected alternative | Reason |

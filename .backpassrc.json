@@ -1,0 +1,6 @@
+{
+  "memoryFiles": ["AGENTS.md"],
+  "budgetTokens": 5000,
+  "jobs": 2,
+  "discovery": { "since": "30d", "minUserTurns": 2 }
+}
