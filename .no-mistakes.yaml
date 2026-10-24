@@ -16,11 +16,14 @@ test:
        Do not run dbq against configured projects. Guard behaviour is covered by tests/guards/.
     4. Real databases are optional. Only src/engines/ changes need one.
        The MySQL integration test needs a disposable server, never a shared one:
-         docker run -d --rm --name dbq-nm-mysql -e MYSQL_ROOT_PASSWORD=pw -p 127.0.0.1:33999:3306 mysql:8.4
+         Use a name and a host port unique to this run, so parallel runs never collide:
+         name=dbq-nm-mysql-$$-$(date +%s)
+         docker run -d --rm --name "$name" -e MYSQL_ROOT_PASSWORD=pw -p 127.0.0.1::3306 mysql:8.4
+         port=$(docker port "$name" 3306 | head -n1 | cut -d: -f2)
          Wait until the server accepts connections, then:
-         DBQ_TEST_MYSQL_URI=mysql://root:pw@127.0.0.1:33999/mysql pnpm vitest run tests/engines/mysql.integration.test.ts
-         docker rm -f dbq-nm-mysql
-       Run at most one container at a time and remove it right after the run.
+         DBQ_TEST_MYSQL_URI=mysql://root:pw@127.0.0.1:$port/mysql pnpm vitest run tests/engines/mysql.integration.test.ts
+         docker rm -f "$name"
+       Run at most one container at a time and remove only your own container right after the run.
        If docker is not available, mark the engine change untested with that reason.
     There is no integration test for PostgreSQL, MongoDB or Redis. Mark engine changes for them untested.
     Never point dbq at a real or production database during validation.
