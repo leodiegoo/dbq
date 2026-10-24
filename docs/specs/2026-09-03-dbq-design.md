@@ -408,3 +408,9 @@ order, read-only guards, and Redis bounded scan behavior remain unchanged.
 The AXI audit at `docs/axi-auditoria.md` records the decision and evidence for
 each of the ten principles, including the contract or safety reason behind
 each adaptation.
+
+## Revision of 2026-10-24 — MySQL integration test runs after merge
+
+The test strategy above left engine integration opt-in and local only. The MySQL integration test now also runs in the `integration` CI job, on `push` to `main` only, against a `mysql:8.4` service container. It never gates a pull request, so the PR gate is unchanged. PostgreSQL, MongoDB and Redis still have no integration test.
+
+The job runs `tests/engines/` with `--retry 1` because it depends on an external server. This is the only place a retry is allowed; a unit test that fails intermittently is tracked as an issue instead (see AGENTS.md).

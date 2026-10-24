@@ -24,6 +24,7 @@ test:
          DBQ_TEST_MYSQL_URI=mysql://root:pw@127.0.0.1:$port/mysql pnpm vitest run tests/engines/mysql.integration.test.ts
          docker rm -f "$name"
        Run at most one container at a time and remove only your own container right after the run.
+        MySQL engine changes are also covered by the post-merge `integration` CI job; local Docker remains optional.
        If docker is not available, mark the engine change untested with that reason.
     There is no integration test for PostgreSQL, MongoDB or Redis. Mark engine changes for them untested.
     Never point dbq at a real or production database during validation.
