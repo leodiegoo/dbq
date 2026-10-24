@@ -38,3 +38,41 @@ jobs:
       - name: Test
         run: |
           pnpm test
+
+  # Post-merge only: the MySQL integration test needs a real server, so it never gates a PR.
+  integration:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: pw
+        ports:
+          - 3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -ppw"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Install
+        run: |
+          pnpm install --frozen-lockfile --config.strict-dep-builds=false
+
+      - name: Integration
+        env:
+          DBQ_TEST_MYSQL_URI: mysql://root:pw@127.0.0.1:${{ job.services.mysql.ports[3306] }}/mysql
+        run: |
+          pnpm vitest run --retry 1 tests/engines/
