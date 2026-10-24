@@ -3,8 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { executeMysql } from '../../src/engines/mysql.ts';
 
 // Needs a disposable MySQL, never a shared one. For example:
-//   docker run -d --rm -e MYSQL_ROOT_PASSWORD=pw -p 127.0.0.1:33999:3306 mysql:8.4
-//   DBQ_TEST_MYSQL_URI=mysql://root:pw@127.0.0.1:33999/mysql pnpm test
+// The name and host port are unique per run, so parallel runs never collide:
+//   name=dbq-nm-mysql-$$-$(date +%s)
+//   docker run -d --rm --name "$name" -e MYSQL_ROOT_PASSWORD=pw -p 127.0.0.1::3306 mysql:8.4
+//   port=$(docker port "$name" 3306 | head -n1 | cut -d: -f2)
+//   DBQ_TEST_MYSQL_URI=mysql://root:pw@127.0.0.1:$port/mysql pnpm test
 const uri = process.env.DBQ_TEST_MYSQL_URI;
 
 describe.skipIf(!uri)('executeMysql against a real MySQL', () => {
