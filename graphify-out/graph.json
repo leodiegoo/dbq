@@ -30,6 +30,19 @@
       "source_location": "L5"
     },
     {
+      "id": "src_config_types_postgresconnection",
+      "label": "PostgresConnection",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "postgresconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L6"
+    },
+    {
       "id": "src_engines_mysql_executeoptions",
       "label": "ExecuteOptions",
       "_callable": true,
@@ -69,19 +82,6 @@
       "source_location": "L10"
     },
     {
-      "id": "src_guards_types_mongoplan",
-      "label": "MongoPlan",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "mongoplan",
-      "source_file": "src/guards/types.ts",
-      "source_location": "L61"
-    },
-    {
       "id": "src_guards_types_sqlplan",
       "label": "SqlPlan",
       "_callable": true,
@@ -93,6 +93,45 @@
       "norm_label": "sqlplan",
       "source_file": "src/guards/types.ts",
       "source_location": "L30"
+    },
+    {
+      "id": "src_config_types_connection",
+      "label": "Connection",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "connection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_config_types_envconfig",
+      "label": "EnvConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "envconfig",
+      "source_file": "src/config/types.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_config_types_resolvedconnection",
+      "label": "ResolvedConnection",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "resolvedconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L16"
     },
     {
       "id": "src_config_types_redisconnection",
@@ -251,6 +290,19 @@
       "source_location": "L23"
     },
     {
+      "id": "src_guards_types_mongoplan",
+      "label": "MongoPlan",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "guards/types.ts",
+      "file_type": "code",
+      "norm_label": "mongoplan",
+      "source_file": "src/guards/types.ts",
+      "source_location": "L61"
+    },
+    {
       "id": "src_guards_types_mongoreadop",
       "label": "MongoReadOp",
       "_callable": true,
@@ -303,56 +355,17 @@
       "source_location": "L53"
     },
     {
-      "id": "src_config_types_connection",
-      "label": "Connection",
+      "id": "tests_engines_mysql_test_fakeclient",
+      "label": "FakeClient",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "connection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_config_types_envconfig",
-      "label": "EnvConfig",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "envconfig",
-      "source_file": "src/config/types.ts",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_config_types_postgresconnection",
-      "label": "PostgresConnection",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "postgresconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L6"
-    },
-    {
-      "id": "src_config_types_resolvedconnection",
-      "label": "ResolvedConnection",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "resolvedconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L16"
+      "norm_label": "fakeclient",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L4"
     },
     {
       "id": "src_engines_mongo_ceiling",
@@ -412,7 +425,19 @@
       "file_type": "code",
       "norm_label": "executemysql()",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L18"
+      "source_location": "L51"
+    },
+    {
+      "id": "src_engines_mysql_killquery",
+      "label": "killQuery()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "killquery()",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L28"
     },
     {
       "id": "src_engines_mysql_withdatabase",
@@ -427,6 +452,30 @@
       "source_location": "L10"
     },
     {
+      "id": "src_engines_postgres_executepostgres",
+      "label": "executePostgres()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "executepostgres()",
+      "source_file": "src/engines/postgres.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "src_engines_postgres_withdatabase",
+      "label": "withDatabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "withdatabase()",
+      "source_file": "src/engines/postgres.ts",
+      "source_location": "L10"
+    },
+    {
       "id": "src_errors_readtag",
       "label": "readTag()",
       "_callable": true,
@@ -437,6 +486,18 @@
       "norm_label": "readtag()",
       "source_file": "src/errors.ts",
       "source_location": "L43"
+    },
+    {
+      "id": "src_errors_scruburi",
+      "label": "scrubUri()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "scruburi()",
+      "source_file": "src/errors.ts",
+      "source_location": "L28"
     },
     {
       "id": "src_errors_toconnectionerror",
@@ -511,16 +572,100 @@
       "source_location": "L7"
     },
     {
+      "id": "src_schema_postgres_postgresdatabases",
+      "label": "postgresDatabases()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "postgresdatabases()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "src_schema_postgres_postgresschema",
+      "label": "postgresSchema()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "postgresschema()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_schema_postgres_quote",
+      "label": "quote()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "quote()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L15"
+    },
+    {
       "id": "src_cli_resolve",
       "label": "resolve()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "resolve()",
       "source_file": "src/cli.ts",
       "source_location": "L55"
+    },
+    {
+      "id": "src_config_loadenv_isrecord",
+      "label": "isRecord()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "isrecord()",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "src_config_loadenv_loadenv",
+      "label": "loadEnv()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "loadenv()",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "src_config_loadenv_usage",
+      "label": "usage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "usage()",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "src_config_loadenv_validateconnection",
+      "label": "validateConnection()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "validateconnection()",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L21"
     },
     {
       "id": "src_config_resolveproject_configroot",
@@ -528,7 +673,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "configroot()",
       "source_file": "src/config/resolveProject.ts",
@@ -540,11 +685,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "gitroot()",
       "source_file": "src/config/resolveProject.ts",
       "source_location": "L27"
+    },
+    {
+      "id": "src_config_resolveproject_listenvs",
+      "label": "listEnvs()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "listenvs()",
+      "source_file": "src/config/resolveProject.ts",
+      "source_location": "L18"
     },
     {
       "id": "src_config_resolveproject_listprojects",
@@ -552,7 +709,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "listprojects()",
       "source_file": "src/config/resolveProject.ts",
@@ -564,7 +721,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "resolveproject()",
       "source_file": "src/config/resolveProject.ts",
@@ -576,7 +733,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "runcli()",
       "source_file": "tests/cli/output.test.ts",
@@ -588,7 +745,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "codeof()",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -600,7 +757,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "writeenv()",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -612,7 +769,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "maketemp()",
       "source_file": "tests/config/resolveProject.test.ts",
@@ -895,30 +1052,6 @@
       "source_location": "L116"
     },
     {
-      "id": "src_engines_postgres_executepostgres",
-      "label": "executePostgres()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "executepostgres()",
-      "source_file": "src/engines/postgres.ts",
-      "source_location": "L31"
-    },
-    {
-      "id": "src_engines_postgres_withdatabase",
-      "label": "withDatabase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "withdatabase()",
-      "source_file": "src/engines/postgres.ts",
-      "source_location": "L10"
-    },
-    {
       "id": "src_output_envelope_cell",
       "label": "cell()",
       "_callable": true,
@@ -1025,42 +1158,6 @@
       "norm_label": "truncatecontent()",
       "source_file": "src/output/envelope.ts",
       "source_location": "L47"
-    },
-    {
-      "id": "src_schema_postgres_postgresdatabases",
-      "label": "postgresDatabases()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "postgresdatabases()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L66"
-    },
-    {
-      "id": "src_schema_postgres_postgresschema",
-      "label": "postgresSchema()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "postgresschema()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_schema_postgres_quote",
-      "label": "quote()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "quote()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L15"
     },
     {
       "id": "tests_output_envelope_test_envelope",
@@ -1219,76 +1316,28 @@
       "source_location": "L5"
     },
     {
-      "id": "src_config_loadenv_isrecord",
-      "label": "isRecord()",
+      "id": "tests_engines_mysql_test_kills",
+      "label": "kills()",
       "_callable": true,
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "isrecord()",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L18"
+      "norm_label": "kills()",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L44"
     },
     {
-      "id": "src_config_loadenv_loadenv",
-      "label": "loadEnv()",
+      "id": "tests_engines_mysql_test_querybehaviour",
+      "label": "queryBehaviour()",
       "_callable": true,
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "loadenv()",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L58"
-    },
-    {
-      "id": "src_config_loadenv_usage",
-      "label": "usage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "usage()",
-      "source_file": "src/config/loadEnv.ts",
+      "norm_label": "querybehaviour()",
+      "source_file": "tests/engines/mysql.test.ts",
       "source_location": "L14"
-    },
-    {
-      "id": "src_config_loadenv_validateconnection",
-      "label": "validateConnection()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "validateconnection()",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_config_resolveproject_listenvs",
-      "label": "listEnvs()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "listenvs()",
-      "source_file": "src/config/resolveProject.ts",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_errors_scruburi",
-      "label": "scrubUri()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "scruburi()",
-      "source_file": "src/errors.ts",
-      "source_location": "L28"
     },
     {
       "id": "src_engines_mongo",
@@ -1401,6 +1450,28 @@
       "source_location": "L1"
     },
     {
+      "id": "src_schema_postgres",
+      "label": "schema/postgres.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "schema/postgres.ts",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_engines_mysql_integration_test",
+      "label": "mysql.integration.test.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "code",
+      "norm_label": "mysql.integration.test.ts",
+      "source_file": "tests/engines/mysql.integration.test.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "tests_errors_test",
       "label": "errors.test.ts",
       "_origin": "ast",
@@ -1433,6 +1504,18 @@
       "norm_label": "errors and exit codes",
       "source_file": "AGENTS.md",
       "source_location": "L107"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_global_constraints",
+      "label": "Global Constraints",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "errors.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "global constraints",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L13"
     },
     {
       "id": "docs_plans_2026_09_03_dbq_self_review",
@@ -1483,22 +1566,77 @@
       "source_location": "L1837"
     },
     {
+      "id": "src_config_loadenv",
+      "label": "loadEnv.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "loadenv.ts",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "src_config_resolveproject",
       "label": "resolveProject.ts",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "resolveproject.ts",
       "source_file": "src/config/resolveProject.ts",
       "source_location": "L1"
     },
     {
+      "id": "src_config_types",
+      "label": "config/types.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "config/types.ts",
+      "source_file": "src/config/types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_config_types_default_limit",
+      "label": "DEFAULT_LIMIT",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_limit",
+      "source_file": "src/config/types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_config_types_default_max_bytes",
+      "label": "DEFAULT_MAX_BYTES",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_max_bytes",
+      "source_file": "src/config/types.ts",
+      "source_location": "L2"
+    },
+    {
+      "id": "src_config_types_default_timeout_ms",
+      "label": "DEFAULT_TIMEOUT_MS",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_timeout_ms",
+      "source_file": "src/config/types.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "tests_cli_output_test",
       "label": "output.test.ts",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "output.test.ts",
       "source_file": "tests/cli/output.test.ts",
@@ -1509,7 +1647,7 @@
       "label": "loadEnv.test.ts",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "loadenv.test.ts",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -1520,7 +1658,7 @@
       "label": "bothEnv",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "bothenv",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -1531,7 +1669,7 @@
       "label": "mysqlEnv",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "mysqlenv",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -1542,7 +1680,7 @@
       "label": "temps",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "temps",
       "source_file": "tests/config/loadEnv.test.ts",
@@ -1553,7 +1691,7 @@
       "label": "resolveProject.test.ts",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "resolveproject.test.ts",
       "source_file": "tests/config/resolveProject.test.ts",
@@ -1564,7 +1702,7 @@
       "label": "temps",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "temps",
       "source_file": "tests/config/resolveProject.test.ts",
@@ -1575,7 +1713,7 @@
       "label": "scaffold.test.ts",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "code",
       "norm_label": "scaffold.test.ts",
       "source_file": "tests/scaffold.test.ts",
@@ -1586,11 +1724,35 @@
       "label": "vitest",
       "_origin": "ast",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "file_type": "concept",
       "norm_label": "vitest",
       "source_file": "package.json",
       "source_location": "L33"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_file_structure",
+      "label": "File Structure",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "file structure",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_7_loading_and_validating_the_env_file",
+      "label": "Task 7: Loading and validating the env file",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 7: loading and validating the env file",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1320"
     },
     {
       "id": "src_engines_redis",
@@ -1938,6 +2100,66 @@
       "node_kind": "page",
       "norm_label": "claude.md",
       "source_file": "CLAUDE.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_pull_request_template",
+      "label": "pull_request_template.md",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "pull_request_template.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "pull_request_template.md",
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_pull_request_template_checklist",
+      "label": "Checklist",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "pull_request_template.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "checklist",
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L22"
+    },
+    {
+      "id": "github_pull_request_template_evidence",
+      "label": "Evidence",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "pull_request_template.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "evidence",
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "github_pull_request_template_merge_danger",
+      "label": "Merge Danger",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "pull_request_template.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "merge danger",
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "github_pull_request_template_summary",
+      "label": "Summary",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "pull_request_template.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "summary",
+      "source_file": ".github/pull_request_template.md",
       "source_location": "L1"
     },
     {
@@ -2304,6 +2526,28 @@
       "source_location": "L24"
     },
     {
+      "id": "ref_picocolors",
+      "label": "picocolors",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "picocolors",
+      "source_file": "package.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "ref_toon_format_toon",
+      "label": "@toon-format/toon",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "@toon-format/toon",
+      "source_file": "package.json",
+      "source_location": "L18"
+    },
+    {
       "id": "ref_types_node",
       "label": "@types/node",
       "_origin": "ast",
@@ -2405,7 +2649,7 @@
       "node_kind": "heading",
       "norm_label": "development",
       "source_file": "README.md",
-      "source_location": "L629"
+      "source_location": "L637"
     },
     {
       "id": "readme_discovery_envs_databases_schema",
@@ -2429,7 +2673,7 @@
       "node_kind": "heading",
       "norm_label": "exit codes",
       "source_file": "README.md",
-      "source_location": "L508"
+      "source_location": "L516"
     },
     {
       "id": "readme_fields",
@@ -2453,7 +2697,7 @@
       "node_kind": "heading",
       "norm_label": "how it works",
       "source_file": "README.md",
-      "source_location": "L542"
+      "source_location": "L550"
     },
     {
       "id": "readme_how_the_project_is_discovered",
@@ -2489,7 +2733,7 @@
       "node_kind": "heading",
       "norm_label": "limits and truncation",
       "source_file": "README.md",
-      "source_location": "L430"
+      "source_location": "L438"
     },
     {
       "id": "readme_mongodb",
@@ -2504,7 +2748,7 @@
       "source_location": "L239"
     },
     {
-      "id": "readme_mongodb_389",
+      "id": "readme_mongodb_397",
       "label": "MongoDB",
       "_origin": "ast",
       "community": 3,
@@ -2513,7 +2757,7 @@
       "node_kind": "heading",
       "norm_label": "mongodb",
       "source_file": "README.md",
-      "source_location": "L389"
+      "source_location": "L397"
     },
     {
       "id": "readme_one_file_groups_n_connections",
@@ -2537,7 +2781,7 @@
       "node_kind": "heading",
       "norm_label": "output",
       "source_file": "README.md",
-      "source_location": "L461"
+      "source_location": "L469"
     },
     {
       "id": "readme_passwords_with_special_characters",
@@ -2573,7 +2817,7 @@
       "node_kind": "heading",
       "norm_label": "recipes",
       "source_file": "README.md",
-      "source_location": "L572"
+      "source_location": "L580"
     },
     {
       "id": "readme_redis",
@@ -2588,7 +2832,7 @@
       "source_location": "L249"
     },
     {
-      "id": "readme_redis_376",
+      "id": "readme_redis_384",
       "label": "Redis",
       "_origin": "ast",
       "community": 3,
@@ -2597,7 +2841,7 @@
       "node_kind": "heading",
       "norm_label": "redis",
       "source_file": "README.md",
-      "source_location": "L376"
+      "source_location": "L384"
     },
     {
       "id": "readme_requirements",
@@ -2621,7 +2865,7 @@
       "node_kind": "heading",
       "norm_label": "scope",
       "source_file": "README.md",
-      "source_location": "L644"
+      "source_location": "L652"
     },
     {
       "id": "readme_security_recommendation",
@@ -2693,7 +2937,7 @@
       "node_kind": "heading",
       "norm_label": "troubleshooting",
       "source_file": "README.md",
-      "source_location": "L612"
+      "source_location": "L620"
     },
     {
       "id": "readme_usage",
@@ -2810,17 +3054,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_schema_postgres",
-      "label": "schema/postgres.ts",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "code",
-      "norm_label": "schema/postgres.ts",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "tests_output_envelope_test",
       "label": "envelope.test.ts",
       "_origin": "ast",
@@ -2830,28 +3063,6 @@
       "norm_label": "envelope.test.ts",
       "source_file": "tests/output/envelope.test.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "ref_picocolors",
-      "label": "picocolors",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "concept",
-      "norm_label": "picocolors",
-      "source_file": "package.json",
-      "source_location": "L25"
-    },
-    {
-      "id": "ref_toon_format_toon",
-      "label": "@toon-format/toon",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "cli.ts",
-      "file_type": "concept",
-      "norm_label": "@toon-format/toon",
-      "source_file": "package.json",
-      "source_location": "L18"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_architecture",
@@ -3043,7 +3254,7 @@
       "node_kind": "heading",
       "norm_label": "recorded decisions",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L336"
+      "source_location": "L355"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_09_03_postgresql",
@@ -3067,7 +3278,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-03 \u2014 agent-oriented output",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L351"
+      "source_location": "L370"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_03_single_structured_format_and_explicit_limits",
@@ -3079,7 +3290,31 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-03 \u2014 single structured format and explicit limits",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L361"
+      "source_location": "L380"
+    },
+    {
+      "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_15_mysql_kills_the_server_side_query",
+      "label": "Revision of 2026-10-15 \u2014 MySQL kills the server-side query",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "revision of 2026-10-15 \u2014 mysql kills the server-side query",
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
+      "source_location": "L336"
+    },
+    {
+      "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_24_mysql_integration_test_runs_after_merge",
+      "label": "Revision of 2026-10-24 \u2014 MySQL integration test runs after merge",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "revision of 2026-10-24 \u2014 mysql integration test runs after merge",
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
+      "source_location": "L412"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_scope",
@@ -3344,7 +3579,7 @@
       "node_kind": "heading",
       "norm_label": "anti-patterns",
       "source_file": "AGENTS.md",
-      "source_location": "L153"
+      "source_location": "L156"
     },
     {
       "id": "agents_architecture",
@@ -3392,7 +3627,7 @@
       "node_kind": "heading",
       "norm_label": "documentation",
       "source_file": "AGENTS.md",
-      "source_location": "L174"
+      "source_location": "L177"
     },
     {
       "id": "agents_errors_that_list_alternatives",
@@ -3500,7 +3735,7 @@
       "node_kind": "heading",
       "norm_label": "where to add code",
       "source_file": "AGENTS.md",
-      "source_location": "L141"
+      "source_location": "L144"
     },
     {
       "id": "docs_plans_2026_09_03_dbq",
@@ -3704,102 +3939,78 @@
       "source_location": "L16"
     },
     {
-      "id": "src_config_loadenv",
-      "label": "loadEnv.ts",
+      "id": "tests_engines_mysql_test",
+      "label": "mysql.test.ts",
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "loadenv.ts",
-      "source_file": "src/config/loadEnv.ts",
+      "norm_label": "mysql.test.ts",
+      "source_file": "tests/engines/mysql.test.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_config_types",
-      "label": "config/types.ts",
+      "id": "tests_engines_mysql_test_connection",
+      "label": "connection",
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "config/types.ts",
-      "source_file": "src/config/types.ts",
-      "source_location": "L1"
+      "norm_label": "connection",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L41"
     },
     {
-      "id": "src_config_types_default_limit",
-      "label": "DEFAULT_LIMIT",
+      "id": "tests_engines_mysql_test_created",
+      "label": "created",
       "_origin": "ast",
       "community": 9,
-      "community_name": "loadEnv.ts",
+      "community_name": "mysql.test.ts",
       "file_type": "code",
-      "norm_label": "default_limit",
-      "source_file": "src/config/types.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_config_types_default_max_bytes",
-      "label": "DEFAULT_MAX_BYTES",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "default_max_bytes",
-      "source_file": "src/config/types.ts",
-      "source_location": "L2"
-    },
-    {
-      "id": "src_config_types_default_timeout_ms",
-      "label": "DEFAULT_TIMEOUT_MS",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "code",
-      "norm_label": "default_timeout_ms",
-      "source_file": "src/config/types.ts",
-      "source_location": "L3"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_file_structure",
-      "label": "File Structure",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "file structure",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L28"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_global_constraints",
-      "label": "Global Constraints",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "loadEnv.ts",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "global constraints",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "norm_label": "created",
+      "source_file": "tests/engines/mysql.test.ts",
       "source_location": "L13"
     },
     {
-      "id": "docs_plans_2026_09_03_dbq_task_7_loading_and_validating_the_env_file",
-      "label": "Task 7: Loading and validating the env file",
+      "id": "tests_engines_mysql_test_opts",
+      "label": "opts",
       "_origin": "ast",
       "community": 9,
+      "community_name": "mysql.test.ts",
+      "file_type": "code",
+      "norm_label": "opts",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "tests_engines_mysql_test_plan",
+      "label": "plan",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "mysql.test.ts",
+      "file_type": "code",
+      "norm_label": "plan",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "ref_node_child_process",
+      "label": "ref_node_child_process",
+      "_origin": "semantic",
+      "community": 1,
       "community_name": "loadEnv.ts",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 7: loading and validating the env file",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1320"
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ref_node_child_process",
+      "source_file": "",
+      "type": "external"
     },
     {
       "id": "ref_node_fs",
       "label": "ref_node_fs",
       "_origin": "semantic",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_node_fs",
@@ -3811,7 +4022,7 @@
       "label": "ref_node_fs_promises",
       "_origin": "semantic",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_node_fs_promises",
@@ -3823,7 +4034,7 @@
       "label": "ref_node_os",
       "_origin": "semantic",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_node_os",
@@ -3835,7 +4046,7 @@
       "label": "ref_node_path",
       "_origin": "semantic",
       "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "community_name": "loadEnv.ts",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_node_path",
@@ -3855,13 +4066,24 @@
       "type": "external"
     },
     {
-      "id": "ref_node_child_process",
-      "label": "ref_node_child_process",
-      "community": 1,
-      "community_name": "loadEnv.test.ts",
+      "id": "ref_mysql2_promise",
+      "label": "ref_mysql2_promise",
+      "community": 0,
+      "community_name": "errors.ts",
       "external": true,
       "file_type": "concept",
-      "norm_label": "ref_node_child_process",
+      "norm_label": "ref_mysql2_promise",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "ref_node_events",
+      "label": "ref_node_events",
+      "community": 9,
+      "community_name": "mysql.test.ts",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ref_node_events",
       "source_file": "",
       "type": "external"
     }
@@ -4241,30 +4463,6 @@
     },
     {
       "source": "src_engines_mysql_executemysql",
-      "target": "src_engines_mysql_withdatabase",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L24",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_mysql_executemysql",
-      "target": "src_errors_toconnectionerror",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L37",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_mysql_executemysql",
       "target": "src_output_envelope_applylimit",
       "relation": "calls",
       "_origin": "ast",
@@ -4272,7 +4470,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L65",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -4284,7 +4482,67 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L67",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql_executemysql",
+      "target": "src_errors_dbqerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql_executemysql",
+      "target": "src_engines_mysql_withdatabase",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql_executemysql",
+      "target": "src_engines_mysql_killquery",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql_executemysql",
+      "target": "src_errors_toconnectionerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql_killquery",
+      "target": "src_errors_scruburi",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -5104,6 +5362,30 @@
       "weight": 1.0
     },
     {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_querybehaviour",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_kills",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
       "source": "tests_guards_mongo_test",
       "target": "tests_guards_mongo_test_refuses",
       "relation": "contains",
@@ -5897,6 +6179,30 @@
     },
     {
       "source": "src_engines_mysql",
+      "target": "src_errors_dbqerror",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql",
+      "target": "src_errors_scruburi",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql",
       "target": "src_errors_toconnectionerror",
       "relation": "imports",
       "_origin": "ast",
@@ -6529,6 +6835,18 @@
       "context": "import",
       "source_file": "tests/config/resolveProject.test.ts",
       "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_integration_test",
+      "target": "src_engines_mysql_executemysql",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.integration.test.ts",
+      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -7846,6 +8164,66 @@
       "weight": 1.0
     },
     {
+      "source": "tests_engines_mysql_integration_test",
+      "target": "ref_mysql2_promise",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.integration.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_integration_test",
+      "target": "ref_vitest",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.integration.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_integration_test",
+      "target": "src_engines_mysql",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.integration.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "ref_node_events",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "ref_vitest",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
       "source": "tests_errors_test",
       "target": "ref_vitest",
       "relation": "imports_from",
@@ -8192,7 +8570,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L141",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -8203,7 +8581,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L153",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -8214,7 +8592,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L174",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -8725,7 +9103,7 @@
     },
     {
       "source": "docs_specs_2026_09_03_dbq_design_dbq_a_read_only_query_runner_for_mysql_postgresql_and_mongodb",
-      "target": "docs_specs_2026_09_03_dbq_design_recorded_decisions",
+      "target": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_15_mysql_kills_the_server_side_query",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8736,13 +9114,24 @@
     },
     {
       "source": "docs_specs_2026_09_03_dbq_design_dbq_a_read_only_query_runner_for_mysql_postgresql_and_mongodb",
+      "target": "docs_specs_2026_09_03_dbq_design_recorded_decisions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_specs_2026_09_03_dbq_design_dbq_a_read_only_query_runner_for_mysql_postgresql_and_mongodb",
       "target": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_03_agent_oriented_output",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L351",
+      "source_location": "L370",
       "weight": 1.0
     },
     {
@@ -8753,7 +9142,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L361",
+      "source_location": "L380",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_specs_2026_09_03_dbq_design_dbq_a_read_only_query_runner_for_mysql_postgresql_and_mongodb",
+      "target": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_24_mysql_integration_test_runs_after_merge",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
+      "source_location": "L412",
       "weight": 1.0
     },
     {
@@ -8820,6 +9220,50 @@
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
       "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "github_pull_request_template",
+      "target": "github_pull_request_template_summary",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "github_pull_request_template",
+      "target": "github_pull_request_template_merge_danger",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "github_pull_request_template",
+      "target": "github_pull_request_template_checklist",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "github_pull_request_template",
+      "target": "github_pull_request_template_evidence",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/pull_request_template.md",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -9281,7 +9725,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L430",
+      "source_location": "L438",
       "weight": 1.0
     },
     {
@@ -9292,7 +9736,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L461",
+      "source_location": "L469",
       "weight": 1.0
     },
     {
@@ -9303,18 +9747,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L508",
-      "weight": 1.0
-    },
-    {
-      "source": "readme_dbq",
-      "target": "readme_how_it_works",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": "L542",
+      "source_location": "L516",
       "weight": 1.0
     },
     {
@@ -9330,24 +9763,24 @@
     },
     {
       "source": "readme_dbq",
+      "target": "readme_how_it_works",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L550",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dbq",
       "target": "readme_recipes",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L572",
-      "weight": 1.0
-    },
-    {
-      "source": "readme_dbq",
-      "target": "readme_troubleshooting",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": "L612",
+      "source_location": "L580",
       "weight": 1.0
     },
     {
@@ -9363,13 +9796,24 @@
     },
     {
       "source": "readme_dbq",
+      "target": "readme_troubleshooting",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L620",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_dbq",
       "target": "readme_development",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L629",
+      "source_location": "L637",
       "weight": 1.0
     },
     {
@@ -9380,7 +9824,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L644",
+      "source_location": "L652",
       "weight": 1.0
     },
     {
@@ -9473,24 +9917,24 @@
     },
     {
       "source": "readme_what_is_allowed",
-      "target": "readme_redis_376",
+      "target": "readme_redis_384",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L376",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
       "source": "readme_what_is_allowed",
-      "target": "readme_mongodb_389",
+      "target": "readme_mongodb_397",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L389",
+      "source_location": "L397",
       "weight": 1.0
     },
     {
@@ -9880,13 +10324,24 @@
     },
     {
       "source": "src_engines_mysql",
+      "target": "src_engines_mysql_killquery",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_mysql",
       "target": "src_engines_mysql_executemysql",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L18",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -10726,6 +11181,61 @@
       "weight": 1.0
     },
     {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_created",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_fakeclient",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_connection",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_plan",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_engines_mysql_test",
+      "target": "tests_engines_mysql_test_opts",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
       "source": "tsconfig",
       "target": "tsconfig_include",
       "relation": "contains",
@@ -10891,6 +11401,15 @@
       "weight": 1.0
     },
     {
+      "source": "tests_engines_mysql_test",
+      "target": "src_engines_mysql",
+      "relation": "dynamic_import",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/engines/mysql.test.ts"
+    },
+    {
       "source": "src_errors_dbqerror",
       "target": "src_errors_dbqerror_constructor",
       "relation": "method",
@@ -10909,7 +11428,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L178",
+      "source_location": "L181",
       "weight": 1.0
     },
     {
@@ -10920,7 +11439,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L179",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -10931,7 +11450,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "AGENTS.md",
-      "source_location": "L180",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
@@ -10942,7 +11461,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L568",
+      "source_location": "L576",
       "weight": 1.0
     },
     {
@@ -10953,7 +11472,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L640",
+      "source_location": "L648",
       "weight": 1.0
     },
     {
@@ -11421,7 +11940,7 @@
       "confidence_score": 0.95,
       "context": "applyLimit",
       "source_file": "AGENTS.md",
-      "source_location": "L167",
+      "source_location": "L170",
       "weight": 1.0
     },
     {
@@ -11433,7 +11952,7 @@
       "confidence_score": 0.95,
       "context": "applyLimit",
       "source_file": "AGENTS.md",
-      "source_location": "L139",
+      "source_location": "L142",
       "weight": 1.0
     },
     {
@@ -11630,5 +12149,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fd2801a61029456307bd8dd0c1695e6b3252c961"
+  "built_at_commit": "d42366617e439e4eb31ce5acc74af1189167c22b"
 }
