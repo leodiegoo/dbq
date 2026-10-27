@@ -1,5 +1,7 @@
 # dbq
 
+![dbq: an AI agent sends queries through a read-only shield that blocks writes before they reach MySQL, PostgreSQL, MongoDB or Redis](docs/assets/banner.svg)
+
 A **read-only** query runner for MySQL, PostgreSQL, MongoDB and Redis, configured per environment and callable from any directory.
 
 Built for AI agents: structured output uses compact TOON, errors carry actionable hints and distinct exit codes, and `--format table` gives people a readable view. **No code path can write to the database.**

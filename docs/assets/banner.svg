@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" role="img" aria-labelledby="t d">
+  <title id="t">dbq: read-only query runner for AI agents</title>
+  <desc id="d">An AI agent sends queries to dbq, a read-only shield that blocks writes, in front of MySQL, PostgreSQL, MongoDB and Redis.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#8b949e"/>
+    </marker>
+  </defs>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect width="1200" height="400" rx="20" fill="url(#bg)" stroke="#30363d" stroke-width="2"/>
+    <text x="600" y="72" text-anchor="middle" font-size="44" font-weight="700" fill="#f0f6fc" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">dbq</text>
+    <text x="600" y="106" text-anchor="middle" font-size="19" fill="#8b949e">Read-only query runner, built to be driven by AI agents</text>
+
+    <!-- agent -->
+    <rect x="60" y="170" width="190" height="110" rx="14" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="155" y="218" text-anchor="middle" font-size="30" fill="#58a6ff">&#9672;</text>
+    <text x="155" y="256" text-anchor="middle" font-size="22" font-weight="600" fill="#f0f6fc">AI agent</text>
+
+    <line x1="254" y1="225" x2="400" y2="225" stroke="#8b949e" stroke-width="2.5" marker-end="url(#arr)"/>
+
+    <!-- dbq shield -->
+    <path d="M500 150 L590 172 V235 C590 275 550 296 500 312 C450 296 410 275 410 235 V172 Z" fill="#12261a" stroke="#3fb950" stroke-width="3"/>
+    <rect x="478" y="222" width="44" height="34" rx="5" fill="#3fb950"/>
+    <path d="M487 222 V212 a13 13 0 0 1 26 0 V222" fill="none" stroke="#3fb950" stroke-width="5"/>
+    <text x="500" y="338" text-anchor="middle" font-size="20" font-weight="600" fill="#3fb950">read-only &#183; writes blocked</text>
+
+    <line x1="594" y1="225" x2="720" y2="225" stroke="#8b949e" stroke-width="2.5" marker-end="url(#arr)"/>
+
+    <!-- databases -->
+    <g font-size="21" font-weight="600" fill="#f0f6fc">
+      <rect x="730" y="136" width="400" height="48" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <circle cx="758" cy="160" r="7" fill="#f0883e"/><text x="778" y="167">MySQL</text>
+      <rect x="730" y="196" width="400" height="48" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <circle cx="758" cy="220" r="7" fill="#58a6ff"/><text x="778" y="227">PostgreSQL</text>
+      <rect x="730" y="256" width="400" height="48" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <circle cx="758" cy="280" r="7" fill="#3fb950"/><text x="778" y="287">MongoDB</text>
+      <rect x="730" y="316" width="400" height="48" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <circle cx="758" cy="340" r="7" fill="#f85149"/><text x="778" y="347">Redis</text>
+    </g>
+  </g>
+</svg>
