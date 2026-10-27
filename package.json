@@ -18,11 +18,12 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=26"
+    "node": ">=20"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "prepack": "rm -rf dist && pnpm build",
+    "prepack": "rm -rf dist && npm run build",
+    "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"

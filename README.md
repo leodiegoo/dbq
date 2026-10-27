@@ -54,7 +54,7 @@ Not a single network packet left the machine for that command.
 
 ## Requirements
 
-- **Node >= 26.** The published package ships compiled JavaScript in `dist/`; the sources run directly on Node 26 through native type stripping.
+- **Node >= 20.** The published package ships compiled JavaScript in `dist/`. Development from source needs Node 22.18 or newer, which runs TypeScript natively.
 - MySQL, PostgreSQL, MongoDB and/or Redis reachable over the network (VPN, if that applies).
 
 ---
@@ -69,7 +69,7 @@ npm install --global @leodiegoo/dbq
 npx @leodiegoo/dbq --help
 ```
 
-Node 26 or newer is required. Check it:
+Node 20 or newer is required. Check it:
 
 ```bash
 dbq --version   # 0.1.0
