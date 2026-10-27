@@ -428,3 +428,7 @@ The job runs `tests/engines/` with `--retry 1` because it depends on an external
 The previous revision blocked this change on two conditions. Both are now met. `tests/cli/output.test.ts` spawns the compiled `dist/cli.js`, which the Vitest `globalSetup` rebuilds with `npm run build` before every run, so no entry point (`vitest run <file>`, watch mode) runs a stale `dist/`. CI runs the suite on a Node 20, 22 and 24 matrix. `engines` is now `>=20`.
 
 Development from source still needs Node 22.18 or newer, because Node 20 cannot run TypeScript. The CI steps that run under the matrix Node use `npm`, not `pnpm`, because pnpm 11 needs Node 22 or newer; `pnpm install` runs under Node 24.
+
+## Revision of 2026-10-27 — releases through release-please
+
+The hand-made GitHub release that triggered `publish.yml` is replaced by one automatic path. `.github/workflows/release.yml` runs release-please on every push to `main`. It keeps a release PR open that bumps `package.json`, the version in `src/cli.ts` and `.release-please-manifest.json`, and writes `CHANGELOG.md`, all from Conventional Commits. Merging that PR creates the `v<version>` tag and release, and a `publish` job in the same workflow then runs the typecheck and test suite (including `tests/guards/`), checks that `package.json` and `dbq --version` equal the released version, and runs `npm publish --provenance`. `publish.yml` is deleted, so `npm publish --provenance` no longer runs from a hand-published release. The README's "Releases" section holds the usage steps.
