@@ -655,6 +655,14 @@ pnpm typecheck   # tsc --noEmit
 pnpm build       # tsc -> dist/
 ```
 
+### Releases
+
+Versions follow [Conventional Commits](https://www.conventionalcommits.org/) and are managed by [release-please](https://github.com/googleapis/release-please):
+
+1. Merge commits to `main` with conventional titles: `fix:` bumps the patch, `feat:` the minor, and a breaking change (`feat!:` or a `BREAKING CHANGE:` footer) the major. `docs:`, `chore:`, `ci:` and the like do not release.
+2. release-please keeps one release PR open that bumps `package.json`, the CLI version and `.release-please-manifest.json`, and writes `CHANGELOG.md`.
+3. Merging that PR creates the `v<version>` tag and GitHub release, then the `Release` workflow typechecks, tests, builds and runs `npm publish --provenance` with the `NPM_TOKEN` secret. This is the only publish path; never publish by hand.
+
 The adversarial suite in `tests/guards/` is the project's invariant: not one of its cases may be skipped or marked `.skip` to unblock a build.
 
 Before touching the code, read **[AGENTS.md](AGENTS.md)** — architecture, the guard/engine boundary, type-stripping constraints, and where each kind of code belongs.
