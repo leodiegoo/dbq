@@ -54,28 +54,39 @@ Not a single network packet left the machine for that command.
 
 ## Requirements
 
-- **Node >= 26.** The binary points straight at a `.ts` file and Node strips the types at runtime — no build step, no `dist/`.
+- **Node >= 26.** The published package ships compiled JavaScript in `dist/`; the sources run directly on Node 26 through native type stripping.
 - MySQL, PostgreSQL, MongoDB and/or Redis reachable over the network (VPN, if that applies).
 
 ---
 
 ## Install
 
+> The unscoped name `dbq` on npm belongs to an unrelated package, so this one is published as `@leodiegoo/dbq`. The binary is still called `dbq`.
+
 ```bash
-git clone https://github.com/leodiegoo/dbq.git
-cd dbq
-pnpm install
-npm link
+npm install --global @leodiegoo/dbq
+# or run it once, without installing:
+npx @leodiegoo/dbq --help
 ```
 
-`npm link` puts `dbq` on your PATH. Check it:
+Node 26 or newer is required. Check it:
 
 ```bash
 dbq --version   # 0.1.0
 dbq --help
 ```
 
-> `npm link` is the development path — source edits take effect immediately, with no reinstall.
+### From source
+
+```bash
+git clone https://github.com/leodiegoo/dbq.git
+cd dbq
+pnpm install
+pnpm build
+npm link
+```
+
+`pnpm build` compiles `src/` to `dist/`, which is what the `dbq` binary runs. Run it again after editing the source, or call `node src/cli.ts` directly while developing.
 
 ---
 
@@ -639,6 +650,7 @@ Resolution errors **list the alternatives** in the message itself — an uninfer
 ```bash
 pnpm test        # vitest
 pnpm typecheck   # tsc --noEmit
+pnpm build       # tsc -> dist/
 ```
 
 The adversarial suite in `tests/guards/` is the project's invariant: not one of its cases may be skipped or marked `.skip` to unblock a build.
@@ -660,3 +672,7 @@ Redis support is intentionally narrower than the database engines: it has no
 surfaces such as `KEYS` are refused.
 
 `${VAR}` expansion in URIs — to keep production passwords out of plaintext — is noted as a v2 candidate.
+
+## License
+
+[MIT](LICENSE)

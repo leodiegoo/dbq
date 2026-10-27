@@ -39,6 +39,17 @@ jobs:
         run: |
           pnpm test
 
+      # Proves the published artifact installs and runs, not just the sources.
+      - name: Pack and smoke test
+        run: |
+          npm pack --pack-destination "$RUNNER_TEMP"
+          mkdir "$RUNNER_TEMP/smoke"
+          cd "$RUNNER_TEMP/smoke"
+          npm init -y
+          npm install "$RUNNER_TEMP"/leodiegoo-dbq-*.tgz
+          npx dbq --version
+          npx dbq --help
+
   # Post-merge only: the MySQL integration test needs a real server, so it never gates a PR.
   integration:
     if: github.event_name == 'push'
