@@ -101,7 +101,7 @@ const rejectSubcommandAsQuery = (raw: string): void => {
 
 const program = new Command();
 
-program.name('dbq').description('Read-only query runner for SQL, MongoDB and Redis').version('0.1.0');
+program.name('dbq').description('Read-only query runner for SQL, MongoDB and Redis').version('0.1.0'); // x-release-please-version
 
 const handleCliError = (err: { code: string; message: string; exitCode: number }): never => {
   if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
