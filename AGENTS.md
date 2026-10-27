@@ -1,6 +1,6 @@
 # dbq — Knowledge Base
 
-**Stack**: TypeScript run directly by Node 26 in development (native type stripping) and compiled to `dist/` with `tsc` for npm + Commander + mysql2 + pg + mongodb + redis + acorn + Vitest + pnpm
+**Stack**: TypeScript run directly by Node 22.18+ in development (native type stripping) and compiled to `dist/` with `tsc` for npm + Commander + mysql2 + pg + mongodb + redis + acorn + Vitest + pnpm
 
 A read-only query runner for MySQL, PostgreSQL, MongoDB and bounded Redis inspection. The primary consumer is an **AI agent**, not a person — that inverts the usual CLI priorities and explains nearly every design decision here.
 
@@ -15,7 +15,7 @@ npm link           # puts the `dbq` binary on PATH (run pnpm build first)
 node src/cli.ts --help
 ```
 
-`package.json`'s `bin` points at `dist/cli.js`. Tests and `node src/cli.ts` run the TypeScript sources directly, so there is no build step in the dev loop. `pnpm build` (`tsconfig.build.json`) emits `dist/`, rewriting the `.ts` import extensions to `.js`; `npm pack` runs it through `prepack`.
+`package.json`'s `bin` points at `dist/cli.js`. Unit tests and `node src/cli.ts` run the TypeScript sources directly; `tests/cli` spawns `dist/cli.js`, which the Vitest `globalSetup` rebuilds before every run. `pnpm build` (`tsconfig.build.json`) emits `dist/`, rewriting the `.ts` import extensions to `.js`; `npm pack` runs it through `prepack`.
 
 ## The invariant
 

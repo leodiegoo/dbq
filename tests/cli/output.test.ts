@@ -4,8 +4,9 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+// Runs the compiled CLI: Node 20 cannot execute TypeScript. vitest globalSetup builds dist/ first.
 const runCli = (args: string[], xdgConfigHome: string) =>
-  spawnSync(process.execPath, ['src/cli.ts', ...args], {
+  spawnSync(process.execPath, ['dist/cli.js', ...args], {
     cwd: process.cwd(),
     encoding: 'utf8',
     env: { ...process.env, XDG_CONFIG_HOME: xdgConfigHome },

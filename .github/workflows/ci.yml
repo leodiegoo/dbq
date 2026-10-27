@@ -15,6 +15,9 @@ concurrency:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
 
@@ -22,23 +25,23 @@ jobs:
         with:
           version: 11.25.0
 
+      # pnpm 11 itself needs Node >= 22, so install under 24 and test under the matrix version.
       - uses: actions/setup-node@v4
         with:
-          node-version: 26
+          node-version: 24
           cache: pnpm
-
       - name: Install
         run: |
           pnpm install --frozen-lockfile --config.strict-dep-builds=false
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Lint
         run: |
-          pnpm typecheck
-
+          npm run typecheck
       - name: Test
         run: |
-          pnpm test
-
+          npm test
       # Proves the published artifact installs and runs, not just the sources.
       - name: Pack and smoke test
         run: |
