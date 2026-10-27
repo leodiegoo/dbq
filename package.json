@@ -10,6 +10,7 @@
   "bin": {
     "dbq": "./dist/cli.js"
   },
+  "license": "MIT",
   "files": [
     "dist"
   ],

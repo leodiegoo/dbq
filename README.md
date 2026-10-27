@@ -672,3 +672,7 @@ Redis support is intentionally narrower than the database engines: it has no
 surfaces such as `KEYS` are refused.
 
 `${VAR}` expansion in URIs — to keep production passwords out of plaintext — is noted as a v2 candidate.
+
+## License
+
+[MIT](LICENSE)
