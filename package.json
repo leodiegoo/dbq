@@ -23,7 +23,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepack": "rm -rf dist && npm run build",
-    "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
