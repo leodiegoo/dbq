@@ -414,3 +414,11 @@ each adaptation.
 The test strategy above left engine integration opt-in and local only. The MySQL integration test now also runs in the `integration` CI job, on `push` to `main` only, against a `mysql:8.4` service container. It never gates a pull request, so the PR gate is unchanged. PostgreSQL, MongoDB and Redis still have no integration test.
 
 The job runs `tests/engines/` with `--retry 1` because it depends on an external server. This is the only place a retry is allowed; a unit test that fails intermittently is tracked as an issue instead (see AGENTS.md).
+
+## Revision of 2026-10-27 — published to npm as compiled JavaScript
+
+"No build step" held while `dbq` ran from a clone. Installing from npm needs a `bin` that plain Node can run on any install, so the package now ships `dist/`, compiled by `tsc` (`tsconfig.build.json`). `rewriteRelativeImportExtensions` turns the `./x.ts` imports into `./x.js`, so the sources stay unchanged. `tsc` was already the type checker, which is why `tsup` and `tsx` stay rejected. Development and tests still run the `.ts` sources directly.
+
+`dbq` is taken on npm by an unrelated package, so the package name is `@leodiegoo/dbq`; the binary is still `dbq`. `npm publish --provenance` runs from a GitHub release only (`.github/workflows/publish.yml`), after the same typecheck and test suite, including `tests/guards/`.
+
+`engines` stays at `>=26`. The compiled output ran the read-only guards and reached the connection step for all four engines on Node 20, 22 and 24, and every dependency accepts Node 20 or newer. Node 20 still fails 12 tests in `tests/cli/output.test.ts`, which spawn `src/cli.ts` and need type stripping. Lowering `engines` needs those tests to run the compiled CLI and a Node matrix in CI first.

@@ -1,15 +1,27 @@
 {
-  "name": "dbq",
+  "name": "@leodiegoo/dbq",
   "version": "0.1.0",
   "description": "Read-only query runner for SQL, MongoDB and Redis",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leodiegoo/dbq.git"
+  },
   "bin": {
-    "dbq": "./src/cli.ts"
+    "dbq": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=26"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "rm -rf dist && pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
