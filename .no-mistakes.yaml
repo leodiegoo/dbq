@@ -2,6 +2,7 @@ commands:
   prepare: "pnpm install --frozen-lockfile --config.strict-dep-builds=false"
   # The project has no linter; the strict tsconfig (erasableSyntaxOnly, noUncheckedIndexedAccess) is its static check.
   lint: "pnpm typecheck"
+  test: "pnpm test"
 test:
   prepare: true
   instructions: |
