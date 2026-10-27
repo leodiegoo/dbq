@@ -422,3 +422,9 @@ The job runs `tests/engines/` with `--retry 1` because it depends on an external
 `dbq` is taken on npm by an unrelated package, so the package name is `@leodiegoo/dbq`; the binary is still `dbq`. `npm publish --provenance` runs from a GitHub release only (`.github/workflows/publish.yml`), after the same typecheck and test suite, including `tests/guards/`.
 
 `engines` stays at `>=26`. The compiled output ran the read-only guards and reached the connection step for all four engines on Node 20, 22 and 24, and every dependency accepts Node 20 or newer. Node 20 still fails 12 tests in `tests/cli/output.test.ts`, which spawn `src/cli.ts` and need type stripping. Lowering `engines` needs those tests to run the compiled CLI and a Node matrix in CI first.
+
+## Revision of 2026-10-27 — `engines` lowered to Node 20
+
+The previous revision blocked this change on two conditions. Both are now met. `tests/cli/output.test.ts` spawns the compiled `dist/cli.js`, which the Vitest `globalSetup` rebuilds with `npm run build` before every run, so no entry point (`vitest run <file>`, watch mode) runs a stale `dist/`. CI runs the suite on a Node 20, 22 and 24 matrix. `engines` is now `>=20`.
+
+Development from source still needs Node 22.18 or newer, because Node 20 cannot run TypeScript. The CI steps that run under the matrix Node use `npm`, not `pnpm`, because pnpm 11 needs Node 22 or newer; `pnpm install` runs under Node 24.
