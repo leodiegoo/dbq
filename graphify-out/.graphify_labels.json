@@ -14,5 +14,7 @@
   "12": "AXI audit and output measurements",
   "13": "vitest.config.ts",
   "14": "CLAUDE.md",
-  "15": "pull_request_template.md"
+  "15": "pull_request_template.md",
+  "16": "compilerOptions",
+  "17": "release-please-config.json"
 }
