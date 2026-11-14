@@ -16,7 +16,15 @@ import { mongoSchema } from './schema/mongo.ts';
 import { postgresDatabases, postgresSchema } from './schema/postgres.ts';
 import { listDatabases } from './engines/mongo.ts';
 import { MongoClient } from 'mongodb';
-import { formatError, formatTable, formatToon, formatToonValue, formatValueTable, truncateContent, type Envelope } from './output/envelope.ts';
+import {
+  formatError,
+  formatTable,
+  formatToon,
+  formatToonValue,
+  formatValueTable,
+  truncateContent,
+  type Envelope,
+} from './output/envelope.ts';
 
 type Format = 'table' | 'toon';
 
@@ -35,7 +43,8 @@ type CommonOptions = {
 
 const integer = (raw: string): number => {
   const value = Number(raw);
-  if (!Number.isInteger(value) || value < 0) throw new InvalidArgumentError('expected a non-negative integer');
+  if (!Number.isInteger(value) || value < 0)
+    throw new InvalidArgumentError('expected a non-negative integer');
   return value;
 };
 
@@ -101,11 +110,18 @@ const rejectSubcommandAsQuery = (raw: string): void => {
 
 const program = new Command();
 
-program.name('dbq').description('Read-only query runner for SQL, MongoDB and Redis').version('0.1.0'); // x-release-please-version
+program
+  .name('dbq')
+  .description('Read-only query runner for SQL, MongoDB and Redis')
+  .version('0.1.0'); // x-release-please-version
 
 const handleCliError = (err: { code: string; message: string; exitCode: number }): never => {
   if (err.code === 'commander.helpDisplayed' || err.code === 'commander.version') process.exit(0);
-  const usageError = new DbqError('USAGE', err.message, 'run `dbq --help` for valid commands and flags');
+  const usageError = new DbqError(
+    'USAGE',
+    err.message,
+    'run `dbq --help` for valid commands and flags',
+  );
   process.stdout.write(`${formatError(usageError)}\n`);
   process.exit(2);
 };
@@ -117,7 +133,10 @@ const withCommonOptions = (command: Command): Command =>
   configureErrors(command)
     .option('-p, --project <name>', 'project under ~/.config/dbq (default: inferred from cwd)')
     .requiredOption('-e, --env <name>', 'environment to use')
-    .option('-d, --db <connection>', 'connection inside the env (required when there is more than one)')
+    .option(
+      '-d, --db <connection>',
+      'connection inside the env (required when there is more than one)',
+    )
     .option('-D, --database <name>', 'database to query; overrides the env file')
     .option('-t, --timeout <ms>', 'statement timeout (default: 30000)', integer)
     .option('-f, --format <format>', 'toon or table', format, 'toon')
@@ -130,191 +149,235 @@ withCommonOptions(
   program
     .command('run', { isDefault: true })
     .description('run a read query (default command)')
-    .argument('<query>', "SQL, db.<collection>.<op>(...), a Redis JSON command, or '-' to read stdin")
-    .option('-l, --limit <n>', 'row/item ceiling; 0 disables it for SQL and MongoDB (default: 500)', integer)
+    .argument(
+      '<query>',
+      "SQL, db.<collection>.<op>(...), a Redis JSON command, or '-' to read stdin",
+    )
+    .option(
+      '-l, --limit <n>',
+      'row/item ceiling; 0 disables it for SQL and MongoDB (default: 500)',
+      integer,
+    )
     .option('--max-bytes <n>', 'Redis GET byte ceiling; 0 disables it (default: 1000000)', integer)
     .option('-x, --explain', 'run EXPLAIN / .explain() instead of the query'),
-).addHelpText('after', `
+)
+  .addHelpText(
+    'after',
+    `
 Examples:
   dbq run --env <env> "SELECT id, name FROM companies"
   dbq run --env <env> --db <mongo> 'db.companies.find({ active: true }).limit(10)'
   dbq run --env <env> --db <cache> '["SCAN","0","MATCH","cache:*"]'
-`).action(async (query: string, opts: CommonOptions) => {
+`,
+  )
+  .action(async (query: string, opts: CommonOptions) => {
+    try {
+      const raw = query === '-' ? await readStdin() : query;
+      rejectSubcommandAsQuery(raw);
+      const { project, resolved } = resolve(opts);
+      const { connection } = resolved;
+      if (connection.engine === 'redis' && opts.explain === true) {
+        throw new DbqError('USAGE', '--explain is not supported for Redis');
+      }
+      if (connection.engine === 'redis' && resolved.limit === 0) {
+        throw new DbqError(
+          'USAGE',
+          '--limit 0 is not supported for Redis',
+          'use a positive result ceiling',
+        );
+      }
+      const started = Date.now();
+
+      const engineOptions = {
+        limit: resolved.limit,
+        maxBytes: resolved.maxBytes,
+        timeoutMs: resolved.timeoutMs,
+        explain: opts.explain === true,
+        database: resolved.database,
+      };
+
+      let result;
+      if (connection.engine === 'mysql')
+        result = await executeMysql(connection, guardSql(raw), engineOptions);
+      else if (connection.engine === 'postgres') {
+        result = await executePostgres(connection, guardPostgres(raw), engineOptions);
+      } else if (connection.engine === 'mongodb') {
+        result = await executeMongo(connection, guardMongo(raw), engineOptions);
+      } else {
+        result = await executeRedis(connection, guardRedis(raw), engineOptions);
+      }
+      const { rows, truncated } = result;
+      const cursor =
+        connection.engine === 'redis' ? (result as { cursor?: string }).cursor : undefined;
+
+      emit(
+        {
+          project,
+          env: opts.env,
+          db: resolved.name,
+          engine: connection.engine,
+          rowCount: rows.length,
+          truncated,
+          ...(cursor === undefined ? {} : { cursor }),
+          elapsedMs: Date.now() - started,
+          rows,
+        },
+        opts.format,
+        opts.full === true,
+      );
+    } catch (err) {
+      fail(err);
+    }
+  });
+
+configureErrors(
+  program
+    .command('envs')
+    .description('list configured projects and environments')
+    .option('-f, --format <format>', 'toon or table', format, 'toon')
+    .addHelpText(
+      'after',
+      `
+Examples:
+  dbq envs
+  dbq envs --format table
+`,
+    ),
+).action((opts: { format: Format }) => {
   try {
-    const raw = query === '-' ? await readStdin() : query;
-    rejectSubcommandAsQuery(raw);
-    const { project, resolved } = resolve(opts);
-    const { connection } = resolved;
-    if (connection.engine === 'redis' && opts.explain === true) {
-      throw new DbqError('USAGE', '--explain is not supported for Redis');
-    }
-    if (connection.engine === 'redis' && resolved.limit === 0) {
-      throw new DbqError('USAGE', '--limit 0 is not supported for Redis', 'use a positive result ceiling');
-    }
-    const started = Date.now();
+    const root = configRoot();
+    const rows = listProjects(root).flatMap((project) =>
+      listEnvs(root, project).map((env) => ({ project, env })),
+    );
 
-    const engineOptions = {
-      limit: resolved.limit,
-      maxBytes: resolved.maxBytes,
-      timeoutMs: resolved.timeoutMs,
-      explain: opts.explain === true,
-      database: resolved.database,
-    };
-
-    let result;
-    if (connection.engine === 'mysql') result = await executeMysql(connection, guardSql(raw), engineOptions);
-    else if (connection.engine === 'postgres') {
-      result = await executePostgres(connection, guardPostgres(raw), engineOptions);
-    } else if (connection.engine === 'mongodb') {
-      result = await executeMongo(connection, guardMongo(raw), engineOptions);
-    } else {
-      result = await executeRedis(connection, guardRedis(raw), engineOptions);
-    }
-    const { rows, truncated } = result;
-    const cursor = connection.engine === 'redis' ? (result as { cursor?: string }).cursor : undefined;
-
-    emit(
-      {
-        project,
-        env: opts.env,
-        db: resolved.name,
-        engine: connection.engine,
-        rowCount: rows.length,
-        truncated,
-        ...(cursor === undefined ? {} : { cursor }),
-        elapsedMs: Date.now() - started,
-        rows,
-      },
-      opts.format,
-      opts.full === true,
+    const value = { root, rows };
+    process.stdout.write(
+      `${opts.format === 'table' ? formatValueTable(value, process.stdout.isTTY === true) : formatToonValue(value)}\n`,
     );
   } catch (err) {
     fail(err);
   }
 });
-
-configureErrors(program
-  .command('envs')
-  .description('list configured projects and environments')
-  .option('-f, --format <format>', 'toon or table', format, 'toon')
-  .addHelpText('after', `
-Examples:
-  dbq envs
-  dbq envs --format table
-`))
-  .action((opts: { format: Format }) => {
-    try {
-      const root = configRoot();
-      const rows = listProjects(root).flatMap((project) =>
-        listEnvs(root, project).map((env) => ({ project, env })),
-      );
-
-      const value = { root, rows };
-      process.stdout.write(`${opts.format === 'table' ? formatValueTable(value, process.stdout.isTTY === true) : formatToonValue(value)}\n`);
-    } catch (err) {
-      fail(err);
-    }
-  });
 
 withCommonOptions(
   program
     .command('schema')
     .description('list tables/collections, or detail one of them')
     .argument('[target]', 'table or collection name'),
-).addHelpText('after', `
+)
+  .addHelpText(
+    'after',
+    `
 Examples:
   dbq schema --env <env> --db <connection>
   dbq schema --env <env> --db <connection> <table-or-collection>
-`).action(async (target: string | undefined, opts: CommonOptions) => {
-  try {
-    const { project, resolved } = resolve(opts);
-    const { connection } = resolved;
-    const started = Date.now();
+`,
+  )
+  .action(async (target: string | undefined, opts: CommonOptions) => {
+    try {
+      const { project, resolved } = resolve(opts);
+      const { connection } = resolved;
+      const started = Date.now();
 
-    if (connection.engine === 'redis') {
-      throw new DbqError('USAGE', 'schema is not supported for Redis', 'use SCAN with a narrow MATCH pattern');
+      if (connection.engine === 'redis') {
+        throw new DbqError(
+          'USAGE',
+          'schema is not supported for Redis',
+          'use SCAN with a narrow MATCH pattern',
+        );
+      }
+
+      const schemaOptions = { timeoutMs: resolved.timeoutMs, database: resolved.database };
+      let rows;
+      if (connection.engine === 'mysql')
+        rows = await mysqlSchema(connection, target, schemaOptions);
+      else if (connection.engine === 'postgres')
+        rows = await postgresSchema(connection, target, schemaOptions);
+      else rows = await mongoSchema(connection, target, schemaOptions);
+
+      emit(
+        {
+          project,
+          env: opts.env,
+          db: resolved.name,
+          engine: connection.engine,
+          rowCount: rows.length,
+          truncated: false,
+          elapsedMs: Date.now() - started,
+          rows,
+        },
+        opts.format,
+        opts.full === true,
+      );
+    } catch (err) {
+      fail(err);
     }
-
-    const schemaOptions = { timeoutMs: resolved.timeoutMs, database: resolved.database };
-    let rows;
-    if (connection.engine === 'mysql') rows = await mysqlSchema(connection, target, schemaOptions);
-    else if (connection.engine === 'postgres') rows = await postgresSchema(connection, target, schemaOptions);
-    else rows = await mongoSchema(connection, target, schemaOptions);
-
-    emit(
-      {
-        project,
-        env: opts.env,
-        db: resolved.name,
-        engine: connection.engine,
-        rowCount: rows.length,
-        truncated: false,
-        elapsedMs: Date.now() - started,
-        rows,
-      },
-      opts.format,
-      opts.full === true,
-    );
-  } catch (err) {
-    fail(err);
-  }
-});
+  });
 
 withCommonOptions(
   program.command('databases').description('list the databases available on the connection'),
-).addHelpText('after', `
+)
+  .addHelpText(
+    'after',
+    `
 Examples:
   dbq databases --env <env> --db <connection>
   dbq databases --project <project> --env <env> --db <connection>
-`).action(async (opts: CommonOptions) => {
-  try {
-    const { project, resolved } = resolve(opts);
-    const { connection } = resolved;
-    const started = Date.now();
+`,
+  )
+  .action(async (opts: CommonOptions) => {
+    try {
+      const { project, resolved } = resolve(opts);
+      const { connection } = resolved;
+      const started = Date.now();
 
-    let rows: unknown[];
-    if (connection.engine === 'mysql') {
-      const result = await executeMysql(
-        connection,
-        { kind: 'sql', statement: 'SHOW DATABASES' },
-        { limit: 0, timeoutMs: resolved.timeoutMs, explain: false },
-      );
-      rows = result.rows;
-    } else if (connection.engine === 'postgres') {
-      rows = await postgresDatabases(connection, { timeoutMs: resolved.timeoutMs });
-    } else if (connection.engine === 'redis') {
-      throw new DbqError('USAGE', 'databases is not supported for Redis', 'put the logical database number in the Redis URI path');
-    } else {
-      const client = new MongoClient(connection.uri, {
-        serverSelectionTimeoutMS: resolved.timeoutMs,
-        socketTimeoutMS: resolved.timeoutMs,
-      });
-      try {
-        await client.connect();
-        rows = (await listDatabases(client)).map((database) => ({ database }));
-      } finally {
-        await client.close().catch(() => undefined);
+      let rows: unknown[];
+      if (connection.engine === 'mysql') {
+        const result = await executeMysql(
+          connection,
+          { kind: 'sql', statement: 'SHOW DATABASES' },
+          { limit: 0, timeoutMs: resolved.timeoutMs, explain: false },
+        );
+        rows = result.rows;
+      } else if (connection.engine === 'postgres') {
+        rows = await postgresDatabases(connection, { timeoutMs: resolved.timeoutMs });
+      } else if (connection.engine === 'redis') {
+        throw new DbqError(
+          'USAGE',
+          'databases is not supported for Redis',
+          'put the logical database number in the Redis URI path',
+        );
+      } else {
+        const client = new MongoClient(connection.uri, {
+          serverSelectionTimeoutMS: resolved.timeoutMs,
+          socketTimeoutMS: resolved.timeoutMs,
+        });
+        try {
+          await client.connect();
+          rows = (await listDatabases(client)).map((database) => ({ database }));
+        } finally {
+          await client.close().catch(() => undefined);
+        }
       }
-    }
 
-    emit(
-      {
-        project,
-        env: opts.env,
-        db: resolved.name,
-        engine: connection.engine,
-        rowCount: rows.length,
-        truncated: false,
-        elapsedMs: Date.now() - started,
-        rows,
-      },
-      opts.format,
-      opts.full === true,
-    );
-  } catch (err) {
-    fail(err);
-  }
-});
+      emit(
+        {
+          project,
+          env: opts.env,
+          db: resolved.name,
+          engine: connection.engine,
+          rowCount: rows.length,
+          truncated: false,
+          elapsedMs: Date.now() - started,
+          rows,
+        },
+        opts.format,
+        opts.full === true,
+      );
+    } catch (err) {
+      fail(err);
+    }
+  });
 
 // Commander exits with 1 on usage errors; the spec reserves 2 for that.
 configureErrors(program);

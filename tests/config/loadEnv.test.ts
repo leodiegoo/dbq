@@ -67,7 +67,14 @@ describe('loadEnv', () => {
 
   it('should be preferring the flags over the file defaults', () => {
     const root = writeEnv(bothEnv);
-    const resolved = loadEnv({ root, project: 'proj', env: 'dev', db: 'mysql', limit: 7, timeoutMs: 900 });
+    const resolved = loadEnv({
+      root,
+      project: 'proj',
+      env: 'dev',
+      db: 'mysql',
+      limit: 7,
+      timeoutMs: 900,
+    });
     expect(resolved.limit).toBe(7);
     expect(resolved.timeoutMs).toBe(900);
   });
@@ -127,27 +134,39 @@ describe('loadEnv', () => {
   });
 
   it('should be accepting a redis connection', () => {
-    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } } });
+    const root = writeEnv({
+      connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } },
+    });
     const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
     expect(resolved.connection).toEqual({ engine: 'redis', uri: 'redis://u:p@h:6379/3' });
     expect(resolved.database).toBeUndefined();
   });
 
   it('should be refusing --database for redis because the logical database belongs in the URI', () => {
-    const root = writeEnv({ connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } } });
-    expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev', database: '1' }))).toBe('USAGE');
+    const root = writeEnv({
+      connections: { cache: { engine: 'redis', uri: 'redis://u:p@h:6379/3' } },
+    });
+    expect(codeOf(() => loadEnv({ root, project: 'proj', env: 'dev', database: '1' }))).toBe(
+      'USAGE',
+    );
   });
 
   it('should be accepting a postgres connection', () => {
-    const root = writeEnv({ connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } } });
+    const root = writeEnv({
+      connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } },
+    });
     const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
     expect(resolved.connection.engine).toBe('postgres');
     expect(resolved.database).toBeUndefined();
   });
 
   it('should be applying the database flag to a postgres connection', () => {
-    const root = writeEnv({ connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } } });
-    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe('other');
+    const root = writeEnv({
+      connections: { pg: { engine: 'postgres', uri: 'postgres://u:p@h:5432/d' } },
+    });
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe(
+      'other',
+    );
   });
 
   it('should be refusing a connection without a uri', () => {
@@ -157,7 +176,9 @@ describe('loadEnv', () => {
 
   it('should be keeping the configured database as the single source of truth', () => {
     const root = writeEnv({
-      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado', database: 'real' } },
+      connections: {
+        mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado', database: 'real' },
+      },
     });
     const resolved = loadEnv({ root, project: 'proj', env: 'dev' });
     expect(resolved.database).toBe('real');
@@ -169,7 +190,9 @@ describe('loadEnv', () => {
   });
 
   it('should be leaving the database undefined when neither config nor flag supplies one', () => {
-    const root = writeEnv({ connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado' } } });
+    const root = writeEnv({
+      connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017/ignorado' } },
+    });
     expect(loadEnv({ root, project: 'proj', env: 'dev' }).database).toBeUndefined();
   });
 
@@ -184,12 +207,16 @@ describe('loadEnv', () => {
     const root = writeEnv({
       connections: { mongo: { engine: 'mongodb', uri: 'mongodb://h:27017', database: 'fromFile' } },
     });
-    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'fromFlag' }).database).toBe('fromFlag');
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'fromFlag' }).database).toBe(
+      'fromFlag',
+    );
   });
 
   it('should be applying the database flag to a mysql connection too', () => {
     const root = writeEnv(mysqlEnv);
-    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe('other');
+    expect(loadEnv({ root, project: 'proj', env: 'dev', database: 'other' }).database).toBe(
+      'other',
+    );
   });
 
   it('should be leaving a mysql database undefined so the uri path stands', () => {
@@ -198,7 +225,9 @@ describe('loadEnv', () => {
   });
 
   it('should not be leaking the uri password in a validation error', () => {
-    const root = writeEnv({ connections: { x: { engine: 'oracle', uri: 'oracle://u:hunter2@h/d' } } });
+    const root = writeEnv({
+      connections: { x: { engine: 'oracle', uri: 'oracle://u:hunter2@h/d' } },
+    });
     try {
       loadEnv({ root, project: 'proj', env: 'dev' });
       expect.unreachable('should have thrown');

@@ -48,7 +48,9 @@ describe('toDbqError', () => {
   });
 
   it('should be classifying driver auth failures as connection errors', () => {
-    const err = Object.assign(new Error('Access denied for user'), { code: 'ER_ACCESS_DENIED_ERROR' });
+    const err = Object.assign(new Error('Access denied for user'), {
+      code: 'ER_ACCESS_DENIED_ERROR',
+    });
     expect(toDbqError(err).code).toBe('CONNECTION_ERROR');
   });
 
@@ -58,7 +60,9 @@ describe('toDbqError', () => {
   });
 
   it('should be classifying timeouts as timeout errors', () => {
-    const err = Object.assign(new Error('operation exceeded time limit'), { codeName: 'MaxTimeMSExpired' });
+    const err = Object.assign(new Error('operation exceeded time limit'), {
+      codeName: 'MaxTimeMSExpired',
+    });
     expect(toDbqError(err).code).toBe('TIMEOUT');
   });
 

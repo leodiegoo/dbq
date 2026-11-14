@@ -146,7 +146,11 @@ export const guardPostgres = (raw: string): SqlPlan => {
     refuse('multiple statements are not allowed');
   }
 
-  const leading = normalized.trim().match(/^([A-Za-z_]+)/)?.[1]?.toUpperCase() ?? '';
+  const leading =
+    normalized
+      .trim()
+      .match(/^([A-Za-z_]+)/)?.[1]
+      ?.toUpperCase() ?? '';
   if (!ALLOWED_LEADING.includes(leading)) {
     refuse(`statement '${leading || raw.trim().slice(0, 20)}' is not a read operation`);
   }

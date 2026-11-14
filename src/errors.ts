@@ -61,7 +61,11 @@ export const toDbqError = (err: unknown): DbqError => {
   }
 
   if (tags.some((tag) => CONNECTION_CODES.has(tag))) {
-    return new DbqError('CONNECTION_ERROR', message, 'check --env, the connection URI and network access');
+    return new DbqError(
+      'CONNECTION_ERROR',
+      message,
+      'check --env, the connection URI and network access',
+    );
   }
 
   if (tags.some((tag) => tag !== 'Error')) {

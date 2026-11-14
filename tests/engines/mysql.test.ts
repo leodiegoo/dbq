@@ -52,7 +52,10 @@ describe('executeMysql server-side kill', () => {
   it('should be KILL QUERY on a side connection with the main threadId when the timeout fires', async () => {
     queryBehaviour = (stream) =>
       setImmediate(() =>
-        stream.emit('error', Object.assign(new Error('timeout'), { code: 'PROTOCOL_SEQUENCE_TIMEOUT', fatal: true })),
+        stream.emit(
+          'error',
+          Object.assign(new Error('timeout'), { code: 'PROTOCOL_SEQUENCE_TIMEOUT', fatal: true }),
+        ),
       );
 
     await expect(executeMysql(connection, plan, opts)).rejects.toMatchObject({ code: 'TIMEOUT' });
@@ -85,15 +88,27 @@ describe('executeMysql server-side kill', () => {
 
   it('should be no KILL when the server itself rejected the statement', async () => {
     queryBehaviour = (stream) =>
-      setImmediate(() => stream.emit('error', Object.assign(new Error('syntax'), { code: 'ER_PARSE_ERROR', sqlState: '42000' })));
+      setImmediate(() =>
+        stream.emit(
+          'error',
+          Object.assign(new Error('syntax'), { code: 'ER_PARSE_ERROR', sqlState: '42000' }),
+        ),
+      );
 
-    await expect(executeMysql(connection, plan, opts)).rejects.toMatchObject({ code: 'DATABASE_ERROR' });
+    await expect(executeMysql(connection, plan, opts)).rejects.toMatchObject({
+      code: 'DATABASE_ERROR',
+    });
     expect(created).toHaveLength(1);
   });
 
   it('should be the original error plus a warning without credentials when the KILL fails', async () => {
     queryBehaviour = (stream) =>
-      setImmediate(() => stream.emit('error', Object.assign(new Error('timeout'), { code: 'PROTOCOL_SEQUENCE_TIMEOUT' })));
+      setImmediate(() =>
+        stream.emit(
+          'error',
+          Object.assign(new Error('timeout'), { code: 'PROTOCOL_SEQUENCE_TIMEOUT' }),
+        ),
+      );
     killError = Object.assign(new Error('denied for mysql://u:secret@host/db'), { errno: 1227 });
 
     const err = await executeMysql(connection, plan, opts).catch((e: Error) => e);

@@ -4,7 +4,12 @@ import type { MysqlConnection } from '../config/types.ts';
 import type { SqlPlan } from '../guards/types.ts';
 import { applyLimit } from '../output/envelope.ts';
 
-export type ExecuteOptions = { limit: number; timeoutMs: number; explain: boolean; database?: string };
+export type ExecuteOptions = {
+  limit: number;
+  timeoutMs: number;
+  explain: boolean;
+  database?: string;
+};
 
 /** --database overrides the database in the URI path; without the flag, the path wins. */
 const withDatabase = (uri: string, database: string | undefined): string => {

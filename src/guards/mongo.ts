@@ -19,7 +19,9 @@ const refuse = (reason: string): never => {
 type AnyNode = Node & Record<string, unknown>;
 
 const isNode = (value: unknown): value is AnyNode =>
-  typeof value === 'object' && value !== null && typeof (value as { type?: unknown }).type === 'string';
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as { type?: unknown }).type === 'string';
 
 /**
  * Turns an AST node into a value, accepting pure literals and nothing else.
@@ -71,7 +73,9 @@ const toLiteral = (node: AnyNode): unknown => {
               : refuse('a key must be an identifier or a string');
 
         if ((FORBIDDEN_KEYS as readonly string[]).includes(name as string)) {
-          refuse(`operator '${String(name)}' is not allowed: it writes data or runs JavaScript on the server`);
+          refuse(
+            `operator '${String(name)}' is not allowed: it writes data or runs JavaScript on the server`,
+          );
         }
 
         result[name as string] = toLiteral(property.value as AnyNode);
@@ -128,7 +132,8 @@ export const guardMongo = (raw: string): MongoPlan => {
 
   while (cursor.type === 'CallExpression') {
     const callee = cursor.callee as AnyNode;
-    if (callee.type !== 'MemberExpression') refuse('invalid shape: expected db.<collection>.<operation>(...)');
+    if (callee.type !== 'MemberExpression')
+      refuse('invalid shape: expected db.<collection>.<operation>(...)');
     if (callee.computed === true) refuse('bracket access is not allowed');
 
     const property = callee.property as AnyNode;
@@ -152,7 +157,8 @@ export const guardMongo = (raw: string): MongoPlan => {
 
   const base = cursor.object as AnyNode;
   const collectionNode = cursor.property as AnyNode;
-  if (base.type !== 'Identifier' || String(base.name) !== 'db') refuse("the base must start at 'db'");
+  if (base.type !== 'Identifier' || String(base.name) !== 'db')
+    refuse("the base must start at 'db'");
   if (collectionNode.type !== 'Identifier') refuse('a collection name must be an identifier');
 
   const [operationCall, ...chain] = calls;

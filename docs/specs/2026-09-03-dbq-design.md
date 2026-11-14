@@ -76,7 +76,7 @@ pnpm            package manager
 
 Discipline demanded by type stripping: no `enum`, `namespace` or parameter properties, and internal imports carry an explicit extension (`./guards/sql.ts`).
 
-**No `@clack/prompts` and no `ora`.** Both serve interactive sessions, which is precisely what `dbq` is not. A prompt blocks waiting on a TTY that does not exist when an agent invokes it — the command does not fail, it *hangs*, the worst failure mode for an automated tool. A spinner writes cursor escapes to stdout and contaminates output destined for `JSON.parse`. No flow in this design needs to ask anything.
+**No `@clack/prompts` and no `ora`.** Both serve interactive sessions, which is precisely what `dbq` is not. A prompt blocks waiting on a TTY that does not exist when an agent invokes it — the command does not fail, it _hangs_, the worst failure mode for an automated tool. A spinner writes cursor escapes to stdout and contaminates output destined for `JSON.parse`. No flow in this design needs to ask anything.
 
 **Commander despite the small surface.** The auto-generated `--help`, always in sync with the real flags, is what an agent reads when it meets an unknown binary. That is worth more than the handful of `util.parseArgs` lines it replaces.
 
@@ -117,7 +117,7 @@ The `database` field is the connection's **default** database, and it is optiona
 
 **Revision of 2026-09-03**, after first real use: the original version required `database` in the file and treated it as the single source of truth. A cluster hosts several databases — the dev one had seven — so pinning one per file forced a named connection per database. The `-D, --database` flag now overrides the default per invocation.
 
-The reason behind the original rule still holds: it existed to stop two *implicit* sources (the field and the URI path) from disagreeing. An explicit flag is not ambiguity, it is an override — and the URI path stays ignored.
+The reason behind the original rule still holds: it existed to stop two _implicit_ sources (the field and the URI path) from disagreeing. An explicit flag is not ambiguity, it is an override — and the URI path stays ignored.
 
 When neither the field nor the flag resolves a database, the error lists the cluster's databases, the same way the project error lists the projects.
 
@@ -141,15 +141,15 @@ dbq --project my-project --env prod --db mysql "SHOW TABLES"
 cat pipeline.js | dbq --env dev --db mongo -
 ```
 
-| Flag | Default | Note |
-|---|---|---|
-| `--project <name>` | detected from cwd | |
-| `--env <name>` | — | required |
-| `--db <connection>` | the env's only one | required when there is more than one |
-| `--limit <n>` | `500` | `0` disables it |
-| `--timeout <ms>` | `30000` | |
-| `--format json\|table` | `json` | |
-| `--explain` | off | runs `EXPLAIN` / `.explain()` |
+| Flag                   | Default            | Note                                 |
+| ---------------------- | ------------------ | ------------------------------------ |
+| `--project <name>`     | detected from cwd  |                                      |
+| `--env <name>`         | —                  | required                             |
+| `--db <connection>`    | the env's only one | required when there is more than one |
+| `--limit <n>`          | `500`              | `0` disables it                      |
+| `--timeout <ms>`       | `30000`            |                                      |
+| `--format json\|table` | `json`             |                                      |
+| `--explain`            | off                | runs `EXPLAIN` / `.explain()`        |
 
 `--explain` is applied by the **engine**, after the guard approves the original query. The user does not write `.explain()` in the expression — `explain` is not on the chainable whitelist and would be refused. In SQL the engine prefixes `EXPLAIN`; in Mongo it wraps the already-built cursor.
 
@@ -207,7 +207,7 @@ The algorithm, via `acorn`:
    - `$out`, `$merge` — **write to a collection**
    - `$where`, `$function`, `$accumulator` — execute JS on the server
 
-Step 5 exists because the first four, alone, approve `db.companies.aggregate([{ $out: "backup" }])`, which writes data. A pipeline is syntactically a pure literal; the write hides in the *content* of the data, not in the shape of the code. The operation whitelist cannot reach that.
+Step 5 exists because the first four, alone, approve `db.companies.aggregate([{ $out: "backup" }])`, which writes data. A pipeline is syntactically a pure literal; the write hides in the _content_ of the data, not in the shape of the code. The operation whitelist cannot reach that.
 
 Regex literals are **allowed**: `find({ name: /acme/i })` is a legitimate read and executes no code. A catastrophic regex consumes server CPU, but that is cost, not writing, and it falls under the `maxTimeMS` net.
 
@@ -223,22 +223,26 @@ Regex literals are **allowed**: `find({ name: /acme/i })` is a legitimate read a
 
 Distinct codes because each implies a different corrective action, and the reader is an agent choosing its next step:
 
-| Code | Meaning | Implied action |
-|---|---|---|
-| `0` | success | — |
-| `1` | unexpected | — |
-| `2` | invalid usage (missing flag, unknown env) | fix the invocation |
-| `3` | refused by the guard | rewrite the query |
-| `4` | connection / authentication | wrong env, or VPN down |
-| `5` | database error (syntax, missing collection) | check the schema |
-| `6` | timeout | filter harder |
+| Code | Meaning                                     | Implied action         |
+| ---- | ------------------------------------------- | ---------------------- |
+| `0`  | success                                     | —                      |
+| `1`  | unexpected                                  | —                      |
+| `2`  | invalid usage (missing flag, unknown env)   | fix the invocation     |
+| `3`  | refused by the guard                        | rewrite the query      |
+| `4`  | connection / authentication                 | wrong env, or VPN down |
+| `5`  | database error (syntax, missing collection) | check the schema       |
+| `6`  | timeout                                     | filter harder          |
 
 With `--format json`, the error goes to **stderr** as JSON:
 
 ```json
-{ "error": { "code": "READONLY_VIOLATION",
-             "message": "operation 'drop' is not allowed",
-             "hint": "read operations: find, findOne, aggregate, countDocuments, distinct" } }
+{
+  "error": {
+    "code": "READONLY_VIOLATION",
+    "message": "operation 'drop' is not allowed",
+    "hint": "read operations: find, findOne, aggregate, countDocuments, distinct"
+  }
+}
 ```
 
 The `hint` field is deliberate: it is what makes the agent's second attempt correct instead of its fifth.
@@ -294,7 +298,7 @@ and is rolled back. **This is the one engine where a hole in the parser is not a
 hole in the guarantee** — the backend refuses the write itself.
 
 One thing the corpus corrected: `SELECT $$ DROP TABLE t $$` was initially
-written as a case that must be refused. It must be *accepted*. Dollar quoting is
+written as a case that must be refused. It must be _accepted_. Dollar quoting is
 alternative string-literal syntax, so that statement returns the text and
 executes nothing, exactly like `SELECT 'DROP TABLE t'`. Execution enters through
 `DO`, which is refused on its own.
@@ -354,18 +358,18 @@ PostgreSQL, MongoDB and Redis are unchanged.
 
 ## Recorded decisions
 
-| Decision | Rejected alternative | Reason |
-|---|---|---|
-| Pure read-only, no escape hatch | Writes behind a flag + a permissive env | Production one typo away; an agent must not be able to self-authorise |
-| An env groups N connections | One file per connection | Mirrors the real environment; `dev-mysql` and `prod-mysql` as neighbouring strings invite the mistake |
-| Project auto-detected from cwd, fails loudly | Mandatory `--project`; a persisted active project | Ergonomics without invisible global state |
-| mongosh syntax parsed as an AST | `eval` of the string; structured arguments | The ergonomics of the former with the guarantee of the latter; `eval` turns the invariant into a hope |
-| A 500-row ceiling injected | Honour the query as written | Asymmetric cost: one re-invocation versus the session |
-| No build step (native type stripping) | `tsx` + `tsup` | Fewer moving parts; a bundler returns if publishing happens |
-| No Clack, no ora | An interactive CLI | A prompt hangs with no TTY; a spinner contaminates stdout |
-| A dedicated PostgreSQL guard | Reusing the MySQL guard | Data-modifying CTEs and a different lexer; reuse would have been a security bug |
-| PostgreSQL wrapped in BEGIN READ ONLY | Trusting the guard alone | The server enforces it, so a parser hole is not a guarantee hole |
-| Generic Redis engine rejected; bounded inspector added later | Arbitrary read-command execution | Redis needs command-specific limits; read-only does not prevent blocking operations |
+| Decision                                                     | Rejected alternative                              | Reason                                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Pure read-only, no escape hatch                              | Writes behind a flag + a permissive env           | Production one typo away; an agent must not be able to self-authorise                                 |
+| An env groups N connections                                  | One file per connection                           | Mirrors the real environment; `dev-mysql` and `prod-mysql` as neighbouring strings invite the mistake |
+| Project auto-detected from cwd, fails loudly                 | Mandatory `--project`; a persisted active project | Ergonomics without invisible global state                                                             |
+| mongosh syntax parsed as an AST                              | `eval` of the string; structured arguments        | The ergonomics of the former with the guarantee of the latter; `eval` turns the invariant into a hope |
+| A 500-row ceiling injected                                   | Honour the query as written                       | Asymmetric cost: one re-invocation versus the session                                                 |
+| No build step (native type stripping)                        | `tsx` + `tsup`                                    | Fewer moving parts; a bundler returns if publishing happens                                           |
+| No Clack, no ora                                             | An interactive CLI                                | A prompt hangs with no TTY; a spinner contaminates stdout                                             |
+| A dedicated PostgreSQL guard                                 | Reusing the MySQL guard                           | Data-modifying CTEs and a different lexer; reuse would have been a security bug                       |
+| PostgreSQL wrapped in BEGIN READ ONLY                        | Trusting the guard alone                          | The server enforces it, so a parser hole is not a guarantee hole                                      |
+| Generic Redis engine rejected; bounded inspector added later | Arbitrary read-command execution                  | Redis needs command-specific limits; read-only does not prevent blocking operations                   |
 
 ## Revision of 2026-10-03 — agent-oriented output
 
