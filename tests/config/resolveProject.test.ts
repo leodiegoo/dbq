@@ -2,7 +2,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { configRoot, listEnvs, listProjects, resolveProject } from '../../src/config/resolveProject.ts';
+import {
+  configRoot,
+  listEnvs,
+  listProjects,
+  resolveProject,
+} from '../../src/config/resolveProject.ts';
 import { DbqError } from '../../src/errors.ts';
 
 const temps: string[] = [];

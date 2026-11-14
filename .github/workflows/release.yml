@@ -4,7 +4,7 @@ name: Release
 # Merging that PR creates the tag and GitHub release, and only then does the publish job run.
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
 
 jobs:
   release-please:

@@ -35,7 +35,8 @@ const replacer = function (this: unknown, key: string, value: unknown): JsonRepl
   if (typeof original === 'bigint') return original.toString();
   if (original instanceof Uint8Array) return Buffer.from(original).toString('base64');
   if (value === null || value === undefined || typeof value === 'object') return value;
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    return value;
   return String(value);
 };
 
@@ -93,7 +94,9 @@ const formatRows = (rows: unknown[], color: boolean): string[] => {
 
     const header = columns.length > 0 ? columns : ['value'];
     const body = rows.map((row) =>
-      columns.length > 0 ? header.map((key) => cell((row as Record<string, unknown>)[key])) : [cell(row)],
+      columns.length > 0
+        ? header.map((key) => cell((row as Record<string, unknown>)[key]))
+        : [cell(row)],
     );
 
     const widths = header.map((key, index) =>
@@ -124,8 +127,10 @@ export const formatTable = (envelope: Envelope, color: boolean): string => {
   return lines.join('\n');
 };
 
-export const formatValueTable = (value: { root: string; rows: unknown[] }, color: boolean): string =>
-  [`root: ${value.root}`, '', ...formatRows(value.rows, color)].join('\n');
+export const formatValueTable = (
+  value: { root: string; rows: unknown[] },
+  color: boolean,
+): string => [`root: ${value.root}`, '', ...formatRows(value.rows, color)].join('\n');
 
 export const formatError = (err: DbqError): string => {
   const payload =

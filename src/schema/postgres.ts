@@ -69,7 +69,11 @@ export const postgresDatabases = async (
 ): Promise<unknown[]> => {
   const result = await executePostgres(
     connection,
-    { kind: 'sql', statement: 'SELECT datname AS database FROM pg_database WHERE NOT datistemplate ORDER BY datname' },
+    {
+      kind: 'sql',
+      statement:
+        'SELECT datname AS database FROM pg_database WHERE NOT datistemplate ORDER BY datname',
+    },
     { limit: 0, timeoutMs: opts.timeoutMs, explain: false, database: opts.database },
   );
   return result.rows;

@@ -67,7 +67,8 @@ export const mongoSchema = async (
       .map(([field, entry]) => ({
         field,
         types: [...entry.types].sort().join(' | '),
-        presence: sample.length === 0 ? '0%' : `${Math.round((entry.present / sample.length) * 100)}%`,
+        presence:
+          sample.length === 0 ? '0%' : `${Math.round((entry.present / sample.length) * 100)}%`,
       }))
       .sort((a, b) => a.field.localeCompare(b.field));
   } catch (err) {

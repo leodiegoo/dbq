@@ -10,7 +10,11 @@ export const mysqlSchema = async (
   opts: { timeoutMs: number; database?: string },
 ): Promise<unknown[]> => {
   if (table !== undefined && !IDENTIFIER.test(table)) {
-    throw new DbqError('USAGE', `invalid table name: '${table}'`, 'use letters, digits and underscores only');
+    throw new DbqError(
+      'USAGE',
+      `invalid table name: '${table}'`,
+      'use letters, digits and underscores only',
+    );
   }
 
   // The interpolation is safe because IDENTIFIER above already rejected

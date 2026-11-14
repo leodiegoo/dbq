@@ -31,7 +31,8 @@ const validateScan = (command: RedisReadCommand, args: string[]): void => {
   }
   if (command !== 'SCAN' && args[0]?.length === 0) refuse(`${command} requires a key`);
 
-  const allowed = command === 'SCAN' ? new Set(['MATCH', 'COUNT', 'TYPE']) : new Set(['MATCH', 'COUNT']);
+  const allowed =
+    command === 'SCAN' ? new Set(['MATCH', 'COUNT', 'TYPE']) : new Set(['MATCH', 'COUNT']);
   for (let index = cursorIndex + 1; index < args.length; index += 2) {
     const option = args[index]?.toUpperCase() ?? '';
     const value = args[index + 1];
@@ -72,12 +73,10 @@ export const guardRedis = (raw: string): RedisPlan => {
 
   if (readCommand === 'LRANGE' || readCommand === 'ZRANGE') {
     const expected = readCommand === 'ZRANGE' && args[3]?.toUpperCase() === 'WITHSCORES' ? 4 : 3;
-    if (
-      args.length !== expected ||
-      !isCursor(args[1] as string) ||
-      !isInteger(args[2] as string)
-    ) {
-      refuse(`${readCommand} expects a key, non-negative start and integer stop${readCommand === 'ZRANGE' ? ', optionally WITHSCORES' : ''}`);
+    if (args.length !== expected || !isCursor(args[1] as string) || !isInteger(args[2] as string)) {
+      refuse(
+        `${readCommand} expects a key, non-negative start and integer stop${readCommand === 'ZRANGE' ? ', optionally WITHSCORES' : ''}`,
+      );
     }
     if (args[3] !== undefined) args[3] = 'WITHSCORES';
   }

@@ -16,14 +16,19 @@ describe.skipIf(!uri)('executeMysql against a real MySQL', () => {
     const plan = { statement: `SELECT SLEEP(5) AS ${marker}` } as never;
 
     await expect(
-      executeMysql({ engine: 'mysql', uri: uri! } as never, plan, { limit: 10, timeoutMs: 1000, explain: false }),
+      executeMysql({ engine: 'mysql', uri: uri! } as never, plan, {
+        limit: 10,
+        timeoutMs: 1000,
+        explain: false,
+      }),
     ).rejects.toMatchObject({ code: 'TIMEOUT' });
 
     const admin = await createConnection(uri!);
     try {
-      const [rows] = await admin.query('SELECT id FROM information_schema.processlist WHERE info LIKE ?', [
-        `%${marker}%`,
-      ]);
+      const [rows] = await admin.query(
+        'SELECT id FROM information_schema.processlist WHERE info LIKE ?',
+        [`%${marker}%`],
+      );
       // The admin connection's own LIKE statement also contains the marker.
       expect((rows as unknown[]).length).toBe(1);
     } finally {

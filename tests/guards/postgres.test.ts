@@ -146,13 +146,13 @@ describe('guardPostgres — refused queries', () => {
   });
 
   it('should be refusing anonymous code blocks', () => {
-    refuses("DO $$ BEGIN PERFORM 1; END $$");
+    refuses('DO $$ BEGIN PERFORM 1; END $$');
   });
 
   it('should be refusing a statement hidden inside a dollar-quoted code block', () => {
     // The danger of dollar quoting is DO, which executes its body. The body
     // itself is inert text either way.
-    refuses("DO $tag$ BEGIN PERFORM 1; END $tag$");
+    refuses('DO $tag$ BEGIN PERFORM 1; END $tag$');
   });
 
   it('should be refusing a write hidden behind a comment', () => {

@@ -38,7 +38,9 @@ describe('guardMongo — accepted expressions', () => {
   });
 
   it('should be parsing an aggregate pipeline', () => {
-    const plan = guardMongo('db.orders.aggregate([{ $match: { paid: true } }, { $group: { _id: "$userId" } }])');
+    const plan = guardMongo(
+      'db.orders.aggregate([{ $match: { paid: true } }, { $group: { _id: "$userId" } }])',
+    );
     expect(plan.operation).toBe('aggregate');
     expect(plan.args).toEqual([[{ $match: { paid: true } }, { $group: { _id: '$userId' } }]]);
   });

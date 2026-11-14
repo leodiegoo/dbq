@@ -31,7 +31,10 @@ const cappedRangeArgs = (plan: RedisPlan, limit: number): string[] => {
   return args;
 };
 
-const scanRows = (command: RedisPlan['command'], reply: unknown): { cursor: string; rows: unknown[] } => {
+const scanRows = (
+  command: RedisPlan['command'],
+  reply: unknown,
+): { cursor: string; rows: unknown[] } => {
   if (!Array.isArray(reply) || reply.length !== 2 || !Array.isArray(reply[1])) {
     throw new Error(`unexpected ${command} response`);
   }
@@ -40,7 +43,10 @@ const scanRows = (command: RedisPlan['command'], reply: unknown): { cursor: stri
   const entries = reply[1];
   if (command === 'HSCAN') return { cursor, rows: pairs(entries, 'field', 'value') };
   if (command === 'ZSCAN') return { cursor, rows: pairs(entries, 'value', 'score') };
-  return { cursor, rows: entries.map((entry) => ({ [command === 'SCAN' ? 'key' : 'value']: entry })) };
+  return {
+    cursor,
+    rows: entries.map((entry) => ({ [command === 'SCAN' ? 'key' : 'value']: entry })),
+  };
 };
 
 export const executeRedis = async (
@@ -67,8 +73,17 @@ export const executeRedis = async (
     try {
       if (plan.command === 'GET' && opts.maxBytes > 0) {
         const length = Number(await run(['STRLEN', plan.args[0] as string]));
-        const value = await run(['GETRANGE', plan.args[0] as string, '0', String(opts.maxBytes - 1)]);
-        if (length === 0 && value === '' && Number(await run(['EXISTS', plan.args[0] as string])) === 0) {
+        const value = await run([
+          'GETRANGE',
+          plan.args[0] as string,
+          '0',
+          String(opts.maxBytes - 1),
+        ]);
+        if (
+          length === 0 &&
+          value === '' &&
+          Number(await run(['EXISTS', plan.args[0] as string])) === 0
+        ) {
           return { rows: [], truncated: false };
         }
         return { rows: [{ value }], truncated: length > opts.maxBytes };
@@ -89,9 +104,10 @@ export const executeRedis = async (
         };
       }
 
-      const args = plan.command === 'LRANGE' || plan.command === 'ZRANGE'
-        ? cappedRangeArgs(plan, opts.limit)
-        : plan.args;
+      const args =
+        plan.command === 'LRANGE' || plan.command === 'ZRANGE'
+          ? cappedRangeArgs(plan, opts.limit)
+          : plan.args;
       const reply = await run([plan.command, ...args]);
       const rows =
         plan.command === 'ZRANGE' && args[3] === 'WITHSCORES'
@@ -100,7 +116,11 @@ export const executeRedis = async (
       return applyLimit(rows, opts.limit);
     } catch (err) {
       if (controller.signal.aborted) {
-        throw new DbqError('TIMEOUT', 'Redis command timed out', 'narrow the query, or raise --timeout');
+        throw new DbqError(
+          'TIMEOUT',
+          'Redis command timed out',
+          'narrow the query, or raise --timeout',
+        );
       }
       throw err;
     } finally {

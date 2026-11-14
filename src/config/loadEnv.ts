@@ -30,7 +30,10 @@ const validateConnection = (name: string, raw: unknown): Connection => {
   if (raw.engine === 'postgres') {
     const database = raw.database;
     if (database !== undefined && (typeof database !== 'string' || database.length === 0)) {
-      usage(`connection '${name}' has an invalid 'database'`, 'use a non-empty string, or omit the field');
+      usage(
+        `connection '${name}' has an invalid 'database'`,
+        'use a non-empty string, or omit the field',
+      );
     }
     return database === undefined
       ? { engine: 'postgres', uri: uri as string }
@@ -40,7 +43,10 @@ const validateConnection = (name: string, raw: unknown): Connection => {
   if (raw.engine === 'mongodb') {
     const database = raw.database;
     if (database !== undefined && (typeof database !== 'string' || database.length === 0)) {
-      usage(`connection '${name}' has an invalid 'database'`, 'use a non-empty string, or omit the field');
+      usage(
+        `connection '${name}' has an invalid 'database'`,
+        'use a non-empty string, or omit the field',
+      );
     }
     // `database` is optional: it becomes the connection default, overridden by
     // --database. The database name in the URI path stays ignored either way.
@@ -79,7 +85,10 @@ export const loadEnv = (opts: {
 
   const mode = stat.mode & 0o777;
   if (mode !== 0o600) {
-    usage(`${file} has mode ${mode.toString(8).padStart(3, '0')}; expected 600`, `run: chmod 600 ${file}`);
+    usage(
+      `${file} has mode ${mode.toString(8).padStart(3, '0')}; expected 600`,
+      `run: chmod 600 ${file}`,
+    );
   }
 
   let parsed: unknown;
@@ -100,19 +109,27 @@ export const loadEnv = (opts: {
   let selected = opts.db;
   if (selected === undefined) {
     if (names.length > 1) {
-      usage(`env '${opts.env}' has several connections: ${names.join(', ')}`, 'pass --db <connection>');
+      usage(
+        `env '${opts.env}' has several connections: ${names.join(', ')}`,
+        'pass --db <connection>',
+      );
     }
     selected = names[0];
   }
 
   const rawConnection = config.connections[selected as string];
   if (rawConnection === undefined) {
-    usage(`connection '${selected}' does not exist in env '${opts.env}'. Available: ${names.join(', ')}`);
+    usage(
+      `connection '${selected}' does not exist in env '${opts.env}'. Available: ${names.join(', ')}`,
+    );
   }
 
   const connection = validateConnection(selected as string, rawConnection);
   if (connection.engine === 'redis' && opts.database !== undefined) {
-    usage('--database is not supported for Redis', 'put the logical database number in the Redis URI path');
+    usage(
+      '--database is not supported for Redis',
+      'put the logical database number in the Redis URI path',
+    );
   }
   const fileDefaults = config.defaults ?? {};
 
@@ -121,7 +138,9 @@ export const loadEnv = (opts: {
     connection,
     database:
       opts.database ??
-      (connection.engine === 'postgres' || connection.engine === 'mongodb' ? connection.database : undefined),
+      (connection.engine === 'postgres' || connection.engine === 'mongodb'
+        ? connection.database
+        : undefined),
     limit: opts.limit ?? fileDefaults.limit ?? DEFAULT_LIMIT,
     maxBytes: opts.maxBytes ?? fileDefaults.maxBytes ?? DEFAULT_MAX_BYTES,
     timeoutMs: opts.timeoutMs ?? fileDefaults.timeoutMs ?? DEFAULT_TIMEOUT_MS,

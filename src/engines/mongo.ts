@@ -17,7 +17,10 @@ export const listDatabases = async (client: MongoClient): Promise<string[]> => {
  * cluster's databases so that re-invoking with --database is immediate, the
  * same way the project error lists the projects.
  */
-const requireDatabase = async (client: MongoClient, database: string | undefined): Promise<string> => {
+const requireDatabase = async (
+  client: MongoClient,
+  database: string | undefined,
+): Promise<string> => {
   if (database !== undefined) return database;
   const names = await listDatabases(client);
   throw new DbqError(
@@ -88,16 +91,26 @@ export const executeMongo = async (
 
         case 'countDocuments':
           return [
-            { count: await collection.countDocuments((first ?? {}) as Document, { maxTimeMS: opts.timeoutMs }) },
+            {
+              count: await collection.countDocuments((first ?? {}) as Document, {
+                maxTimeMS: opts.timeoutMs,
+              }),
+            },
           ];
 
         case 'estimatedDocumentCount':
-          return [{ count: await collection.estimatedDocumentCount({ maxTimeMS: opts.timeoutMs }) }];
+          return [
+            { count: await collection.estimatedDocumentCount({ maxTimeMS: opts.timeoutMs }) },
+          ];
 
         case 'distinct': {
-          const values = await collection.distinct(String(first ?? ''), (second ?? {}) as Document, {
-            maxTimeMS: opts.timeoutMs,
-          });
+          const values = await collection.distinct(
+            String(first ?? ''),
+            (second ?? {}) as Document,
+            {
+              maxTimeMS: opts.timeoutMs,
+            },
+          );
           return values.map((value) => ({ value }));
         }
       }

@@ -152,15 +152,15 @@ hint: run: chmod 600 /Users/…/dev.json
 
 ### Fields
 
-| Field | Required | What it is |
-|---|---|---|
-| `connections` | yes | map of named connections |
-| `connections.<name>.engine` | yes | `"mysql"`, `"postgres"`, `"mongodb"` or `"redis"` |
-| `connections.<name>.uri` | yes | full connection URI; Redis logical DB belongs in its URI path |
-| `connections.<name>.database` | no | **default** database for SQL/MongoDB connections |
-| `defaults.limit` | no | row/item ceiling (built-in: `500`) |
-| `defaults.maxBytes` | no | Redis string-value ceiling (built-in: `1000000`) |
-| `defaults.timeoutMs` | no | statement timeout (built-in: `30000`) |
+| Field                         | Required | What it is                                                    |
+| ----------------------------- | -------- | ------------------------------------------------------------- |
+| `connections`                 | yes      | map of named connections                                      |
+| `connections.<name>.engine`   | yes      | `"mysql"`, `"postgres"`, `"mongodb"` or `"redis"`             |
+| `connections.<name>.uri`      | yes      | full connection URI; Redis logical DB belongs in its URI path |
+| `connections.<name>.database` | no       | **default** database for SQL/MongoDB connections              |
+| `defaults.limit`              | no       | row/item ceiling (built-in: `500`)                            |
+| `defaults.maxBytes`           | no       | Redis string-value ceiling (built-in: `1000000`)              |
+| `defaults.timeoutMs`          | no       | statement timeout (built-in: `30000`)                         |
 
 **Precedence:** invocation flag > file `defaults` > built-in default.
 
@@ -211,7 +211,7 @@ GRANT SELECT, SHOW VIEW ON mydb.* TO 'dbq_reader'@'%';
 ```
 
 ```js
-db.createUser({ user: "dbq_reader", pwd: "…", roles: [{ role: "read", db: "mydb" }] })
+db.createUser({ user: 'dbq_reader', pwd: '…', roles: [{ role: 'read', db: 'mydb' }] });
 ```
 
 The guard protects you from human error; the database user protects you from a bug in the guard. Different layers — you want both.
@@ -224,19 +224,19 @@ The guard protects you from human error; the database user protects you from a b
 dbq [options] <query>
 ```
 
-| Flag | Default | What it does |
-|---|---|---|
-| `-p, --project <name>` | inferred from cwd | project under `~/.config/dbq` |
-| `-e, --env <name>` | — | **required** |
-| `-d, --db <connection>` | the env's only one | required when there is more than one |
-| `-D, --database <name>` | the `database` field | database to query, per invocation |
-| `-l, --limit <n>` | `500` | row/item ceiling; `0` disables it except for Redis |
-| `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables it |
-| `-t, --timeout <ms>` | `30000` | statement timeout; on MySQL, giving up also stops the query on the server (see below) |
-| `-f, --format <toon\|table>` | `toon` | TOON for structured output; table for human reading |
-| `--full` | off | bypasses the 1,000-character text-field cap; row and Redis byte limits still apply |
-| `--max-bytes <n>` | `1000000` | Redis string-value ceiling; `0` disables this cap |
-| `-x, --explain` | off | run `EXPLAIN` / `.explain()` instead |
+| Flag                         | Default              | What it does                                                                          |
+| ---------------------------- | -------------------- | ------------------------------------------------------------------------------------- |
+| `-p, --project <name>`       | inferred from cwd    | project under `~/.config/dbq`                                                         |
+| `-e, --env <name>`           | —                    | **required**                                                                          |
+| `-d, --db <connection>`      | the env's only one   | required when there is more than one                                                  |
+| `-D, --database <name>`      | the `database` field | database to query, per invocation                                                     |
+| `-l, --limit <n>`            | `500`                | row/item ceiling; `0` disables it except for Redis                                    |
+| `--max-bytes <n>`            | `1000000`            | Redis string-value ceiling; `0` disables it                                           |
+| `-t, --timeout <ms>`         | `30000`              | statement timeout; on MySQL, giving up also stops the query on the server (see below) |
+| `-f, --format <toon\|table>` | `toon`               | TOON for structured output; table for human reading                                   |
+| `--full`                     | off                  | bypasses the 1,000-character text-field cap; row and Redis byte limits still apply    |
+| `--max-bytes <n>`            | `1000000`            | Redis string-value ceiling; `0` disables this cap                                     |
+| `-x, --explain`              | off                  | run `EXPLAIN` / `.explain()` instead                                                  |
 
 ### SQL
 
@@ -411,35 +411,36 @@ command surface as defence in depth.
 
 **Accepted shape:** exactly `db.<collection>.<operation>(…)`, optionally chained.
 
-| | |
-|---|---|
+|            |                                                                                   |
+| ---------- | --------------------------------------------------------------------------------- |
 | Operations | `find` `findOne` `aggregate` `countDocuments` `estimatedDocumentCount` `distinct` |
-| Chainable | `limit` `sort` `skip` `project` |
-| Arguments | pure literals only: object, array, string, number, boolean, `null`, regex |
+| Chainable  | `limit` `sort` `skip` `project`                                                   |
+| Arguments  | pure literals only: object, array, string, number, boolean, `null`, regex         |
 
 The expression is **parsed as an AST, never evaluated**. That is not an implementation detail — it is the decision the whole guarantee rests on:
 
 ```js
-db.companies.drop()              // refused: operation not on the whitelist
-db["compa" + "nies"].drop()      // refused: bracket access is not the accepted shape
-db.c.find({ a: fn() })           // refused: argument is not a pure literal
-db.c.find({}).toArray()          // refused: chained call not on the whitelist
-db.c.find({}); db.d.drop()       // refused: more than one statement
+db.companies.drop(); // refused: operation not on the whitelist
+db['compa' + 'nies'].drop(); // refused: bracket access is not the accepted shape
+db.c.find({ a: fn() }); // refused: argument is not a pure literal
+db.c.find({}).toArray(); // refused: chained call not on the whitelist
+db.c.find({});
+db.d.drop(); // refused: more than one statement
 ```
 
 `db["compa" + "nies"]` does not die because something inspected the string looking for `drop` — it dies because concatenation simply isn't part of the accepted grammar.
 
 **Operators refused at any depth** inside the arguments:
 
-| Operator | Why |
-|---|---|
-| `$out`, `$merge` | **write to a collection** |
+| Operator                              | Why                              |
+| ------------------------------------- | -------------------------------- |
+| `$out`, `$merge`                      | **write to a collection**        |
 | `$where`, `$function`, `$accumulator` | execute JavaScript on the server |
 
 ```js
-db.c.aggregate([{ $out: "backup" }])                    // refused
-db.c.aggregate([{ $facet: { a: [{ $out: "x" }] } }])    // refused, nested
-db.c.find({ $and: [{ $where: "true" }] })               // refused, nested
+db.c.aggregate([{ $out: 'backup' }]); // refused
+db.c.aggregate([{ $facet: { a: [{ $out: 'x' }] } }]); // refused, nested
+db.c.find({ $and: [{ $where: 'true' }] }); // refused, nested
 ```
 
 This exists because the operation whitelist **cannot reach** those cases: a pipeline containing `$out` is syntactically a pure literal. The write hides in the content of the data, not in the shape of the code.
@@ -452,11 +453,11 @@ This exists because the operation whitelist **cannot reach** those cases: a pipe
 
 `--limit` is a **ceiling**, not a replacement — a query that already asks for less still wins:
 
-| Query | `--limit` | Result |
-|---|---|---|
-| `find({})` over 134 docs | 500 | 134 rows, `truncated: false` |
-| `find({})` over 134 docs | 3 | 3 rows, `truncated: true` |
-| `find({}).limit(2)` | 3 | 2 rows, `truncated: false` |
+| Query                    | `--limit` | Result                       |
+| ------------------------ | --------- | ---------------------------- |
+| `find({})` over 134 docs | 500       | 134 rows, `truncated: false` |
+| `find({})` over 134 docs | 3         | 3 rows, `truncated: true`    |
+| `find({}).limit(2)`      | 3         | 2 rows, `truncated: false`   |
 
 `--limit 0` disables the row/item ceiling for SQL and MongoDB. Redis refuses `--limit 0` for every command because scans and ranges must stay bounded. With SQL or MongoDB, use `--limit 0` only when an unbounded result is intended.
 
@@ -530,15 +531,15 @@ Errors always use TOON on stdout, including when `--format table` is requested. 
 
 Each code implies a different corrective action — that is what lets an agent choose its next step without parsing prose:
 
-| Code | Meaning | What to do |
-|---|---|---|
-| `0` | success | — |
-| `1` | unexpected | — |
-| `2` | invalid usage | fix the invocation |
-| `3` | refused by the guard | rewrite the query |
-| `4` | connection / authentication | check `--env`, credentials, VPN |
-| `5` | database error | check with `dbq schema` |
-| `6` | timeout | filter harder, or raise `--timeout` |
+| Code | Meaning                     | What to do                          |
+| ---- | --------------------------- | ----------------------------------- |
+| `0`  | success                     | —                                   |
+| `1`  | unexpected                  | —                                   |
+| `2`  | invalid usage               | fix the invocation                  |
+| `3`  | refused by the guard        | rewrite the query                   |
+| `4`  | connection / authentication | check `--env`, credentials, VPN     |
+| `5`  | database error              | check with `dbq schema`             |
+| `6`  | timeout                     | filter harder, or raise `--timeout` |
 
 Errors go to **stderr**, in the same format as the output:
 
@@ -632,16 +633,16 @@ dbq -e dev -d mongo 'db.plans.find({}, { name: 1 })' | jq -r '.rows[].name'
 
 ## Troubleshooting
 
-| Symptom | Likely cause |
-|---|---|
-| `has mode 644; expected 600` | run `chmod 600` on the env file |
-| `could not infer the project` | you are outside the repo; pass `--project` |
-| `env 'dev' has several connections` | pass `--db <connection>` |
+| Symptom                                   | Likely cause                                        |
+| ----------------------------------------- | --------------------------------------------------- |
+| `has mode 644; expected 600`              | run `chmod 600` on the env file                     |
+| `could not infer the project`             | you are outside the repo; pass `--project`          |
+| `env 'dev' has several connections`       | pass `--db <connection>`                            |
 | `no database defined for this connection` | pass `-D <name>`, or declare `database` in the file |
-| `'schema' is a subcommand, not a query` | subcommands come before flags |
-| exit `4` with `ETIMEDOUT` | VPN disconnected, or host unreachable |
-| exit `6` | query too heavy; filter harder or raise `--timeout` |
-| fewer results than expected | check `truncated` in the output; raise `--limit` |
+| `'schema' is a subcommand, not a query`   | subcommands come before flags                       |
+| exit `4` with `ETIMEDOUT`                 | VPN disconnected, or host unreachable               |
+| exit `6`                                  | query too heavy; filter harder or raise `--timeout` |
+| fewer results than expected               | check `truncated` in the output; raise `--limit`    |
 
 Resolution errors **list the alternatives** in the message itself — an uninferred project lists the projects, a missing environment lists the environments, an undefined database lists the cluster's databases. The corrected invocation falls straight out of the error.
 

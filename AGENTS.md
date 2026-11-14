@@ -101,7 +101,7 @@ Node erases types at runtime but **does not transform code**. That rules out:
 - **Unbounded output is explicit.** `--limit 0` disables the row ceiling for SQL and MongoDB; Redis refuses it. `--max-bytes 0` disables the Redis GET byte ceiling. Explain these effects wherever the options are documented.
 - **Unknown or removed output formats are usage errors.** `--json` and `--format json` exit 2 before configuration resolution or connection.
 - **Structured errors go to stdout** in TOON and carry an actionable `hint`; exit code and error `code` remain the stable contract.
-- **Nothing blocks waiting on a TTY.** No prompts, no spinners — a command that *hangs* is the worst failure mode for an automated tool. `@clack/prompts` and `ora` were deliberately rejected for this reason.
+- **Nothing blocks waiting on a TTY.** No prompts, no spinners — a command that _hangs_ is the worst failure mode for an automated tool. `@clack/prompts` and `ora` were deliberately rejected for this reason.
 - **Every error carries an actionable `hint`.** It is the field that makes the agent's second attempt correct instead of its fifth.
 - **Credentials never reach output.** Every driver message passes through `scrubUri`. Drivers love echoing the entire connection string when auth fails.
 
@@ -109,15 +109,15 @@ Node erases types at runtime but **does not transform code**. That rules out:
 
 Distinct codes, because each implies a different corrective action:
 
-| Code | `DbqErrorCode` | Implied action |
-|---|---|---|
-| 0 | — | — |
-| 1 | `UNEXPECTED` | — |
-| 2 | `USAGE` | fix the invocation |
-| 3 | `READONLY_VIOLATION` | rewrite the query |
-| 4 | `CONNECTION_ERROR` | check `--env` and the network |
-| 5 | `DATABASE_ERROR` | check with `dbq schema` |
-| 6 | `TIMEOUT` | filter harder |
+| Code | `DbqErrorCode`       | Implied action                |
+| ---- | -------------------- | ----------------------------- |
+| 0    | —                    | —                             |
+| 1    | `UNEXPECTED`         | —                             |
+| 2    | `USAGE`              | fix the invocation            |
+| 3    | `READONLY_VIOLATION` | rewrite the query             |
+| 4    | `CONNECTION_ERROR`   | check `--env` and the network |
+| 5    | `DATABASE_ERROR`     | check with `dbq schema`       |
+| 6    | `TIMEOUT`            | filter harder                 |
 
 Use `toConnectionError` — not `toDbqError` — for any failure raised **while the connection is still opening**. Without it a `connect ETIMEDOUT` becomes `TIMEOUT` and the consumer is told to "narrow the query" for a socket that never opened.
 
@@ -144,15 +144,15 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 
 ## Where to add code
 
-| What | Where | Don't forget |
-|---|---|---|
-| New Mongo read operation | `MONGO_READ_OPS` in `guards/types.ts` + a `case` in `engines/mongo.ts` | a test in the passing corpus |
-| New Redis read command | `REDIS_READ_COMMANDS` + command-specific validation + `engines/redis.ts` | prove its response is bounded; add passing and adversarial tests |
-| New forbidden operator | `FORBIDDEN_KEYS` in `guards/types.ts` | an adversarial test, including nested |
-| New forbidden SQL fragment | `FORBIDDEN_FRAGMENTS` in `guards/sql.ts` | an adversarial test |
-| New subcommand | `src/cli.ts` + the `SUBCOMMANDS` array | that array feeds the subcommand-as-query refusal |
-| New engine (Postgres, etc.) | `src/engines/<name>.ts` + its own guard in `src/guards/` | the guard comes **first**, with an adversarial corpus |
-| New config field | `src/config/types.ts` + validation in `loadEnv.ts` | a precedence test: flag > file > built-in |
+| What                        | Where                                                                    | Don't forget                                                     |
+| --------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| New Mongo read operation    | `MONGO_READ_OPS` in `guards/types.ts` + a `case` in `engines/mongo.ts`   | a test in the passing corpus                                     |
+| New Redis read command      | `REDIS_READ_COMMANDS` + command-specific validation + `engines/redis.ts` | prove its response is bounded; add passing and adversarial tests |
+| New forbidden operator      | `FORBIDDEN_KEYS` in `guards/types.ts`                                    | an adversarial test, including nested                            |
+| New forbidden SQL fragment  | `FORBIDDEN_FRAGMENTS` in `guards/sql.ts`                                 | an adversarial test                                              |
+| New subcommand              | `src/cli.ts` + the `SUBCOMMANDS` array                                   | that array feeds the subcommand-as-query refusal                 |
+| New engine (Postgres, etc.) | `src/engines/<name>.ts` + its own guard in `src/guards/`                 | the guard comes **first**, with an adversarial corpus            |
+| New config field            | `src/config/types.ts` + validation in `loadEnv.ts`                       | a precedence test: flag > file > built-in                        |
 
 ## Anti-patterns
 
@@ -177,11 +177,11 @@ pnpm vitest run tests/guards/    # only the suite guarding the invariant
 
 ## Documentation
 
-| Document | What it holds |
-|---|---|
-| [README.md](README.md) | usage, configuration, what is allowed |
+| Document                                                                   | What it holds                                                               |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [README.md](README.md)                                                     | usage, configuration, what is allowed                                       |
 | [docs/specs/2026-09-03-dbq-design.md](docs/specs/2026-09-03-dbq-design.md) | the design and the **why** behind each decision, with rejected alternatives |
-| [docs/plans/2026-09-03-dbq.md](docs/plans/2026-09-03-dbq.md) | the implementation plan, task by task |
+| [docs/plans/2026-09-03-dbq.md](docs/plans/2026-09-03-dbq.md)               | the implementation plan, task by task                                       |
 
 The spec carries a decision table at the end and a dated revision covering `--database`. **Read the spec before changing behaviour** — several choices that look arbitrary have an alternative that was already considered and rejected for a recorded reason.
 

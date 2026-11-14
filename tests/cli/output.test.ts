@@ -38,25 +38,25 @@ describe('CLI output', () => {
     }
   });
 
-  it.each([
-    ['--json'],
-    ['--format', 'json'],
-  ])('should be refusing JSON output flags before resolving a connection (%s)', (...flags) => {
-    const config = mkdtempSync(join(tmpdir(), 'dbq-cli-'));
-    try {
-      const result = runCli(['run', '--env', 'missing', ...flags, 'SELECT 1'], config);
-      expect(result.status).toBe(2);
-      expect(result.stdout).toContain('USAGE');
-      expect(result.stdout).toContain(
-        flags[0] === '--json' ? "unknown option '--json'" : "expected 'toon' or 'table'",
-      );
-      expect(result.stdout).not.toContain('could not infer the project');
-      expect(result.stdout).not.toContain('"error"');
-      expect(result.stderr).toBe('');
-    } finally {
-      rmSync(config, { recursive: true, force: true });
-    }
-  });
+  it.each([['--json'], ['--format', 'json']])(
+    'should be refusing JSON output flags before resolving a connection (%s)',
+    (...flags) => {
+      const config = mkdtempSync(join(tmpdir(), 'dbq-cli-'));
+      try {
+        const result = runCli(['run', '--env', 'missing', ...flags, 'SELECT 1'], config);
+        expect(result.status).toBe(2);
+        expect(result.stdout).toContain('USAGE');
+        expect(result.stdout).toContain(
+          flags[0] === '--json' ? "unknown option '--json'" : "expected 'toon' or 'table'",
+        );
+        expect(result.stdout).not.toContain('could not infer the project');
+        expect(result.stdout).not.toContain('"error"');
+        expect(result.stderr).toBe('');
+      } finally {
+        rmSync(config, { recursive: true, force: true });
+      }
+    },
+  );
 
   it('should be sending unknown flag errors as structured stdout with exit code 2', () => {
     const config = mkdtempSync(join(tmpdir(), 'dbq-cli-'));
@@ -111,18 +111,21 @@ describe('CLI output', () => {
     }
   });
 
-  it.each(['run', 'envs', 'schema', 'databases'])('should be omitting JSON formats from %s help', (command) => {
-    const config = mkdtempSync(join(tmpdir(), 'dbq-cli-'));
-    try {
-      const result = runCli([command, '--help'], config);
-      expect(result.status).toBe(0);
-      expect(result.stdout).not.toContain('--json');
-      expect(result.stdout).not.toContain('toon, json or table');
-      expect(result.stdout).toContain('toon or table');
-      expect(result.stdout).toContain('table');
-      if (command !== 'envs') expect(result.stdout).toContain('--full');
-    } finally {
-      rmSync(config, { recursive: true, force: true });
-    }
-  });
+  it.each(['run', 'envs', 'schema', 'databases'])(
+    'should be omitting JSON formats from %s help',
+    (command) => {
+      const config = mkdtempSync(join(tmpdir(), 'dbq-cli-'));
+      try {
+        const result = runCli([command, '--help'], config);
+        expect(result.status).toBe(0);
+        expect(result.stdout).not.toContain('--json');
+        expect(result.stdout).not.toContain('toon, json or table');
+        expect(result.stdout).toContain('toon or table');
+        expect(result.stdout).toContain('table');
+        if (command !== 'envs') expect(result.stdout).toContain('--full');
+      } finally {
+        rmSync(config, { recursive: true, force: true });
+      }
+    },
+  );
 });

@@ -32,8 +32,22 @@ const samples: { name: string; engine: Envelope['engine']; rows: unknown[]; curs
     name: 'SQL EXPLAIN · 2 plan rows',
     engine: 'mysql',
     rows: [
-      { id: 1, select_type: 'SIMPLE', table: 'orders', type: 'range', rows: 42, Extra: 'Using where' },
-      { id: 1, select_type: 'SIMPLE', table: 'companies', type: 'eq_ref', rows: 1, Extra: 'Using index' },
+      {
+        id: 1,
+        select_type: 'SIMPLE',
+        table: 'orders',
+        type: 'range',
+        rows: 42,
+        Extra: 'Using where',
+      },
+      {
+        id: 1,
+        select_type: 'SIMPLE',
+        table: 'companies',
+        type: 'eq_ref',
+        rows: 1,
+        Extra: 'Using index',
+      },
     ],
   },
   {
@@ -74,8 +88,12 @@ for (const sample of samples) {
   const savings = ((1 - afterTokens / beforeTokens) * 100).toFixed(1);
   beforeTotal += beforeTokens;
   afterTotal += afterTokens;
-  console.log(`| ${sample.name} | ${before} | ${after} | ${beforeTokens} | ${afterTokens} | ${savings}% |`);
+  console.log(
+    `| ${sample.name} | ${before} | ${after} | ${beforeTokens} | ${afterTokens} | ${savings}% |`,
+  );
 }
 
-console.log(`| **Average** | — | — | **${Math.ceil(beforeTotal / samples.length)}** | **${Math.ceil(afterTotal / samples.length)}** | **${((1 - afterTotal / beforeTotal) * 100).toFixed(1)}%** |`);
+console.log(
+  `| **Average** | — | — | **${Math.ceil(beforeTotal / samples.length)}** | **${Math.ceil(afterTotal / samples.length)}** | **${((1 - afterTotal / beforeTotal) * 100).toFixed(1)}%** |`,
+);
 console.log('\n¹ Estimate: character count divided by four, rounded up.');
