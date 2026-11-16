@@ -4,69 +4,17 @@
   "graph": {},
   "nodes": [
     {
-      "id": "src_config_types_mongoconnection",
-      "label": "MongoConnection",
+      "id": "src_errors_dbqerror",
+      "label": "DbqError",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
-      "norm_label": "mongoconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L7"
-    },
-    {
-      "id": "src_config_types_mysqlconnection",
-      "label": "MysqlConnection",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "mysqlconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_config_types_postgresconnection",
-      "label": "PostgresConnection",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "postgresconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L6"
-    },
-    {
-      "id": "src_engines_mysql_executeoptions",
-      "label": "ExecuteOptions",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "executeoptions",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L7"
-    },
-    {
-      "id": "src_engines_mysql_executeresult",
-      "label": "ExecuteResult",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "executeresult",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L16"
+      "norm_label": "dbqerror",
+      "source_file": "src/errors.ts",
+      "source_location": "L12"
     },
     {
       "id": "src_errors_dbqerrorcode",
@@ -75,24 +23,50 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "dbqerrorcode",
       "source_file": "src/errors.ts",
       "source_location": "L10"
     },
     {
-      "id": "src_guards_types_sqlplan",
-      "label": "SqlPlan",
+      "id": "src_config_types_connection",
+      "label": "Connection",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
+      "community": 1,
+      "community_name": "loadEnv.ts",
       "file_type": "code",
-      "norm_label": "sqlplan",
-      "source_file": "src/guards/types.ts",
-      "source_location": "L30"
+      "norm_label": "connection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_config_types_envconfig",
+      "label": "EnvConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "envconfig",
+      "source_file": "src/config/types.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_config_types_resolvedconnection",
+      "label": "ResolvedConnection",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "resolvedconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L16"
     },
     {
       "id": "src_config_types_redisconnection",
@@ -134,69 +108,43 @@
       "source_location": "L9"
     },
     {
-      "id": "src_config_types_connection",
-      "label": "Connection",
+      "id": "src_guards_types_redisplan",
+      "label": "RedisPlan",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
+      "community": 10,
+      "community_name": "engines/redis.ts",
       "file_type": "code",
-      "norm_label": "connection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_config_types_envconfig",
-      "label": "EnvConfig",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "envconfig",
-      "source_file": "src/config/types.ts",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_config_types_resolvedconnection",
-      "label": "ResolvedConnection",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "resolvedconnection",
-      "source_file": "src/config/types.ts",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_errors_dbqerror",
-      "label": "DbqError",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "dbqerror",
-      "source_file": "src/errors.ts",
-      "source_location": "L12"
-    },
-    {
-      "id": "src_guards_types_mongoplan",
-      "label": "MongoPlan",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "mongoplan",
+      "norm_label": "redisplan",
       "source_file": "src/guards/types.ts",
-      "source_location": "L61"
+      "source_location": "L55"
+    },
+    {
+      "id": "src_guards_types_redisreadcommand",
+      "label": "RedisReadCommand",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "redisreadcommand",
+      "source_file": "src/guards/types.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "src_config_types_postgresconnection",
+      "label": "PostgresConnection",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "postgresconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L6"
     },
     {
       "id": "src_cli_commonoptions",
@@ -209,7 +157,7 @@
       "file_type": "code",
       "norm_label": "commonoptions",
       "source_file": "src/cli.ts",
-      "source_location": "L23"
+      "source_location": "L31"
     },
     {
       "id": "src_cli_format",
@@ -222,7 +170,7 @@
       "file_type": "code",
       "norm_label": "format",
       "source_file": "src/cli.ts",
-      "source_location": "L21"
+      "source_location": "L29"
     },
     {
       "id": "src_output_envelope_envelope",
@@ -274,7 +222,7 @@
       "file_type": "code",
       "norm_label": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L87"
+      "source_location": "L91"
     },
     {
       "id": "src_guards_types_mongochainop",
@@ -303,6 +251,19 @@
       "source_location": "L23"
     },
     {
+      "id": "src_guards_types_mongoplan",
+      "label": "MongoPlan",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "guards/types.ts",
+      "file_type": "code",
+      "norm_label": "mongoplan",
+      "source_file": "src/guards/types.ts",
+      "source_location": "L61"
+    },
+    {
       "id": "src_guards_types_mongoreadop",
       "label": "MongoReadOp",
       "_callable": true,
@@ -329,30 +290,69 @@
       "source_location": "L69"
     },
     {
-      "id": "src_guards_types_redisplan",
-      "label": "RedisPlan",
+      "id": "src_config_types_mongoconnection",
+      "label": "MongoConnection",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
       "file_type": "code",
-      "norm_label": "redisplan",
-      "source_file": "src/guards/types.ts",
-      "source_location": "L55"
+      "norm_label": "mongoconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L7"
     },
     {
-      "id": "src_guards_types_redisreadcommand",
-      "label": "RedisReadCommand",
+      "id": "src_config_types_mysqlconnection",
+      "label": "MysqlConnection",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
       "file_type": "code",
-      "norm_label": "redisreadcommand",
+      "norm_label": "mysqlconnection",
+      "source_file": "src/config/types.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_engines_mysql_executeoptions",
+      "label": "ExecuteOptions",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "executeoptions",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "src_engines_mysql_executeresult",
+      "label": "ExecuteResult",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "executeresult",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_guards_types_sqlplan",
+      "label": "SqlPlan",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "sqlplan",
       "source_file": "src/guards/types.ts",
-      "source_location": "L53"
+      "source_location": "L30"
     },
     {
       "id": "tests_engines_mysql_test_fakeclient",
@@ -373,11 +373,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "ceiling()",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L31"
+      "source_location": "L34"
     },
     {
       "id": "src_engines_mongo_executemongo",
@@ -385,11 +385,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "executemongo()",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L37"
+      "source_location": "L40"
     },
     {
       "id": "src_engines_mongo_listdatabases",
@@ -397,7 +397,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "listdatabases()",
       "source_file": "src/engines/mongo.ts",
@@ -409,71 +409,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "requiredatabase()",
       "source_file": "src/engines/mongo.ts",
       "source_location": "L20"
     },
     {
-      "id": "src_engines_mysql_executemysql",
-      "label": "executeMysql()",
+      "id": "src_errors_dbqerror_constructor",
+      "label": ".constructor()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
-      "norm_label": "executemysql()",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L51"
-    },
-    {
-      "id": "src_engines_mysql_killquery",
-      "label": "killQuery()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "killquery()",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L28"
-    },
-    {
-      "id": "src_engines_mysql_withdatabase",
-      "label": "withDatabase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "withdatabase()",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L10"
-    },
-    {
-      "id": "src_engines_postgres_executepostgres",
-      "label": "executePostgres()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "executepostgres()",
-      "source_file": "src/engines/postgres.ts",
-      "source_location": "L31"
-    },
-    {
-      "id": "src_engines_postgres_withdatabase",
-      "label": "withDatabase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "withdatabase()",
-      "source_file": "src/engines/postgres.ts",
-      "source_location": "L10"
+      "norm_label": ".constructor()",
+      "source_file": "src/errors.ts",
+      "source_location": "L17"
     },
     {
       "id": "src_errors_readtag",
@@ -481,7 +433,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "readtag()",
       "source_file": "src/errors.ts",
@@ -493,7 +445,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "scruburi()",
       "source_file": "src/errors.ts",
@@ -505,11 +457,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "toconnectionerror()",
       "source_file": "src/errors.ts",
-      "source_location": "L80"
+      "source_location": "L84"
     },
     {
       "id": "src_errors_todbqerror",
@@ -517,23 +469,47 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "todbqerror()",
       "source_file": "src/errors.ts",
       "source_location": "L46"
     },
     {
-      "id": "src_output_envelope_applylimit",
-      "label": "applyLimit()",
+      "id": "src_guards_postgres_guardpostgres",
+      "label": "guardPostgres()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
-      "norm_label": "applylimit()",
-      "source_file": "src/output/envelope.ts",
-      "source_location": "L17"
+      "norm_label": "guardpostgres()",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "src_guards_postgres_normalize",
+      "label": "normalize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "normalize()",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "src_guards_postgres_refuse",
+      "label": "refuse()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "refuse()",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L36"
     },
     {
       "id": "src_schema_mongo_describe",
@@ -541,7 +517,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "describe()",
       "source_file": "src/schema/mongo.ts",
@@ -553,59 +529,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "mongoschema()",
       "source_file": "src/schema/mongo.ts",
       "source_location": "L19"
     },
     {
-      "id": "src_schema_mysql_mysqlschema",
-      "label": "mysqlSchema()",
+      "id": "tests_guards_postgres_test_refuses",
+      "label": "refuses()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
-      "norm_label": "mysqlschema()",
-      "source_file": "src/schema/mysql.ts",
-      "source_location": "L7"
-    },
-    {
-      "id": "src_schema_postgres_postgresdatabases",
-      "label": "postgresDatabases()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "postgresdatabases()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L66"
-    },
-    {
-      "id": "src_schema_postgres_postgresschema",
-      "label": "postgresSchema()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "postgresschema()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_schema_postgres_quote",
-      "label": "quote()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "quote()",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L15"
+      "norm_label": "refuses()",
+      "source_file": "tests/guards/postgres.test.ts",
+      "source_location": "L5"
     },
     {
       "id": "src_cli_resolve",
@@ -617,7 +557,7 @@
       "file_type": "code",
       "norm_label": "resolve()",
       "source_file": "src/cli.ts",
-      "source_location": "L55"
+      "source_location": "L64"
     },
     {
       "id": "src_config_loadenv_isrecord",
@@ -641,7 +581,7 @@
       "file_type": "code",
       "norm_label": "loadenv()",
       "source_file": "src/config/loadEnv.ts",
-      "source_location": "L58"
+      "source_location": "L64"
     },
     {
       "id": "src_config_loadenv_usage",
@@ -773,7 +713,7 @@
       "file_type": "code",
       "norm_label": "maketemp()",
       "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L9"
+      "source_location": "L14"
     },
     {
       "id": "tests_globalsetup_setup",
@@ -809,7 +749,7 @@
       "file_type": "code",
       "norm_label": "executeredis()",
       "source_file": "src/engines/redis.ts",
-      "source_location": "L46"
+      "source_location": "L52"
     },
     {
       "id": "src_engines_redis_pairs",
@@ -848,60 +788,12 @@
       "source_location": "L19"
     },
     {
-      "id": "src_errors_dbqerror_constructor",
-      "label": ".constructor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": ".constructor()",
-      "source_file": "src/errors.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_guards_postgres_guardpostgres",
-      "label": "guardPostgres()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "guardpostgres()",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L139"
-    },
-    {
-      "id": "src_guards_postgres_normalize",
-      "label": "normalize()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "normalize()",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L52"
-    },
-    {
-      "id": "src_guards_postgres_refuse",
-      "label": "refuse()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "refuse()",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L36"
-    },
-    {
       "id": "src_guards_sql_guardsql",
       "label": "guardSql()",
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "guardsql()",
       "source_file": "src/guards/sql.ts",
@@ -913,7 +805,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "normalize()",
       "source_file": "src/guards/sql.ts",
@@ -925,23 +817,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "refuse()",
       "source_file": "src/guards/sql.ts",
       "source_location": "L19"
-    },
-    {
-      "id": "tests_guards_postgres_test_refuses",
-      "label": "refuses()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "refuses()",
-      "source_file": "tests/guards/postgres.test.ts",
-      "source_location": "L5"
     },
     {
       "id": "tests_guards_sql_test_refuses",
@@ -949,11 +829,143 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "refuses()",
       "source_file": "tests/guards/sql.test.ts",
       "source_location": "L5"
+    },
+    {
+      "id": "src_guards_redis_guardredis",
+      "label": "guardRedis()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "guardredis()",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "src_guards_redis_iscursor",
+      "label": "isCursor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "iscursor()",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "src_guards_redis_isinteger",
+      "label": "isInteger()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "isinteger()",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "src_guards_redis_refuse",
+      "label": "refuse()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "refuse()",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "src_guards_redis_validatescan",
+      "label": "validateScan()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "validatescan()",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "tests_guards_redis_test_refuses",
+      "label": "refuses()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "refuses()",
+      "source_file": "tests/guards/redis.test.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_engines_postgres_executepostgres",
+      "label": "executePostgres()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "executepostgres()",
+      "source_file": "src/engines/postgres.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "src_engines_postgres_withdatabase",
+      "label": "withDatabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "withdatabase()",
+      "source_file": "src/engines/postgres.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "src_schema_postgres_postgresdatabases",
+      "label": "postgresDatabases()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "postgresdatabases()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "src_schema_postgres_postgresschema",
+      "label": "postgresSchema()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "postgresschema()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_schema_postgres_quote",
+      "label": "quote()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "quote()",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L15"
     },
     {
       "id": "scripts_measure_axi_output_envelope",
@@ -965,7 +977,7 @@
       "file_type": "code",
       "norm_label": "envelope()",
       "source_file": "scripts/measure-axi-output.ts",
-      "source_location": "L51"
+      "source_location": "L65"
     },
     {
       "id": "src_cli_configureerrors",
@@ -977,7 +989,7 @@
       "file_type": "code",
       "norm_label": "configureerrors()",
       "source_file": "src/cli.ts",
-      "source_location": "L113"
+      "source_location": "L129"
     },
     {
       "id": "src_cli_emit",
@@ -989,7 +1001,7 @@
       "file_type": "code",
       "norm_label": "emit()",
       "source_file": "src/cli.ts",
-      "source_location": "L71"
+      "source_location": "L80"
     },
     {
       "id": "src_cli_fail",
@@ -1001,7 +1013,7 @@
       "file_type": "code",
       "norm_label": "fail()",
       "source_file": "src/cli.ts",
-      "source_location": "L78"
+      "source_location": "L87"
     },
     {
       "id": "src_cli_handleclierror",
@@ -1013,7 +1025,7 @@
       "file_type": "code",
       "norm_label": "handleclierror()",
       "source_file": "src/cli.ts",
-      "source_location": "L106"
+      "source_location": "L118"
     },
     {
       "id": "src_cli_integer",
@@ -1025,7 +1037,7 @@
       "file_type": "code",
       "norm_label": "integer()",
       "source_file": "src/cli.ts",
-      "source_location": "L36"
+      "source_location": "L44"
     },
     {
       "id": "src_cli_readstdin",
@@ -1037,7 +1049,7 @@
       "file_type": "code",
       "norm_label": "readstdin()",
       "source_file": "src/cli.ts",
-      "source_location": "L49"
+      "source_location": "L58"
     },
     {
       "id": "src_cli_rejectsubcommandasquery",
@@ -1049,7 +1061,7 @@
       "file_type": "code",
       "norm_label": "rejectsubcommandasquery()",
       "source_file": "src/cli.ts",
-      "source_location": "L92"
+      "source_location": "L101"
     },
     {
       "id": "src_cli_withcommonoptions",
@@ -1061,7 +1073,7 @@
       "file_type": "code",
       "norm_label": "withcommonoptions()",
       "source_file": "src/cli.ts",
-      "source_location": "L116"
+      "source_location": "L132"
     },
     {
       "id": "src_output_envelope_cell",
@@ -1073,7 +1085,7 @@
       "file_type": "code",
       "norm_label": "cell()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L74"
+      "source_location": "L75"
     },
     {
       "id": "src_output_envelope_formaterror",
@@ -1085,7 +1097,7 @@
       "file_type": "code",
       "norm_label": "formaterror()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L130"
+      "source_location": "L135"
     },
     {
       "id": "src_output_envelope_formatrows",
@@ -1097,7 +1109,7 @@
       "file_type": "code",
       "norm_label": "formatrows()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L81"
+      "source_location": "L82"
     },
     {
       "id": "src_output_envelope_formattable",
@@ -1109,7 +1121,7 @@
       "file_type": "code",
       "norm_label": "formattable()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L117"
+      "source_location": "L120"
     },
     {
       "id": "src_output_envelope_formattoon",
@@ -1121,7 +1133,7 @@
       "file_type": "code",
       "norm_label": "formattoon()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L45"
+      "source_location": "L46"
     },
     {
       "id": "src_output_envelope_formattoonvalue",
@@ -1133,7 +1145,7 @@
       "file_type": "code",
       "norm_label": "formattoonvalue()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L42"
+      "source_location": "L43"
     },
     {
       "id": "src_output_envelope_formatvaluetable",
@@ -1145,7 +1157,7 @@
       "file_type": "code",
       "norm_label": "formatvaluetable()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L127"
+      "source_location": "L130"
     },
     {
       "id": "src_output_envelope_replacer",
@@ -1169,7 +1181,7 @@
       "file_type": "code",
       "norm_label": "truncatecontent()",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L47"
+      "source_location": "L48"
     },
     {
       "id": "tests_output_envelope_test_envelope",
@@ -1181,7 +1193,7 @@
       "file_type": "code",
       "norm_label": "envelope()",
       "source_file": "tests/output/envelope.test.ts",
-      "source_location": "L5"
+      "source_location": "L12"
     },
     {
       "id": "src_guards_mongo_guardmongo",
@@ -1193,7 +1205,7 @@
       "file_type": "code",
       "norm_label": "guardmongo()",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L106"
+      "source_location": "L110"
     },
     {
       "id": "src_guards_mongo_isnode",
@@ -1217,7 +1229,7 @@
       "file_type": "code",
       "norm_label": "readmodifier()",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L89"
+      "source_location": "L93"
     },
     {
       "id": "src_guards_mongo_refuse",
@@ -1241,67 +1253,7 @@
       "file_type": "code",
       "norm_label": "toliteral()",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L30"
-    },
-    {
-      "id": "src_guards_redis_guardredis",
-      "label": "guardRedis()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "guardredis()",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L46"
-    },
-    {
-      "id": "src_guards_redis_iscursor",
-      "label": "isCursor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "iscursor()",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L25"
-    },
-    {
-      "id": "src_guards_redis_isinteger",
-      "label": "isInteger()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "isinteger()",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L24"
-    },
-    {
-      "id": "src_guards_redis_refuse",
-      "label": "refuse()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "refuse()",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L20"
-    },
-    {
-      "id": "src_guards_redis_validatescan",
-      "label": "validateScan()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "validatescan()",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L27"
+      "source_location": "L32"
     },
     {
       "id": "tests_guards_mongo_test_refuses",
@@ -1316,16 +1268,64 @@
       "source_location": "L5"
     },
     {
-      "id": "tests_guards_redis_test_refuses",
-      "label": "refuses()",
+      "id": "src_engines_mysql_executemysql",
+      "label": "executeMysql()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
       "file_type": "code",
-      "norm_label": "refuses()",
-      "source_file": "tests/guards/redis.test.ts",
-      "source_location": "L5"
+      "norm_label": "executemysql()",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "src_engines_mysql_killquery",
+      "label": "killQuery()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "killquery()",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "src_engines_mysql_withdatabase",
+      "label": "withDatabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "withdatabase()",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "src_output_envelope_applylimit",
+      "label": "applyLimit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "applylimit()",
+      "source_file": "src/output/envelope.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_schema_mysql_mysqlschema",
+      "label": "mysqlSchema()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "mysqlschema()",
+      "source_file": "src/schema/mysql.ts",
+      "source_location": "L7"
     },
     {
       "id": "tests_engines_mysql_test_kills",
@@ -1352,55 +1352,11 @@
       "source_location": "L14"
     },
     {
-      "id": "src_config_types",
-      "label": "config/types.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "config/types.ts",
-      "source_file": "src/config/types.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_config_types_default_limit",
-      "label": "DEFAULT_LIMIT",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "default_limit",
-      "source_file": "src/config/types.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_config_types_default_max_bytes",
-      "label": "DEFAULT_MAX_BYTES",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "default_max_bytes",
-      "source_file": "src/config/types.ts",
-      "source_location": "L2"
-    },
-    {
-      "id": "src_config_types_default_timeout_ms",
-      "label": "DEFAULT_TIMEOUT_MS",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "default_timeout_ms",
-      "source_file": "src/config/types.ts",
-      "source_location": "L3"
-    },
-    {
       "id": "src_engines_mongo",
       "label": "engines/mongo.ts",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "engines/mongo.ts",
       "source_file": "src/engines/mongo.ts",
@@ -1411,40 +1367,18 @@
       "label": "INTERNAL_DATABASES",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "internal_databases",
       "source_file": "src/engines/mongo.ts",
       "source_location": "L8"
     },
     {
-      "id": "src_engines_mysql",
-      "label": "engines/mysql.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "engines/mysql.ts",
-      "source_file": "src/engines/mysql.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_engines_postgres",
-      "label": "engines/postgres.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "engines/postgres.ts",
-      "source_file": "src/engines/postgres.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "src_errors",
       "label": "errors.ts",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "errors.ts",
       "source_file": "src/errors.ts",
@@ -1455,7 +1389,7 @@
       "label": "CONNECTION_CODES",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "connection_codes",
       "source_file": "src/errors.ts",
@@ -1466,7 +1400,7 @@
       "label": "EXIT_BY_CODE",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "exit_by_code",
       "source_file": "src/errors.ts",
@@ -1477,54 +1411,54 @@
       "label": "TIMEOUT_MARKERS",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "timeout_markers",
       "source_file": "src/errors.ts",
       "source_location": "L41"
     },
     {
+      "id": "src_guards_postgres",
+      "label": "guards/postgres.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "guards/postgres.ts",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_guards_postgres_allowed_leading",
+      "label": "ALLOWED_LEADING",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "allowed_leading",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "src_guards_postgres_forbidden_fragments",
+      "label": "FORBIDDEN_FRAGMENTS",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "forbidden_fragments",
+      "source_file": "src/guards/postgres.ts",
+      "source_location": "L15"
+    },
+    {
       "id": "src_schema_mongo",
       "label": "schema/mongo.ts",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "schema/mongo.ts",
       "source_file": "src/schema/mongo.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_schema_mysql",
-      "label": "schema/mysql.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "schema/mysql.ts",
-      "source_file": "src/schema/mysql.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_schema_postgres",
-      "label": "schema/postgres.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "schema/postgres.ts",
-      "source_file": "src/schema/postgres.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_engines_mysql_integration_test",
-      "label": "mysql.integration.test.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "code",
-      "norm_label": "mysql.integration.test.ts",
-      "source_file": "tests/engines/mysql.integration.test.ts",
       "source_location": "L1"
     },
     {
@@ -1532,10 +1466,21 @@
       "label": "errors.test.ts",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "code",
       "norm_label": "errors.test.ts",
       "source_file": "tests/errors.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_guards_postgres_test",
+      "label": "postgres.test.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "code",
+      "norm_label": "postgres.test.ts",
+      "source_file": "tests/guards/postgres.test.ts",
       "source_location": "L1"
     },
     {
@@ -1543,18 +1488,30 @@
       "label": "mongodb",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "concept",
       "norm_label": "mongodb",
       "source_file": "package.json",
-      "source_location": "L34"
+      "source_location": "L36"
+    },
+    {
+      "id": "agents_conventions",
+      "label": "Conventions",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DbqError",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "conventions",
+      "source_file": "AGENTS.md",
+      "source_location": "L75"
     },
     {
       "id": "agents_errors_and_exit_codes",
       "label": "Errors and exit codes",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "errors and exit codes",
@@ -1562,52 +1519,40 @@
       "source_location": "L108"
     },
     {
-      "id": "docs_plans_2026_09_03_dbq_self_review",
-      "label": "Self-Review",
+      "id": "agents_errors_that_list_alternatives",
+      "label": "Errors that list alternatives",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "self-review",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2542"
+      "norm_label": "errors that list alternatives",
+      "source_file": "AGENTS.md",
+      "source_location": "L124"
     },
     {
-      "id": "docs_plans_2026_09_03_dbq_task_10_engine_mongodb",
-      "label": "Task 10: Engine MongoDB",
+      "id": "agents_output",
+      "label": "Output",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "task 10: engine mongodb",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1924"
+      "norm_label": "output",
+      "source_file": "AGENTS.md",
+      "source_location": "L97"
     },
     {
-      "id": "docs_plans_2026_09_03_dbq_task_11_descoberta_de_schema",
-      "label": "Task 11: Descoberta de schema",
+      "id": "agents_typescript_under_type_stripping",
+      "label": "TypeScript under type stripping",
       "_origin": "ast",
       "community": 0,
-      "community_name": "errors.ts",
+      "community_name": "DbqError",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "task 11: descoberta de schema",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2039"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_9_engine_mysql",
-      "label": "Task 9: Engine MySQL",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "errors.ts",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 9: engine mysql",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1837"
+      "norm_label": "typescript under type stripping",
+      "source_file": "AGENTS.md",
+      "source_location": "L77"
     },
     {
       "id": "src_config_loadenv",
@@ -1630,6 +1575,50 @@
       "norm_label": "resolveproject.ts",
       "source_file": "src/config/resolveProject.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "src_config_types",
+      "label": "config/types.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "config/types.ts",
+      "source_file": "src/config/types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_config_types_default_limit",
+      "label": "DEFAULT_LIMIT",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_limit",
+      "source_file": "src/config/types.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_config_types_default_max_bytes",
+      "label": "DEFAULT_MAX_BYTES",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_max_bytes",
+      "source_file": "src/config/types.ts",
+      "source_location": "L2"
+    },
+    {
+      "id": "src_config_types_default_timeout_ms",
+      "label": "DEFAULT_TIMEOUT_MS",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "code",
+      "norm_label": "default_timeout_ms",
+      "source_file": "src/config/types.ts",
+      "source_location": "L3"
     },
     {
       "id": "tests_cli_output_test",
@@ -1706,7 +1695,7 @@
       "file_type": "code",
       "norm_label": "temps",
       "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L8"
+      "source_location": "L13"
     },
     {
       "id": "tests_globalsetup",
@@ -1739,7 +1728,31 @@
       "file_type": "concept",
       "norm_label": "vitest",
       "source_file": "package.json",
-      "source_location": "L46"
+      "source_location": "L49"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_file_structure",
+      "label": "File Structure",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "file structure",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_7_loading_and_validating_the_env_file",
+      "label": "Task 7: Loading and validating the env file",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "loadEnv.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 7: loading and validating the env file",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1358"
     },
     {
       "id": "src_engines_redis",
@@ -1761,47 +1774,26 @@
       "file_type": "concept",
       "norm_label": "redis",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L41"
     },
     {
-      "id": "src_guards_postgres",
-      "label": "guards/postgres.ts",
+      "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_09_22_bounded_redis_inspection",
+      "label": "Revision of 2026-09-22 \u2014 bounded Redis inspection",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "guards/postgres.ts",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_guards_postgres_allowed_leading",
-      "label": "ALLOWED_LEADING",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "allowed_leading",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L4"
-    },
-    {
-      "id": "src_guards_postgres_forbidden_fragments",
-      "label": "FORBIDDEN_FRAGMENTS",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "forbidden_fragments",
-      "source_file": "src/guards/postgres.ts",
-      "source_location": "L15"
+      "community": 10,
+      "community_name": "engines/redis.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "revision of 2026-09-22 \u2014 bounded redis inspection",
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
+      "source_location": "L316"
     },
     {
       "id": "src_guards_sql",
       "label": "sql.ts",
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "sql.ts",
       "source_file": "src/guards/sql.ts",
@@ -1812,7 +1804,7 @@
       "label": "ALLOWED_LEADING",
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "allowed_leading",
       "source_file": "src/guards/sql.ts",
@@ -1823,189 +1815,22 @@
       "label": "FORBIDDEN_FRAGMENTS",
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "forbidden_fragments",
       "source_file": "src/guards/sql.ts",
       "source_location": "L6"
     },
     {
-      "id": "tests_guards_postgres_test",
-      "label": "postgres.test.ts",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "code",
-      "norm_label": "postgres.test.ts",
-      "source_file": "tests/guards/postgres.test.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "tests_guards_sql_test",
       "label": "sql.test.ts",
       "_origin": "ast",
       "community": 11,
-      "community_name": "DbqError",
+      "community_name": "sql.ts",
       "file_type": "code",
       "norm_label": "sql.test.ts",
       "source_file": "tests/guards/sql.test.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_dbq_implementation_plan",
-      "label": "dbq Implementation Plan",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "dbq implementation plan",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_file_structure",
-      "label": "File Structure",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "file structure",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L28"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_global_constraints",
-      "label": "Global Constraints",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "global constraints",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L13"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_12_montagem_da_cli",
-      "label": "Task 12: Montagem da CLI",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 12: montagem da cli",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2164"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_13_installation_readme_and_manual_smoke_test",
-      "label": "Task 13: Installation, README and manual smoke test",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 13: installation, readme and manual smoke test",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2393"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_1_project_scaffold",
-      "label": "Task 1: Project scaffold",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 1: project scaffold",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L49"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_2_erros_e_exit_codes",
-      "label": "Task 2: Erros e exit codes",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 2: erros e exit codes",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L178"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_3_contrato_entre_guards_e_engines",
-      "label": "Task 3: Contrato entre guards e engines",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 3: contrato entre guards e engines",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L367"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_4_guard_do_sql",
-      "label": "Task 4: Guard do SQL",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 4: guard do sql",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L439"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_5_guard_do_mongodb",
-      "label": "Task 5: Guard do MongoDB",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 5: guard do mongodb",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L699"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_6_configuration_types_and_project_resolution",
-      "label": "Task 6: Configuration types and project resolution",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 6: configuration types and project resolution",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1085"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_7_loading_and_validating_the_env_file",
-      "label": "Task 7: Loading and validating the env file",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 7: loading and validating the env file",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1320"
-    },
-    {
-      "id": "docs_plans_2026_09_03_dbq_task_8_output_envelope",
-      "label": "Task 8: Output envelope",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "DbqError",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "task 8: output envelope",
-      "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1612"
     },
     {
       "id": "docs_axi_auditoria",
@@ -2329,6 +2154,259 @@
       "source_location": "L2"
     },
     {
+      "id": "biome",
+      "label": "biome.json",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "biome.json",
+      "source_file": "biome.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "biome_assist",
+      "label": "assist",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "assist",
+      "source_file": "biome.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "biome_assist_enabled",
+      "label": "enabled",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "enabled",
+      "source_file": "biome.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "biome_files",
+      "label": "files",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "files",
+      "source_file": "biome.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "biome_files_includes",
+      "label": "includes",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "includes",
+      "source_file": "biome.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "biome_formatter",
+      "label": "formatter",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "formatter",
+      "source_file": "biome.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "biome_formatter_indentstyle",
+      "label": "indentStyle",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "indentstyle",
+      "source_file": "biome.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "biome_formatter_indentwidth",
+      "label": "indentWidth",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "indentwidth",
+      "source_file": "biome.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "biome_formatter_linewidth",
+      "label": "lineWidth",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "linewidth",
+      "source_file": "biome.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "biome_formatter_quotestyle",
+      "label": "quoteStyle",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "quotestyle",
+      "source_file": "biome.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "biome_javascript",
+      "label": "javascript",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "javascript",
+      "source_file": "biome.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "biome_javascript_formatter",
+      "label": "formatter",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "formatter",
+      "source_file": "biome.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "biome_linter",
+      "label": "linter",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "linter",
+      "source_file": "biome.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "biome_linter_enabled",
+      "label": "enabled",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "enabled",
+      "source_file": "biome.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "biome_schema",
+      "label": "$schema",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "$schema",
+      "source_file": "biome.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "biome_vcs",
+      "label": "vcs",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "vcs",
+      "source_file": "biome.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "biome_vcs_clientkind",
+      "label": "clientKind",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "clientkind",
+      "source_file": "biome.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "biome_vcs_enabled",
+      "label": "enabled",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "enabled",
+      "source_file": "biome.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "biome_vcs_useignorefile",
+      "label": "useIgnoreFile",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "biome.json",
+      "file_type": "code",
+      "norm_label": "useignorefile",
+      "source_file": "biome.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "src_guards_redis",
+      "label": "guards/redis.ts",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "guards/redis.ts",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_guards_redis_simple_arity",
+      "label": "SIMPLE_ARITY",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "simple_arity",
+      "source_file": "src/guards/redis.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_guards_types_redis_read_commands",
+      "label": "REDIS_READ_COMMANDS",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "redis_read_commands",
+      "source_file": "src/guards/types.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "tests_guards_redis_test",
+      "label": "redis.test.ts",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "guards/redis.ts",
+      "file_type": "code",
+      "norm_label": "redis.test.ts",
+      "source_file": "tests/guards/redis.test.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "package",
       "label": "package.json",
       "_origin": "ast",
@@ -2362,116 +2440,6 @@
       "source_location": "L11"
     },
     {
-      "id": "package_dependencies",
-      "label": "dependencies",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "dependencies",
-      "source_file": "package.json",
-      "source_location": "L30"
-    },
-    {
-      "id": "package_dependencies_acorn",
-      "label": "acorn",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "acorn",
-      "source_file": "package.json",
-      "source_location": "L32"
-    },
-    {
-      "id": "package_dependencies_commander",
-      "label": "commander",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "commander",
-      "source_file": "package.json",
-      "source_location": "L33"
-    },
-    {
-      "id": "package_dependencies_mongodb",
-      "label": "mongodb",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "mongodb",
-      "source_file": "package.json",
-      "source_location": "L34"
-    },
-    {
-      "id": "package_dependencies_mysql2",
-      "label": "mysql2",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "mysql2",
-      "source_file": "package.json",
-      "source_location": "L35"
-    },
-    {
-      "id": "package_dependencies_pg",
-      "label": "pg",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "pg",
-      "source_file": "package.json",
-      "source_location": "L36"
-    },
-    {
-      "id": "package_dependencies_pg_cursor",
-      "label": "pg-cursor",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "pg-cursor",
-      "source_file": "package.json",
-      "source_location": "L37"
-    },
-    {
-      "id": "package_dependencies_picocolors",
-      "label": "picocolors",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "picocolors",
-      "source_file": "package.json",
-      "source_location": "L38"
-    },
-    {
-      "id": "package_dependencies_redis",
-      "label": "redis",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "redis",
-      "source_file": "package.json",
-      "source_location": "L39"
-    },
-    {
-      "id": "package_dependencies_toon_format_toon",
-      "label": "@toon-format/toon",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "code",
-      "norm_label": "@toon-format/toon",
-      "source_file": "package.json",
-      "source_location": "L31"
-    },
-    {
       "id": "package_description",
       "label": "description",
       "_origin": "ast",
@@ -2491,7 +2459,18 @@
       "file_type": "code",
       "norm_label": "devdependencies",
       "source_file": "package.json",
-      "source_location": "L41"
+      "source_location": "L43"
+    },
+    {
+      "id": "package_devdependencies_biomejs_biome",
+      "label": "@biomejs/biome",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "@biomejs/biome",
+      "source_file": "package.json",
+      "source_location": "L44"
     },
     {
       "id": "package_devdependencies_types_node",
@@ -2502,7 +2481,7 @@
       "file_type": "code",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L45"
     },
     {
       "id": "package_devdependencies_types_pg",
@@ -2513,7 +2492,7 @@
       "file_type": "code",
       "norm_label": "@types/pg",
       "source_file": "package.json",
-      "source_location": "L43"
+      "source_location": "L46"
     },
     {
       "id": "package_devdependencies_types_pg_cursor",
@@ -2524,7 +2503,7 @@
       "file_type": "code",
       "norm_label": "@types/pg-cursor",
       "source_file": "package.json",
-      "source_location": "L44"
+      "source_location": "L47"
     },
     {
       "id": "package_devdependencies_typescript",
@@ -2535,7 +2514,7 @@
       "file_type": "code",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L45"
+      "source_location": "L48"
     },
     {
       "id": "package_devdependencies_vitest",
@@ -2546,7 +2525,7 @@
       "file_type": "code",
       "norm_label": "vitest",
       "source_file": "package.json",
-      "source_location": "L46"
+      "source_location": "L49"
     },
     {
       "id": "package_engines",
@@ -2681,6 +2660,28 @@
       "source_location": "L24"
     },
     {
+      "id": "package_scripts_format",
+      "label": "format",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "format",
+      "source_file": "package.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "package_scripts_format_check",
+      "label": "format:check",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "format:check",
+      "source_file": "package.json",
+      "source_location": "L30"
+    },
+    {
       "id": "package_scripts_prepack",
       "label": "prepack",
       "_origin": "ast",
@@ -2747,6 +2748,28 @@
       "source_location": "L3"
     },
     {
+      "id": "ref_acorn",
+      "label": "acorn",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "acorn",
+      "source_file": "package.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "ref_biomejs_biome",
+      "label": "@biomejs/biome",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "@biomejs/biome",
+      "source_file": "package.json",
+      "source_location": "L44"
+    },
+    {
       "id": "ref_commander",
       "label": "commander",
       "_origin": "ast",
@@ -2755,7 +2778,7 @@
       "file_type": "concept",
       "norm_label": "commander",
       "source_file": "package.json",
-      "source_location": "L33"
+      "source_location": "L35"
     },
     {
       "id": "ref_mysql2",
@@ -2765,28 +2788,6 @@
       "community_name": "package.json",
       "file_type": "concept",
       "norm_label": "mysql2",
-      "source_file": "package.json",
-      "source_location": "L35"
-    },
-    {
-      "id": "ref_pg",
-      "label": "pg",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "concept",
-      "norm_label": "pg",
-      "source_file": "package.json",
-      "source_location": "L36"
-    },
-    {
-      "id": "ref_pg_cursor",
-      "label": "pg-cursor",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "concept",
-      "norm_label": "pg-cursor",
       "source_file": "package.json",
       "source_location": "L37"
     },
@@ -2799,7 +2800,7 @@
       "file_type": "concept",
       "norm_label": "picocolors",
       "source_file": "package.json",
-      "source_location": "L38"
+      "source_location": "L40"
     },
     {
       "id": "ref_toon_format_toon",
@@ -2810,7 +2811,7 @@
       "file_type": "concept",
       "norm_label": "@toon-format/toon",
       "source_file": "package.json",
-      "source_location": "L31"
+      "source_location": "L33"
     },
     {
       "id": "ref_types_node",
@@ -2821,7 +2822,7 @@
       "file_type": "concept",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L42"
+      "source_location": "L45"
     },
     {
       "id": "ref_types_pg",
@@ -2832,7 +2833,7 @@
       "file_type": "concept",
       "norm_label": "@types/pg",
       "source_file": "package.json",
-      "source_location": "L43"
+      "source_location": "L46"
     },
     {
       "id": "ref_types_pg_cursor",
@@ -2843,7 +2844,7 @@
       "file_type": "concept",
       "norm_label": "@types/pg-cursor",
       "source_file": "package.json",
-      "source_location": "L44"
+      "source_location": "L47"
     },
     {
       "id": "ref_typescript",
@@ -2854,7 +2855,161 @@
       "file_type": "concept",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L45"
+      "source_location": "L48"
+    },
+    {
+      "id": "package_dependencies",
+      "label": "dependencies",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "dependencies",
+      "source_file": "package.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "package_dependencies_acorn",
+      "label": "acorn",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "acorn",
+      "source_file": "package.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "package_dependencies_commander",
+      "label": "commander",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "commander",
+      "source_file": "package.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "package_dependencies_mongodb",
+      "label": "mongodb",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "mongodb",
+      "source_file": "package.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "package_dependencies_mysql2",
+      "label": "mysql2",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "mysql2",
+      "source_file": "package.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "package_dependencies_pg",
+      "label": "pg",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "pg",
+      "source_file": "package.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "package_dependencies_pg_cursor",
+      "label": "pg-cursor",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "pg-cursor",
+      "source_file": "package.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "package_dependencies_picocolors",
+      "label": "picocolors",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "picocolors",
+      "source_file": "package.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "package_dependencies_redis",
+      "label": "redis",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "redis",
+      "source_file": "package.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "package_dependencies_toon_format_toon",
+      "label": "@toon-format/toon",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "dependencies",
+      "file_type": "code",
+      "norm_label": "@toon-format/toon",
+      "source_file": "package.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "src_engines_postgres",
+      "label": "engines/postgres.ts",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "engines/postgres.ts",
+      "source_file": "src/engines/postgres.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_schema_postgres",
+      "label": "schema/postgres.ts",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "code",
+      "norm_label": "schema/postgres.ts",
+      "source_file": "src/schema/postgres.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "ref_pg",
+      "label": "pg",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "concept",
+      "norm_label": "pg",
+      "source_file": "package.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "ref_pg_cursor",
+      "label": "pg-cursor",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "engines/postgres.ts",
+      "file_type": "concept",
+      "norm_label": "pg-cursor",
+      "source_file": "package.json",
+      "source_location": "L39"
     },
     {
       "id": "readme_configuration",
@@ -2914,7 +3069,7 @@
       "node_kind": "heading",
       "norm_label": "development",
       "source_file": "README.md",
-      "source_location": "L650"
+      "source_location": "L651"
     },
     {
       "id": "readme_discovery_envs_databases_schema",
@@ -2938,7 +3093,7 @@
       "node_kind": "heading",
       "norm_label": "exit codes",
       "source_file": "README.md",
-      "source_location": "L529"
+      "source_location": "L530"
     },
     {
       "id": "readme_fields",
@@ -2974,7 +3129,7 @@
       "node_kind": "heading",
       "norm_label": "how it works",
       "source_file": "README.md",
-      "source_location": "L563"
+      "source_location": "L564"
     },
     {
       "id": "readme_how_the_project_is_discovered",
@@ -3010,7 +3165,7 @@
       "node_kind": "heading",
       "norm_label": "license",
       "source_file": "README.md",
-      "source_location": "L686"
+      "source_location": "L687"
     },
     {
       "id": "readme_limits_and_truncation",
@@ -3022,7 +3177,7 @@
       "node_kind": "heading",
       "norm_label": "limits and truncation",
       "source_file": "README.md",
-      "source_location": "L451"
+      "source_location": "L452"
     },
     {
       "id": "readme_mongodb",
@@ -3070,7 +3225,7 @@
       "node_kind": "heading",
       "norm_label": "output",
       "source_file": "README.md",
-      "source_location": "L482"
+      "source_location": "L483"
     },
     {
       "id": "readme_passwords_with_special_characters",
@@ -3106,7 +3261,7 @@
       "node_kind": "heading",
       "norm_label": "recipes",
       "source_file": "README.md",
-      "source_location": "L593"
+      "source_location": "L594"
     },
     {
       "id": "readme_redis",
@@ -3142,7 +3297,7 @@
       "node_kind": "heading",
       "norm_label": "releases",
       "source_file": "README.md",
-      "source_location": "L658"
+      "source_location": "L659"
     },
     {
       "id": "readme_requirements",
@@ -3166,7 +3321,7 @@
       "node_kind": "heading",
       "norm_label": "scope",
       "source_file": "README.md",
-      "source_location": "L674"
+      "source_location": "L675"
     },
     {
       "id": "readme_security_recommendation",
@@ -3238,7 +3393,7 @@
       "node_kind": "heading",
       "norm_label": "troubleshooting",
       "source_file": "README.md",
-      "source_location": "L633"
+      "source_location": "L634"
     },
     {
       "id": "readme_usage",
@@ -3330,7 +3485,7 @@
       "file_type": "code",
       "norm_label": "program",
       "source_file": "src/cli.ts",
-      "source_location": "L102"
+      "source_location": "L111"
     },
     {
       "id": "src_cli_subcommands",
@@ -3341,7 +3496,7 @@
       "file_type": "code",
       "norm_label": "subcommands",
       "source_file": "src/cli.ts",
-      "source_location": "L84"
+      "source_location": "L93"
     },
     {
       "id": "src_output_envelope",
@@ -3363,6 +3518,42 @@
       "file_type": "code",
       "norm_label": "envelope.test.ts",
       "source_file": "tests/output/envelope.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents",
+      "label": "AGENTS.md",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "agents.md",
+      "source_file": "AGENTS.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq",
+      "label": "2026-09-03-dbq.md",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "2026-09-03-dbq.md",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_specs_2026_09_03_dbq_design",
+      "label": "2026-09-03-dbq-design.md",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "2026-09-03-dbq-design.md",
+      "source_file": "docs/specs/2026-09-03-dbq-design.md",
       "source_location": "L1"
     },
     {
@@ -3555,7 +3746,7 @@
       "node_kind": "heading",
       "norm_label": "recorded decisions",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L355"
+      "source_location": "L359"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_09_03_postgresql",
@@ -3567,7 +3758,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-09-03 \u2014 postgresql",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L263"
+      "source_location": "L267"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_03_agent_oriented_output",
@@ -3579,7 +3770,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-03 \u2014 agent-oriented output",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L370"
+      "source_location": "L374"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_03_single_structured_format_and_explicit_limits",
@@ -3591,7 +3782,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-03 \u2014 single structured format and explicit limits",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L380"
+      "source_location": "L384"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_15_mysql_kills_the_server_side_query",
@@ -3603,7 +3794,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-15 \u2014 mysql kills the server-side query",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L336"
+      "source_location": "L340"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_24_mysql_integration_test_runs_after_merge",
@@ -3615,7 +3806,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-24 \u2014 mysql integration test runs after merge",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L412"
+      "source_location": "L416"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_27_engines_lowered_to_node_20",
@@ -3627,7 +3818,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-27 \u2014 `engines` lowered to node 20",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L426"
+      "source_location": "L430"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_27_published_to_npm_as_compiled_javascript",
@@ -3639,7 +3830,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-27 \u2014 published to npm as compiled javascript",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L418"
+      "source_location": "L422"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_10_27_releases_through_release_please",
@@ -3651,7 +3842,7 @@
       "node_kind": "heading",
       "norm_label": "revision of 2026-10-27 \u2014 releases through release-please",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L432"
+      "source_location": "L436"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_scope",
@@ -3687,7 +3878,7 @@
       "node_kind": "heading",
       "norm_label": "test strategy",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L248"
+      "source_location": "L252"
     },
     {
       "id": "docs_specs_2026_09_03_dbq_design_the_boundary_that_carries_the_project",
@@ -3750,6 +3941,18 @@
       "source_location": "L214"
     },
     {
+      "id": "readme",
+      "label": "README.md",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "dbq \u2014 a read-only query runner for MySQL, PostgreSQL and MongoDB",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "readme.md",
+      "source_file": "README.md",
+      "source_location": "L1"
+    },
+    {
       "id": "src_guards_mongo",
       "label": "guards/mongo.ts",
       "_origin": "ast",
@@ -3759,28 +3962,6 @@
       "norm_label": "guards/mongo.ts",
       "source_file": "src/guards/mongo.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "src_guards_redis",
-      "label": "guards/redis.ts",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "guards/redis.ts",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_guards_redis_simple_arity",
-      "label": "SIMPLE_ARITY",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "simple_arity",
-      "source_file": "src/guards/redis.ts",
-      "source_location": "L5"
     },
     {
       "id": "src_guards_types",
@@ -3827,17 +4008,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_guards_types_redis_read_commands",
-      "label": "REDIS_READ_COMMANDS",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "redis_read_commands",
-      "source_file": "src/guards/types.ts",
-      "source_location": "L32"
-    },
-    {
       "id": "tests_guards_mongo_test",
       "label": "mongo.test.ts",
       "_origin": "ast",
@@ -3847,28 +4017,6 @@
       "norm_label": "mongo.test.ts",
       "source_file": "tests/guards/mongo.test.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "tests_guards_redis_test",
-      "label": "redis.test.ts",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "code",
-      "norm_label": "redis.test.ts",
-      "source_file": "tests/guards/redis.test.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "ref_acorn",
-      "label": "acorn",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "guards/types.ts",
-      "file_type": "concept",
-      "norm_label": "acorn",
-      "source_file": "package.json",
-      "source_location": "L32"
     },
     {
       "id": "agents_style",
@@ -3883,27 +4031,48 @@
       "source_location": "L88"
     },
     {
-      "id": "docs_specs_2026_09_03_dbq_design_revision_of_2026_09_22_bounded_redis_inspection",
-      "label": "Revision of 2026-09-22 \u2014 bounded Redis inspection",
+      "id": "docs_plans_2026_09_03_dbq_task_5_guard_do_mongodb",
+      "label": "Task 5: Guard do MongoDB",
       "_origin": "ast",
       "community": 6,
       "community_name": "guards/types.ts",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "revision of 2026-09-22 \u2014 bounded redis inspection",
-      "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L312"
+      "norm_label": "task 5: guard do mongodb",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L720"
     },
     {
-      "id": "agents",
-      "label": "AGENTS.md",
+      "id": "src_engines_mysql",
+      "label": "engines/mysql.ts",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "agents.md",
-      "source_file": "AGENTS.md",
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "engines/mysql.ts",
+      "source_file": "src/engines/mysql.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_schema_mysql",
+      "label": "schema/mysql.ts",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "schema/mysql.ts",
+      "source_file": "src/schema/mysql.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_engines_mysql_integration_test",
+      "label": "mysql.integration.test.ts",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "code",
+      "norm_label": "mysql.integration.test.ts",
+      "source_file": "tests/engines/mysql.integration.test.ts",
       "source_location": "L1"
     },
     {
@@ -3911,7 +4080,7 @@
       "label": "Anti-patterns",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "anti-patterns",
@@ -3923,7 +4092,7 @@
       "label": "Architecture",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "architecture",
@@ -3931,23 +4100,11 @@
       "source_location": "L30"
     },
     {
-      "id": "agents_conventions",
-      "label": "Conventions",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "conventions",
-      "source_file": "AGENTS.md",
-      "source_location": "L75"
-    },
-    {
       "id": "agents_dbq_knowledge_base",
       "label": "dbq \u2014 Knowledge Base",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "dbq \u2014 knowledge base",
@@ -3959,7 +4116,7 @@
       "label": "Documentation",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "documentation",
@@ -3967,23 +4124,11 @@
       "source_location": "L178"
     },
     {
-      "id": "agents_errors_that_list_alternatives",
-      "label": "Errors that list alternatives",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "errors that list alternatives",
-      "source_file": "AGENTS.md",
-      "source_location": "L124"
-    },
-    {
       "id": "agents_flow",
       "label": "Flow",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "flow",
@@ -3991,23 +4136,11 @@
       "source_location": "L69"
     },
     {
-      "id": "agents_output",
-      "label": "Output",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "output",
-      "source_file": "AGENTS.md",
-      "source_location": "L97"
-    },
-    {
       "id": "agents_quick_start",
       "label": "Quick Start",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "quick start",
@@ -4019,7 +4152,7 @@
       "label": "Tests",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "tests",
@@ -4031,7 +4164,7 @@
       "label": "The boundary the project rests on",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "the boundary the project rests on",
@@ -4043,7 +4176,7 @@
       "label": "The invariant",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "the invariant",
@@ -4051,23 +4184,11 @@
       "source_location": "L20"
     },
     {
-      "id": "agents_typescript_under_type_stripping",
-      "label": "TypeScript under type stripping",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "typescript under type stripping",
-      "source_file": "AGENTS.md",
-      "source_location": "L77"
-    },
-    {
       "id": "agents_where_to_add_code",
       "label": "Where to add code",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "where to add code",
@@ -4075,40 +4196,172 @@
       "source_location": "L145"
     },
     {
-      "id": "docs_plans_2026_09_03_dbq",
-      "label": "2026-09-03-dbq.md",
+      "id": "docs_plans_2026_09_03_dbq_dbq_implementation_plan",
+      "label": "dbq Implementation Plan",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "2026-09-03-dbq.md",
+      "node_kind": "heading",
+      "norm_label": "dbq implementation plan",
       "source_file": "docs/plans/2026-09-03-dbq.md",
       "source_location": "L1"
     },
     {
-      "id": "docs_specs_2026_09_03_dbq_design",
-      "label": "2026-09-03-dbq-design.md",
+      "id": "docs_plans_2026_09_03_dbq_global_constraints",
+      "label": "Global Constraints",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "2026-09-03-dbq-design.md",
-      "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L1"
+      "node_kind": "heading",
+      "norm_label": "global constraints",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L13"
     },
     {
-      "id": "readme",
-      "label": "README.md",
+      "id": "docs_plans_2026_09_03_dbq_self_review",
+      "label": "Self-Review",
       "_origin": "ast",
       "community": 7,
-      "community_name": "dbq \u2014 Knowledge Base",
+      "community_name": "engines/mysql.ts",
       "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "readme.md",
-      "source_file": "README.md",
-      "source_location": "L1"
+      "node_kind": "heading",
+      "norm_label": "self-review",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L2658"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_10_engine_mongodb",
+      "label": "Task 10: Engine MongoDB",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 10: engine mongodb",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L2009"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_11_descoberta_de_schema",
+      "label": "Task 11: Descoberta de schema",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 11: descoberta de schema",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L2138"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_12_montagem_da_cli",
+      "label": "Task 12: Montagem da CLI",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 12: montagem da cli",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L2276"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_13_installation_readme_and_manual_smoke_test",
+      "label": "Task 13: Installation, README and manual smoke test",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 13: installation, readme and manual smoke test",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L2507"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_1_project_scaffold",
+      "label": "Task 1: Project scaffold",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 1: project scaffold",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L49"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_2_erros_e_exit_codes",
+      "label": "Task 2: Erros e exit codes",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 2: erros e exit codes",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L180"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_3_contrato_entre_guards_e_engines",
+      "label": "Task 3: Contrato entre guards e engines",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 3: contrato entre guards e engines",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L379"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_4_guard_do_sql",
+      "label": "Task 4: Guard do SQL",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 4: guard do sql",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L453"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_6_configuration_types_and_project_resolution",
+      "label": "Task 6: Configuration types and project resolution",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 6: configuration types and project resolution",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1116"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_8_output_envelope",
+      "label": "Task 8: Output envelope",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 8: output envelope",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1677"
+    },
+    {
+      "id": "docs_plans_2026_09_03_dbq_task_9_engine_mysql",
+      "label": "Task 9: Engine MySQL",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 9: engine mysql",
+      "source_file": "docs/plans/2026-09-03-dbq.md",
+      "source_location": "L1920"
     },
     {
       "id": "tsconfig",
@@ -4331,18 +4584,6 @@
       "source_location": "L42"
     },
     {
-      "id": "ref_mysql2_promise",
-      "label": "ref_mysql2_promise",
-      "_origin": "semantic",
-      "community": 0,
-      "community_name": "errors.ts",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "ref_mysql2_promise",
-      "source_file": "",
-      "type": "external"
-    },
-    {
       "id": "ref_node_child_process",
       "label": "ref_node_child_process",
       "_origin": "semantic",
@@ -4415,6 +4656,18 @@
       "type": "external"
     },
     {
+      "id": "ref_mysql2_promise",
+      "label": "ref_mysql2_promise",
+      "_origin": "semantic",
+      "community": 7,
+      "community_name": "engines/mysql.ts",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ref_mysql2_promise",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "ref_node_events",
       "label": "ref_node_events",
       "_origin": "semantic",
@@ -4437,7 +4690,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L73",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -4449,7 +4702,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L74",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
@@ -4461,7 +4714,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L74",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
@@ -4473,7 +4726,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L79",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -4485,7 +4738,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L80",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -4497,7 +4750,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L108",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -4509,7 +4762,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L109",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -4521,7 +4774,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L95",
+      "source_location": "L104",
       "weight": 1.0
     },
     {
@@ -4533,7 +4786,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L56",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -4545,7 +4798,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L57",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -4557,7 +4810,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L58",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -4569,43 +4822,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L117",
-      "weight": 1.0
-    },
-    {
-      "source": "src_config_loadenv_loadenv",
-      "target": "src_config_loadenv_validateconnection",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L113",
-      "weight": 1.0
-    },
-    {
-      "source": "src_config_loadenv_loadenv",
-      "target": "src_config_resolveproject_listenvs",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L74",
-      "weight": 1.0
-    },
-    {
-      "source": "src_config_loadenv_loadenv",
-      "target": "src_config_loadenv_usage",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/config/loadEnv.ts",
-      "source_location": "L75",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -4617,7 +4834,43 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/config/loadEnv.ts",
-      "source_location": "L92",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "src_config_loadenv_loadenv",
+      "target": "src_config_loadenv_validateconnection",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "src_config_loadenv_loadenv",
+      "target": "src_config_resolveproject_listenvs",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "src_config_loadenv_loadenv",
+      "target": "src_config_loadenv_usage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/config/loadEnv.ts",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -4713,7 +4966,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L107",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -4725,7 +4978,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L109",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -4737,7 +4990,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L49",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -4749,7 +5002,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L51",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -4761,7 +5014,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L55",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -4785,7 +5038,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -4797,7 +5050,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -4809,7 +5062,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L123",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -4821,7 +5074,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L125",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -4833,7 +5086,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L131",
+      "source_location": "L136",
       "weight": 1.0
     },
     {
@@ -4845,7 +5098,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L56",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -4857,7 +5110,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L75",
+      "source_location": "L80",
       "weight": 1.0
     },
     {
@@ -4869,7 +5122,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L87",
+      "source_location": "L92",
       "weight": 1.0
     },
     {
@@ -4881,7 +5134,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L44",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -4934,66 +5187,6 @@
     },
     {
       "source": "src_engines_redis_executeredis",
-      "target": "src_errors_dbqerror",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/redis.ts",
-      "source_location": "L103",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_redis_executeredis",
-      "target": "src_errors_todbqerror",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/redis.ts",
-      "source_location": "L110",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_redis_executeredis",
-      "target": "src_errors_toconnectionerror",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/redis.ts",
-      "source_location": "L59",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_redis_executeredis",
-      "target": "src_engines_redis_scanrows",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/redis.ts",
-      "source_location": "L83",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_redis_executeredis",
-      "target": "src_output_envelope_applylimit",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/engines/redis.ts",
-      "source_location": "L84",
-      "weight": 1.0
-    },
-    {
-      "source": "src_engines_redis_executeredis",
       "target": "src_engines_redis_cappedrangeargs",
       "relation": "calls",
       "_origin": "ast",
@@ -5001,7 +5194,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/redis.ts",
-      "source_location": "L93",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -5013,12 +5206,72 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/redis.ts",
-      "source_location": "L98",
+      "source_location": "L114",
       "weight": 1.0
     },
     {
       "source": "src_engines_redis_executeredis",
       "target": "src_engines_redis_values",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/redis.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_redis_executeredis",
+      "target": "src_errors_dbqerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/redis.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_redis_executeredis",
+      "target": "src_errors_todbqerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/redis.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_redis_executeredis",
+      "target": "src_errors_toconnectionerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/redis.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_redis_executeredis",
+      "target": "src_engines_redis_scanrows",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/engines/redis.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "src_engines_redis_executeredis",
+      "target": "src_output_envelope_applylimit",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5037,7 +5290,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/engines/redis.ts",
-      "source_location": "L41",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -5049,7 +5302,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/errors.ts",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -5061,7 +5314,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/errors.ts",
-      "source_location": "L83",
+      "source_location": "L87",
       "weight": 1.0
     },
     {
@@ -5109,7 +5362,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L108",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -5121,7 +5374,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L138",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -5133,7 +5386,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L139",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -5145,7 +5398,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L170",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -5157,7 +5410,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L94",
+      "source_location": "L98",
       "weight": 1.0
     },
     {
@@ -5181,7 +5434,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L43",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -5193,7 +5446,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L44",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -5241,7 +5494,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/redis.ts",
-      "source_location": "L51",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -5253,7 +5506,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/redis.ts",
-      "source_location": "L77",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -5265,7 +5518,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/redis.ts",
-      "source_location": "L78",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -5277,7 +5530,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/guards/redis.ts",
-      "source_location": "L85",
+      "source_location": "L84",
       "weight": 1.0
     },
     {
@@ -5361,7 +5614,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L135",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -5373,7 +5626,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L96",
+      "source_location": "L98",
       "weight": 1.0
     },
     {
@@ -5385,7 +5638,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L118",
+      "source_location": "L121",
       "weight": 1.0
     },
     {
@@ -5397,7 +5650,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -5409,7 +5662,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L128",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -5469,7 +5722,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/schema/mongo.ts",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -5493,7 +5746,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/schema/mysql.ts",
-      "source_location": "L20",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -5594,6 +5847,18 @@
     },
     {
       "source": "src_cli",
+      "target": "src_cli_rejectsubcommandasquery",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/cli.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "src_cli",
       "target": "src_cli_readstdin",
       "relation": "contains",
       "_origin": "ast",
@@ -5601,7 +5866,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L49",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -5613,7 +5878,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L55",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -5625,7 +5890,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L71",
+      "source_location": "L80",
       "weight": 1.0
     },
     {
@@ -5637,19 +5902,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/cli.ts",
-      "source_location": "L78",
-      "weight": 1.0
-    },
-    {
-      "source": "src_cli",
-      "target": "src_cli_rejectsubcommandasquery",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/cli.ts",
-      "source_location": "L92",
+      "source_location": "L87",
       "weight": 1.0
     },
     {
@@ -5697,7 +5950,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L9",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -5781,7 +6034,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/output/envelope.test.ts",
-      "source_location": "L5",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -5805,7 +6058,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -5817,7 +6070,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -5829,7 +6082,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -5841,7 +6094,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -5853,7 +6106,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -5865,7 +6118,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -5877,7 +6130,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -5889,7 +6142,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -5901,36 +6154,12 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
       "source": "package",
-      "target": "ref_types_node",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "package.json",
-      "source_location": "L42",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "ref_types_pg",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "package.json",
-      "source_location": "L43",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "ref_types_pg_cursor",
+      "target": "ref_biomejs_biome",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5942,7 +6171,7 @@
     },
     {
       "source": "package",
-      "target": "ref_typescript",
+      "target": "ref_types_node",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5954,7 +6183,7 @@
     },
     {
       "source": "package",
-      "target": "ref_vitest",
+      "target": "ref_types_pg",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5962,6 +6191,42 @@
       "context": "import",
       "source_file": "package.json",
       "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_types_pg_cursor",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_typescript",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_vitest",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -7130,6 +7395,18 @@
     },
     {
       "source": "tests_config_resolveproject_test",
+      "target": "src_errors_dbqerror",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/config/resolveProject.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_config_resolveproject_test",
       "target": "src_config_resolveproject_configroot",
       "relation": "imports",
       "_origin": "ast",
@@ -7174,18 +7451,6 @@
       "context": "import",
       "source_file": "tests/config/resolveProject.test.ts",
       "source_location": "L5",
-      "weight": 1.0
-    },
-    {
-      "source": "tests_config_resolveproject_test",
-      "target": "src_errors_dbqerror",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -7346,6 +7611,18 @@
     },
     {
       "source": "tests_output_envelope_test",
+      "target": "src_errors_dbqerror",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/output/envelope.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_output_envelope_test",
       "target": "src_output_envelope_applylimit",
       "relation": "imports",
       "_origin": "ast",
@@ -7414,18 +7691,6 @@
       "context": "import",
       "source_file": "tests/output/envelope.test.ts",
       "source_location": "L2",
-      "weight": 1.0
-    },
-    {
-      "source": "tests_output_envelope_test",
-      "target": "src_errors_dbqerror",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "tests/output/envelope.test.ts",
-      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -8456,6 +8721,18 @@
     },
     {
       "source": "tests_config_resolveproject_test",
+      "target": "src_errors",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/config/resolveProject.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_config_resolveproject_test",
       "target": "ref_node_fs",
       "relation": "imports_from",
       "_origin": "ast",
@@ -8500,18 +8777,6 @@
       "context": "import",
       "source_file": "tests/config/resolveProject.test.ts",
       "source_location": "L5",
-      "weight": 1.0
-    },
-    {
-      "source": "tests_config_resolveproject_test",
-      "target": "src_errors",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -8768,6 +9033,18 @@
     },
     {
       "source": "tests_output_envelope_test",
+      "target": "src_errors",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/output/envelope.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_output_envelope_test",
       "target": "src_output_envelope",
       "relation": "imports_from",
       "_origin": "ast",
@@ -8776,18 +9053,6 @@
       "context": "import",
       "source_file": "tests/output/envelope.test.ts",
       "source_location": "L2",
-      "weight": 1.0
-    },
-    {
-      "source": "tests_output_envelope_test",
-      "target": "src_errors",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "tests/output/envelope.test.ts",
-      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -9003,6 +9268,204 @@
       "weight": 1.0
     },
     {
+      "source": "biome",
+      "target": "biome_schema",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_vcs",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_files",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_linter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_assist",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_formatter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "biome",
+      "target": "biome_javascript",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_assist",
+      "target": "biome_assist_enabled",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_files",
+      "target": "biome_files_includes",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_formatter",
+      "target": "biome_formatter_indentstyle",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_formatter",
+      "target": "biome_formatter_indentwidth",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_formatter",
+      "target": "biome_formatter_linewidth",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_javascript",
+      "target": "biome_javascript_formatter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_javascript_formatter",
+      "target": "biome_formatter_quotestyle",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_linter",
+      "target": "biome_linter_enabled",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_vcs",
+      "target": "biome_vcs_clientkind",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_vcs",
+      "target": "biome_vcs_enabled",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "biome_vcs",
+      "target": "biome_vcs_useignorefile",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "biome.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
       "source": "docs_axi_auditoria",
       "target": "docs_axi_auditoria_axi_audit_and_output_measurements",
       "relation": "contains",
@@ -9087,7 +9550,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1085",
+      "source_location": "L1116",
       "weight": 1.0
     },
     {
@@ -9109,7 +9572,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1320",
+      "source_location": "L1358",
       "weight": 1.0
     },
     {
@@ -9120,7 +9583,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1612",
+      "source_location": "L1677",
       "weight": 1.0
     },
     {
@@ -9131,7 +9594,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L178",
+      "source_location": "L180",
       "weight": 1.0
     },
     {
@@ -9142,7 +9605,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1837",
+      "source_location": "L1920",
       "weight": 1.0
     },
     {
@@ -9153,7 +9616,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1924",
+      "source_location": "L2009",
       "weight": 1.0
     },
     {
@@ -9164,7 +9627,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2039",
+      "source_location": "L2138",
       "weight": 1.0
     },
     {
@@ -9175,7 +9638,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2164",
+      "source_location": "L2276",
       "weight": 1.0
     },
     {
@@ -9186,7 +9649,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2393",
+      "source_location": "L2507",
       "weight": 1.0
     },
     {
@@ -9197,7 +9660,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2542",
+      "source_location": "L2658",
       "weight": 1.0
     },
     {
@@ -9219,7 +9682,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L367",
+      "source_location": "L379",
       "weight": 1.0
     },
     {
@@ -9230,7 +9693,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L439",
+      "source_location": "L453",
       "weight": 1.0
     },
     {
@@ -9252,7 +9715,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L699",
+      "source_location": "L720",
       "weight": 1.0
     },
     {
@@ -9428,7 +9891,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L248",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
@@ -9439,7 +9902,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L263",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -9461,7 +9924,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L312",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -9472,7 +9935,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L336",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -9483,7 +9946,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L355",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -9494,7 +9957,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L370",
+      "source_location": "L374",
       "weight": 1.0
     },
     {
@@ -9505,7 +9968,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L380",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -9516,7 +9979,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L412",
+      "source_location": "L416",
       "weight": 1.0
     },
     {
@@ -9527,7 +9990,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L418",
+      "source_location": "L422",
       "weight": 1.0
     },
     {
@@ -9538,7 +10001,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L426",
+      "source_location": "L430",
       "weight": 1.0
     },
     {
@@ -9549,7 +10012,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -9758,7 +10221,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -9780,7 +10243,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -9824,7 +10287,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -9835,7 +10298,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -9846,7 +10309,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -9857,7 +10320,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -9868,7 +10331,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -9879,7 +10342,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -9890,7 +10353,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -9901,7 +10364,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -9912,34 +10375,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_node",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L42",
-      "weight": 1.0
-    },
-    {
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_types_pg",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L43",
-      "weight": 1.0
-    },
-    {
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_types_pg_cursor",
+      "target": "package_devdependencies_biomejs_biome",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9950,7 +10391,7 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript",
+      "target": "package_devdependencies_types_node",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9961,13 +10402,46 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vitest",
+      "target": "package_devdependencies_types_pg",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_types_pg_cursor",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_typescript",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vitest",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -10067,6 +10541,28 @@
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "package_scripts",
+      "target": "package_scripts_format",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "package_scripts",
+      "target": "package_scripts_format_check",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -10220,7 +10716,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L451",
+      "source_location": "L452",
       "weight": 1.0
     },
     {
@@ -10231,7 +10727,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L482",
+      "source_location": "L483",
       "weight": 1.0
     },
     {
@@ -10242,7 +10738,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L529",
+      "source_location": "L530",
       "weight": 1.0
     },
     {
@@ -10253,7 +10749,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L563",
+      "source_location": "L564",
       "weight": 1.0
     },
     {
@@ -10275,7 +10771,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L593",
+      "source_location": "L594",
       "weight": 1.0
     },
     {
@@ -10286,7 +10782,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L633",
+      "source_location": "L634",
       "weight": 1.0
     },
     {
@@ -10308,7 +10804,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L650",
+      "source_location": "L651",
       "weight": 1.0
     },
     {
@@ -10319,7 +10815,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L674",
+      "source_location": "L675",
       "weight": 1.0
     },
     {
@@ -10330,7 +10826,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L686",
+      "source_location": "L687",
       "weight": 1.0
     },
     {
@@ -10352,7 +10848,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L658",
+      "source_location": "L659",
       "weight": 1.0
     },
     {
@@ -10506,7 +11002,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/measure-axi-output.ts",
-      "source_location": "L51",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -10517,7 +11013,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L102",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -10528,7 +11024,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L106",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -10539,7 +11035,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L113",
+      "source_location": "L129",
       "weight": 1.0
     },
     {
@@ -10550,7 +11046,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L116",
+      "source_location": "L132",
       "weight": 1.0
     },
     {
@@ -10561,7 +11057,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L23",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -10572,7 +11068,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -10583,7 +11079,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/cli.ts",
-      "source_location": "L84",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -10627,7 +11123,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/config/loadEnv.ts",
-      "source_location": "L58",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -10825,7 +11321,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -10836,7 +11332,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mongo.ts",
-      "source_location": "L37",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -10858,7 +11354,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L10",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -10869,7 +11365,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L16",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -10880,7 +11376,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L28",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -10891,7 +11387,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/mysql.ts",
-      "source_location": "L51",
+      "source_location": "L56",
       "weight": 1.0
     },
     {
@@ -10979,7 +11475,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/engines/redis.ts",
-      "source_location": "L46",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -11100,7 +11596,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/errors.ts",
-      "source_location": "L80",
+      "source_location": "L84",
       "weight": 1.0
     },
     {
@@ -11111,7 +11607,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L106",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -11155,7 +11651,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -11166,7 +11662,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L87",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -11177,7 +11673,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/guards/mongo.ts",
-      "source_location": "L89",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -11287,7 +11783,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/guards/redis.ts",
-      "source_location": "L46",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -11496,7 +11992,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L117",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -11507,7 +12003,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L127",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -11518,7 +12014,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L130",
+      "source_location": "L135",
       "weight": 1.0
     },
     {
@@ -11562,7 +12058,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -11573,7 +12069,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -11584,7 +12080,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -11606,7 +12102,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -11617,7 +12113,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/output/envelope.ts",
-      "source_location": "L81",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -11727,7 +12223,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/config/resolveProject.test.ts",
-      "source_location": "L8",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -12110,7 +12606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L589",
+      "source_location": "L590",
       "weight": 1.0
     },
     {
@@ -12121,7 +12617,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L670",
+      "source_location": "L671",
       "weight": 1.0
     },
     {
@@ -12133,7 +12629,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/cli.ts",
-      "source_location": "L135",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -12145,7 +12641,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/cli.ts",
-      "source_location": "L114",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -12157,7 +12653,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/cli.ts",
-      "source_location": "L122",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -12169,7 +12665,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L77",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -12181,7 +12677,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -12193,7 +12689,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/output/envelope.ts",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -12217,7 +12713,7 @@
       "confidence_score": 0.95,
       "context": "Connection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1326",
+      "source_location": "L1366",
       "weight": 1.0
     },
     {
@@ -12253,7 +12749,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -12265,7 +12761,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L445",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -12277,7 +12773,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L705",
+      "source_location": "L728",
       "weight": 1.0
     },
     {
@@ -12289,7 +12785,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1091",
+      "source_location": "L1124",
       "weight": 1.0
     },
     {
@@ -12301,7 +12797,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1326",
+      "source_location": "L1366",
       "weight": 1.0
     },
     {
@@ -12313,7 +12809,7 @@
       "confidence_score": 0.95,
       "context": "DbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1618",
+      "source_location": "L1685",
       "weight": 1.0
     },
     {
@@ -12349,7 +12845,7 @@
       "confidence_score": 0.95,
       "context": "EnvConfig",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1326",
+      "source_location": "L1366",
       "weight": 1.0
     },
     {
@@ -12361,7 +12857,7 @@
       "confidence_score": 0.95,
       "context": "ExecuteOptions",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2572",
+      "source_location": "L2688",
       "weight": 1.0
     },
     {
@@ -12373,7 +12869,7 @@
       "confidence_score": 0.95,
       "context": "ExecuteOptions",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12385,7 +12881,7 @@
       "confidence_score": 0.95,
       "context": "ExecuteResult",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2572",
+      "source_location": "L2688",
       "weight": 1.0
     },
     {
@@ -12397,7 +12893,7 @@
       "confidence_score": 0.95,
       "context": "ExecuteResult",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12409,7 +12905,7 @@
       "confidence_score": 0.95,
       "context": "MongoConnection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12421,7 +12917,7 @@
       "confidence_score": 0.95,
       "context": "MongoConnection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2045",
+      "source_location": "L2146",
       "weight": 1.0
     },
     {
@@ -12445,7 +12941,7 @@
       "confidence_score": 0.95,
       "context": "MongoPlan",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12457,7 +12953,7 @@
       "confidence_score": 0.95,
       "context": "MongoPlan",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L705",
+      "source_location": "L728",
       "weight": 1.0
     },
     {
@@ -12493,7 +12989,7 @@
       "confidence_score": 0.95,
       "context": "MysqlConnection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2045",
+      "source_location": "L2146",
       "weight": 1.0
     },
     {
@@ -12505,7 +13001,7 @@
       "confidence_score": 0.95,
       "context": "MysqlConnection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1843",
+      "source_location": "L1928",
       "weight": 1.0
     },
     {
@@ -12517,7 +13013,7 @@
       "confidence_score": 0.95,
       "context": "RedisPlan",
       "source_file": "docs/specs/2026-09-03-dbq-design.md",
-      "source_location": "L320",
+      "source_location": "L324",
       "weight": 1.0
     },
     {
@@ -12541,7 +13037,7 @@
       "confidence_score": 0.95,
       "context": "ResolvedConnection",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1326",
+      "source_location": "L1366",
       "weight": 1.0
     },
     {
@@ -12565,7 +13061,7 @@
       "confidence_score": 0.95,
       "context": "SqlPlan",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L445",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -12577,7 +13073,7 @@
       "confidence_score": 0.95,
       "context": "SqlPlan",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1843",
+      "source_location": "L1928",
       "weight": 1.0
     },
     {
@@ -12613,7 +13109,7 @@
       "confidence_score": 0.95,
       "context": "applyLimit",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2574",
+      "source_location": "L2690",
       "weight": 1.0
     },
     {
@@ -12625,7 +13121,7 @@
       "confidence_score": 0.95,
       "context": "applyLimit",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12637,7 +13133,7 @@
       "confidence_score": 0.95,
       "context": "applyLimit",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1843",
+      "source_location": "L1928",
       "weight": 1.0
     },
     {
@@ -12649,7 +13145,7 @@
       "confidence_score": 0.95,
       "context": "executeMysql",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2578",
+      "source_location": "L2694",
       "weight": 1.0
     },
     {
@@ -12661,7 +13157,7 @@
       "confidence_score": 0.95,
       "context": "executeMysql",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2045",
+      "source_location": "L2146",
       "weight": 1.0
     },
     {
@@ -12673,7 +13169,7 @@
       "confidence_score": 0.95,
       "context": "formatError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2575",
+      "source_location": "L2691",
       "weight": 1.0
     },
     {
@@ -12685,7 +13181,7 @@
       "confidence_score": 0.95,
       "context": "listEnvs",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1326",
+      "source_location": "L1366",
       "weight": 1.0
     },
     {
@@ -12757,7 +13253,7 @@
       "confidence_score": 0.95,
       "context": "toDbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1930",
+      "source_location": "L2017",
       "weight": 1.0
     },
     {
@@ -12769,7 +13265,7 @@
       "confidence_score": 0.95,
       "context": "toDbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L2045",
+      "source_location": "L2146",
       "weight": 1.0
     },
     {
@@ -12781,7 +13277,7 @@
       "confidence_score": 0.95,
       "context": "toDbqError",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1843",
+      "source_location": "L1928",
       "weight": 1.0
     },
     {
@@ -12793,10 +13289,10 @@
       "confidence_score": 0.95,
       "context": "toLiteral",
       "source_file": "docs/plans/2026-09-03-dbq.md",
-      "source_location": "L1069",
+      "source_location": "L1100",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dd60f6c1fb8cad592d754fa0f31a76e943f59b2d"
+  "built_at_commit": "1b5bc93bd31df3bc5792542a28e7fd3acb863cac"
 }
