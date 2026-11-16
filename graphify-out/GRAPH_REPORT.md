@@ -1,38 +1,42 @@
-# Graph Report - dbq  (2026-11-05)
+# Graph Report - dbq  (2026-11-16)
 
 ## Corpus Check
-- 49 files · ~38,562 words
+- 55 files · ~39,529 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 3 file(s) not represented in the graph (top: (none) 3)
+- Unclassified: 5 file(s) not represented in the graph (top: (none) 4, .lock 1)
 
 ## Summary
-- 378 nodes · 721 edges · 18 communities (15 shown, 3 thin omitted)
+- 401 nodes · 743 edges · 22 communities (19 shown, 3 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dd60f6c1`
+- Built from commit: `1b5bc93b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- errors.ts
+- DbqError
 - loadEnv.ts
 - package.json
 - dbq
 - cli.ts
 - dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB
 - guards/types.ts
-- dbq — Knowledge Base
+- engines/mysql.ts
 - compilerOptions
 - mysql.test.ts
 - engines/redis.ts
-- DbqError
+- sql.ts
 - AXI audit and output measurements
 - vitest.config.ts
 - pull_request_template.md
 - compilerOptions
 - release-please-config.json
+- biome.json
+- guards/redis.ts
+- dependencies
+- engines/postgres.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `DbqError` - 48 edges
@@ -47,33 +51,33 @@
 10. `compilerOptions` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Output` --references--> `scrubUri()`  [INFERRED]
-  AGENTS.md → src/errors.ts
+- `Task 2: Erros e exit codes` --references--> `DbqError`  [INFERRED]
+  docs/plans/2026-09-03-dbq.md → src/errors.ts
+- `Task 6: Configuration types and project resolution` --references--> `DbqError`  [INFERRED]
+  docs/plans/2026-09-03-dbq.md → src/errors.ts
+- `Task 8: Output envelope` --references--> `DbqError`  [INFERRED]
+  docs/plans/2026-09-03-dbq.md → src/errors.ts
 - `Global Constraints` --references--> `scrubUri()`  [INFERRED]
   docs/plans/2026-09-03-dbq.md → src/errors.ts
-- `Anti-patterns` --references--> `applyLimit()`  [INFERRED]
-  AGENTS.md → src/output/envelope.ts
-- `Tests` --references--> `applyLimit()`  [INFERRED]
-  AGENTS.md → src/output/envelope.ts
-- `Task 7: Loading and validating the env file` --references--> `listEnvs()`  [INFERRED]
-  docs/plans/2026-09-03-dbq.md → src/config/resolveProject.ts
+- `Style` --references--> `DbqError`  [INFERRED]
+  AGENTS.md → src/errors.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (18 total, 3 thin omitted)
+## Communities (22 total, 3 thin omitted)
 
-### Community 0 - "errors.ts"
-Cohesion: 0.10
-Nodes (41): Errors and exit codes, Self-Review, Task 10: Engine MongoDB, Task 11: Descoberta de schema, Task 9: Engine MySQL, mongodb, ref_mysql2_promise, DEFAULT_LIMIT (+33 more)
+### Community 0 - "DbqError"
+Cohesion: 0.12
+Nodes (28): Conventions, Errors and exit codes, Errors that list alternatives, Output, TypeScript under type stripping, mongodb, ceiling(), executeMongo() (+20 more)
 
 ### Community 1 - "loadEnv.ts"
-Cohesion: 0.12
-Nodes (20): ref_node_child_process, ref_node_fs, ref_node_fs_promises, ref_node_os, ref_node_path, vitest, resolve(), isRecord() (+12 more)
+Cohesion: 0.10
+Nodes (28): File Structure, Task 7: Loading and validating the env file, ref_node_child_process, ref_node_fs, ref_node_fs_promises, ref_node_os, ref_node_path, vitest (+20 more)
 
 ### Community 2 - "package.json"
-Cohesion: 0.04
-Nodes (47): bin, dbq, dependencies, acorn, commander, mongodb, mysql2, pg (+39 more)
+Cohesion: 0.05
+Nodes (40): bin, dbq, description, devDependencies, @biomejs/biome, @types/node, @types/pg, @types/pg-cursor (+32 more)
 
 ### Community 3 - "dbq"
 Cohesion: 0.06
@@ -88,12 +92,12 @@ Cohesion: 0.06
 Nodes (32): Architecture, CLI surface, Configuration, Configuration precedence, Credential hygiene, Data flow, dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB, Discovery subcommands (+24 more)
 
 ### Community 6 - "guards/types.ts"
-Cohesion: 0.11
-Nodes (28): Style, Revision of 2026-09-22 — bounded Redis inspection, acorn, AnyNode, Call, guardMongo(), isNode(), readModifier() (+20 more)
+Cohesion: 0.17
+Nodes (18): Style, Task 5: Guard do MongoDB, AnyNode, Call, guardMongo(), isNode(), readModifier(), refuse() (+10 more)
 
-### Community 7 - "dbq — Knowledge Base"
-Cohesion: 0.12
-Nodes (14): Anti-patterns, Architecture, Conventions, dbq — Knowledge Base, Documentation, Errors that list alternatives, Flow, Output (+6 more)
+### Community 7 - "engines/mysql.ts"
+Cohesion: 0.08
+Nodes (35): Anti-patterns, Architecture, dbq — Knowledge Base, Documentation, Flow, Quick Start, Tests, The boundary the project rests on (+27 more)
 
 ### Community 8 - "compilerOptions"
 Cohesion: 0.13
@@ -104,12 +108,12 @@ Cohesion: 0.22
 Nodes (6): ref_node_events, connection, created, FakeClient, opts, plan
 
 ### Community 10 - "engines/redis.ts"
-Cohesion: 0.31
-Nodes (9): redis, RedisConnection, cappedRangeArgs(), executeRedis(), pairs(), RedisExecuteOptions, RedisExecuteResult, scanRows() (+1 more)
+Cohesion: 0.24
+Nodes (11): Revision of 2026-09-22 — bounded Redis inspection, redis, RedisConnection, cappedRangeArgs(), executeRedis(), pairs(), RedisExecuteOptions, RedisExecuteResult (+3 more)
 
-### Community 11 - "DbqError"
-Cohesion: 0.09
-Nodes (30): dbq Implementation Plan, File Structure, Global Constraints, Task 12: Montagem da CLI, Task 13: Installation, README and manual smoke test, Task 1: Project scaffold, Task 2: Erros e exit codes, Task 3: Contrato entre guards e engines (+22 more)
+### Community 11 - "sql.ts"
+Cohesion: 0.39
+Nodes (6): ALLOWED_LEADING, FORBIDDEN_FRAGMENTS, guardSql(), normalize(), refuse(), refuses()
 
 ### Community 12 - "AXI audit and output measurements"
 Cohesion: 0.29
@@ -123,25 +127,41 @@ Nodes (4): Checklist, Evidence, Merge Danger, Summary
 Cohesion: 0.20
 Nodes (9): ./tsconfig.json, compilerOptions, allowImportingTsExtensions, noEmit, outDir, rewriteRelativeImportExtensions, rootDir, extends (+1 more)
 
+### Community 18 - "biome.json"
+Cohesion: 0.11
+Nodes (18): assist, enabled, files, includes, formatter, indentStyle, indentWidth, lineWidth (+10 more)
+
+### Community 19 - "guards/redis.ts"
+Cohesion: 0.33
+Nodes (9): guardRedis(), isCursor(), isInteger(), refuse(), SIMPLE_ARITY, validateScan(), REDIS_READ_COMMANDS, RedisReadCommand (+1 more)
+
+### Community 20 - "dependencies"
+Cohesion: 0.20
+Nodes (10): dependencies, acorn, commander, mongodb, mysql2, pg, pg-cursor, picocolors (+2 more)
+
+### Community 21 - "engines/postgres.ts"
+Cohesion: 0.33
+Nodes (8): pg, pg-cursor, PostgresConnection, executePostgres(), withDatabase(), postgresDatabases(), postgresSchema(), quote()
+
 ## Knowledge Gaps
-- **166 isolated node(s):** `name`, `version`, `description`, `type`, `type` (+161 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 183 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **181 isolated node(s):** `$schema`, `enabled`, `clientKind`, `useIgnoreFile`, `includes` (+176 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 198 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `DbqError` connect `DbqError` to `errors.ts`, `loadEnv.ts`, `cli.ts`, `guards/types.ts`, `engines/redis.ts`?**
-  _High betweenness centrality (0.165) - this node is a cross-community bridge._
-- **Why does `dbq` connect `dbq` to `dbq — Knowledge Base`?**
-  _High betweenness centrality (0.155) - this node is a cross-community bridge._
-- **Why does `dbq Implementation Plan` connect `DbqError` to `errors.ts`, `dbq — Knowledge Base`?**
-  _High betweenness centrality (0.148) - this node is a cross-community bridge._
+- **Why does `DbqError` connect `DbqError` to `loadEnv.ts`, `cli.ts`, `guards/types.ts`, `engines/mysql.ts`, `engines/redis.ts`, `sql.ts`, `guards/redis.ts`, `engines/postgres.ts`?**
+  _High betweenness centrality (0.149) - this node is a cross-community bridge._
+- **Why does `dbq` connect `dbq` to `dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB`?**
+  _High betweenness centrality (0.139) - this node is a cross-community bridge._
+- **Why does `dbq Implementation Plan` connect `engines/mysql.ts` to `loadEnv.ts`, `dbq — a read-only query runner for MySQL, PostgreSQL and MongoDB`, `guards/types.ts`?**
+  _High betweenness centrality (0.133) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `DbqError` (e.g. with `Style` and `File Structure`) actually correct?**
   _`DbqError` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 4 inferred relationships involving `toDbqError()` (e.g. with `Errors and exit codes` and `Task 10: Engine MongoDB`) actually correct?**
   _`toDbqError()` has 4 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `name`, `version`, `description` to the rest of the system?**
-  _166 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `errors.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10352941176470588 - nodes in this community are weakly interconnected._
+- **What connects `$schema`, `enabled`, `clientKind` to the rest of the system?**
+  _181 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `DbqError` be split into smaller, more focused modules?**
+  _Cohesion score 0.12436974789915967 - nodes in this community are weakly interconnected._
